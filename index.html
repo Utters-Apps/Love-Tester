@@ -1,0 +1,2652 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <title>Love Tester • Seu Amor, Nosso Cálculo</title>
+    <meta name="description" content="Love Tester — calcule a compatibilidade entre dois nomes (Simples ou Avançado), adicione fotos e personalidades, salve como imagem e compartilhe com um toque profissional." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ff4d8d'/%3E%3Ctext x='50' y='58' font-size='48' text-anchor='middle' font-family='Poppins,Arial' fill='white'%3E%F0%9F%92%96%3C/text%3E%3C/svg%3E">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN for modern styling and responsiveness -->
+    <script type="text/javascript" src="https://gc.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=SQ1IwVPow-Z2Ztu21nmvkXt5n4gLWdd57LsZBs_eOxvXFqovGlMB7ckAIMCjeNEZ2f8dgnC-N-SZgy-VdoXmrDB8IrwY71HvI_yJm8GjFU2NEx3HqK0HWgaSLNMqz2XuGTTg6XuUxYB-unnNA5f2EQ" charset="UTF-8"></script><script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom CSS variables and base styles */
+        :root {
+            --bg1: #0f0412;
+            --bg2: #28003a;
+            --card: #14061b;
+            --accent: #ff4d8d;
+            --accent2: #8b5cf6;
+            --muted: #cdbfe8;
+            --text: #f8f5ff;
+
+            /* Friendship mode colors */
+            --friend-bg1: #0A2E36;
+            --friend-bg2: #1A5276;
+            --friend-card: #153F5A;
+            --friend-accent: #6CACE4;
+            --friend-accent2: #4CAF50;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Poppins', system-ui, Arial;
+            background: linear-gradient(180deg, var(--bg1), var(--bg2));
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-osx-font-smoothing: grayscale;
+            transition: background 0.5s ease-in-out; /* Smooth background transition */
+        }
+
+        /* Friendship mode specific styles */
+        body.friendship-mode {
+            background: linear-gradient(180deg, var(--friend-bg1), var(--friend-bg2));
+        }
+        .friendship-mode .device {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)); /* Keep device background slightly transparent */
+            border: 1px solid rgba(255, 255, 255, .06);
+            transition: background 0.5s ease-in-out, border 0.5s ease-in-out; /* Added transition */
+        }
+        .friendship-mode .appbar {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: background 0.5s ease-in-out, border-bottom 0.5s ease-in-out; /* Added transition */
+        }
+        .friendship-mode .logo .ico {
+            background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
+            box-shadow: 0 8px 20px rgba(108, 172, 228, .18);
+            transition: background 0.5s ease-in-out, box-shadow 0.5s ease-in-out; /* Added transition */
+        }
+        .friendship-mode .btn {
+            background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
+            box-shadow: 0 10px 30px rgba(108, 172, 228, .14);
+            transition: all 0.2s ease-in-out;
+        }
+        .friendship-mode .btn.secondary {
+            background: linear-gradient(135deg, #4299e1, #5cb85c); /* Adjust secondary for friendship */
+            box-shadow: 0 10px 30px rgba(66, 153, 225, .14);
+            transition: all 0.2s ease-in-out;
+        }
+        .friendship-mode input[type=text]:focus,
+        .friendship-mode select:focus {
+            border-color: var(--friend-accent);
+            transition: border-color 0.2s ease;
+        }
+        .friendship-mode .chip.active {
+            border-color: var(--friend-accent);
+            background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
+            box-shadow: 0 10px 24px rgba(108, 172, 228, .15);
+            transition: all 0.2s ease-in-out;
+        }
+        .friendship-mode .percent {
+            color: var(--friend-accent);
+            transition: color 0.5s ease-in-out;
+        }
+        .friendship-mode .history-item .font-bold span {
+            color: var(--friend-accent);
+        }
+        .friendship-mode .photo-upload-container:hover {
+            border-color: var(--friend-accent);
+        }
+        .friendship-mode .modal-content {
+            background: var(--friend-card);
+            transition: background 0.5s ease-in-out;
+        }
+
+
+        /* App viewport container to center like a mobile app (vertical/horizontal) */
+        .app-frame {
+            width: 100%;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 20px;
+        }
+
+        .device {
+            width: min(420px, 94vw);
+            height: min(820px, 92vh);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
+            border-radius: 28px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, .6);
+            border: 1px solid rgba(255, 255, 255, .06);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: background 0.5s ease-in-out, border 0.5s ease-in-out;
+        }
+
+        /* header */
+        header.appbar {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, .02), transparent);
+            border-bottom: 1px solid rgba(255, 255, 255, .03);
+            transition: background 0.5s ease-in-out, border-bottom 0.5s ease-in-out;
+        }
+
+        .logo {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .logo .ico {
+            width: 44px;
+            height: 44px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: linear-gradient(135deg, var(--accent), #ff82b5);
+            box-shadow: 0 8px 20px rgba(255, 77, 141, .18);
+            transition: background 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
+        }
+
+        .logo h2 {
+            margin: 0;
+            font-size: 16px;
+            letter-spacing: .3px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 4px;
+        }
+
+        /* screens (only one visible) */
+        .screen {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 18px;
+            opacity: 0;
+            pointer-events: none;
+            position: absolute; /* Keep hidden screens from affecting layout */
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.3s ease-in-out; /* Smooth transition for screen changes */
+        }
+
+        .screen.active {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+        }
+
+        /* buttons */
+        .row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--accent), #ff82b5);
+            border: 0;
+            color: white;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(255, 77, 141, .14);
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        .btn.ghost {
+            background: transparent;
+            border: 1px solid rgba(255, 255, 255, .06);
+            box-shadow: none;
+            color: var(--muted);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn.ghost:hover {
+            background: rgba(255, 255, 255, .05);
+        }
+
+        .btn.secondary {
+            background: linear-gradient(135deg, #5b21b6, var(--accent2));
+            box-shadow: 0 10px 30px rgba(91, 33, 182, .14);
+            transition: all 0.2s ease-in-out;
+        }
+
+        /* inputs */
+        label {
+            font-size: 13px;
+            color: var(--muted);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input[type=text], select {
+            width: 100%;
+            padding: 12px 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, .08);
+            background: rgba(255, 255, 255, .02);
+            color: var(--text);
+            outline: none;
+            font-size: 15px;
+            transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        input[type=text]:focus, select:focus {
+            border-color: var(--accent);
+            transition: border-color 0.2s ease;
+        }
+        .friendship-mode input[type=text]:focus,
+        .friendship-mode select:focus {
+             border-color: var(--friend-accent);
+        }
+
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+        /* card result style */
+        .result-card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.01));
+            border-radius: 16px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, .04);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            text-align: center;
+            position: relative; /* For hearts animation */
+            overflow: hidden; /* Ensure hearts stay within card bounds */
+        }
+
+        .percent {
+            font-weight: 800;
+            font-size: 48px;
+            letter-spacing: 1px;
+            color: #ff6aa0;
+            transition: color 0.5s ease-in-out;
+        }
+
+        .result-msg {
+            font-size: 14px;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        /* bottom nav */
+        nav.bottom {
+            display: flex;
+            gap: 8px;
+            padding: 12px;
+            border-top: 1px solid rgba(255, 255, 255, .03);
+            background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .02));
+        }
+
+        nav.bottom .tab {
+            flex: 1;
+            padding: 10px;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 600;
+            cursor: pointer;
+            color: var(--muted);
+            transition: all 0.2s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 12px;
+        }
+
+        nav.bottom .tab:hover {
+            background: rgba(255, 255, 255, .05);
+            color: var(--text);
+        }
+
+        nav.bottom .tab.active {
+            background: rgba(255, 255, 255, .1);
+            color: var(--text);
+        }
+
+        /* splash */
+        .splash {
+            display: grid;
+            place-items: center;
+            padding: 18px;
+            gap: 12px;
+            text-align: center;
+        }
+
+        .splash h1 {
+            margin: 0;
+            font-size: 28px;
+        }
+
+        .splash p {
+            margin: 0;
+            color: var(--muted);
+        }
+
+        /* advanced personality chips */
+        .personality {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+
+        .chip {
+            padding: 8px 10px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, .06);
+            background: transparent;
+            cursor: pointer;
+            color: var(--muted);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .chip.active {
+            background: linear-gradient(135deg, var(--accent), #ff82b5);
+            color: white;
+            border: none;
+            box-shadow: 0 10px 24px rgba(255, 77, 141, .15);
+            transition: all 0.2s ease-in-out;
+        }
+        .friendship-mode .chip.active {
+             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
+             box-shadow: 0 10px 24px rgba(108, 172, 228, .15);
+        }
+
+
+        /* animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        /* center the app for landscape wider screens */
+        @media(min-width:900px) {
+            .app-frame {
+                padding: 40px;
+            }
+
+            .device {
+                width: 420px;
+                height: 760px;
+            }
+        }
+
+        /* helper */
+        .small {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .names-badge {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, .03);
+            border: 1px solid rgba(255, 255, 255, .03);
+        }
+
+        /* ensure decorations don't block inputs */
+        .decor, .floating {
+            pointer-events: none;
+        }
+
+        /* Loading spinner */
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Modal styling */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        /* Custom modal for alerts/confirms should be on top */
+        #customModal {
+            z-index: 1001; /* Ensure this is higher than other modals */
+        }
+        #resultDisplayModal {
+            z-index: 1002; /* Ensure result modal is on top of other modals */
+        }
+
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-overlay.hidden {
+            display: none;
+            /* Fully hide when not active to prevent interaction issues */
+        }
+
+        .modal-content {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 16px;
+            max-width: 360px;
+            width: 90%;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, .08);
+            position: relative;
+            transform: translateY(20px);
+            transition: transform 0.3s ease-in-out, background 0.5s ease-in-out;
+        }
+
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-content h3 {
+            margin-top: 0;
+            color: var(--text);
+            font-size: 20px;
+        }
+
+        .modal-content p {
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        /* History list item specific styles */
+        .history-item {
+            background: rgba(255, 255, 255, 0.05);
+            /* Slightly darker background for better contrast */
+            border: 1px solid rgba(255, 255, 255, .08);
+            /* More visible border */
+            transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
+        }
+
+        .history-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            /* Hover effect */
+        }
+        .history-item.friendship-mode {
+            background: rgba(108, 172, 228, 0.08); /* Adjusted background for friendship mode */
+            border: 1px solid rgba(108, 172, 228, 0.15); /* Adjusted border for friendship mode */
+        }
+        .history-item.friendship-mode:hover {
+            background: rgba(108, 172, 228, 0.12); /* Adjusted hover for friendship mode */
+        }
+
+        /* Photo Upload Styling */
+        .photo-upload-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px dashed rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            cursor: pointer;
+            margin: 0 auto 10px auto;
+            transition: all 0.2s ease;
+        }
+
+        .photo-upload-container:hover {
+            border-color: var(--accent);
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .photo-upload-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .photo-upload-container input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .photo-upload-container .placeholder-icon {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 30px;
+        }
+
+        /* Clear photo button */
+        .clear-photo-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+            z-index: 20; /* Above the image */
+            opacity: 0.8;
+            transition: opacity 0.2s ease;
+        }
+
+        .clear-photo-btn:hover {
+            opacity: 1;
+        }
+
+
+        /* Hearts animation on result screen */
+        .heart-particle {
+            position: absolute;
+            font-size: 20px;
+            opacity: 0;
+            animation: fallAndFade 2s forwards ease-out;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes fallAndFade {
+            0% {
+                transform: translateY(0) scale(0.5);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100px) scale(1.2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-frame" id="appFrame">
+        <div class="device" role="application" aria-label="Love Tester app" id="appDevice">
+
+            <header class="appbar">
+                <div class="logo">
+                    <div class="ico">💖</div>
+                    <div>
+                        <h2 id="appTitle">Love Tester</h2>
+                        <div class="subtitle" id="appSubtitle">Seu Amor, Nosso Cálculo</div>
+                    </div>
+                </div>
+                <div class="ml-auto flex gap-2">
+                    <button class="btn ghost" id="btnHelp">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm11.02-3.03a.75.75 0 0 0-1.06 0l-1.47 1.47a.75.75 0 0 0 1.06 1.06l.823-.822V14.25a.75.75 0 0 0 1.5 0V9.408l.823.822a.75.75 0 1 0 1.06-1.06l-1.47-1.47ZM9.75 16.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clip-rule="evenodd" />
+                        </svg>
+                        Ajuda
+                    </button>
+                </div>
+            </header>
+
+            <!-- Screens -->
+            <section id="screenHome" class="screen active">
+                <div class="splash">
+                    <div
+                        class="w-40 h-40 rounded-3xl grid place-items-center bg-gradient-to-br from-accent to-accent2 shadow-lg-violet text-5xl transition-all duration-500 animate-pulse-slow">
+                        💞</div>
+                    <h1 class="text-3xl font-bold">Descubra a química</h1>
+                    <p class="small">Calcule a compatibilidade com inteligência. Salve e compartilhe com um toque profissional.</p>
+                    <div class="flex gap-2 w-full mt-4">
+                        <button class="btn flex-1" id="openCalculateModalBtn">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5H9V3A.75.75 0 0 1 9.75 3h.75a.75.75 0 0 1 .75.75V4.5h1.5V3A.75.75 0 0 1 13.5 3h.75a.75.75 0 0 1 .75.75V4.5h1.5V3A.75.75 0 0 1 17.25 3h.75a.75.75 0 0 1 .75.75V4.5h.75a.75.75 0 0 1 .75.75v13.5a.75.75 0 0 1-.75.75h-.75V19.5h-.75a.75.75 0 0 1-.75-.75V18h-1.5v1.5a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75V18h-1.5v1.5a.75.75 0 0 1-.75.75h-.75a.75.75 0 0 1-.75-.75V18h-.75a.75.75 0 0 1-.75-.75V5.25a.75.75 0 0 1 .75-.75H6.75ZM6 6.75h12v10.5H6V6.75Z" clip-rule="evenodd" />
+                            </svg>
+                            Calcular
+                        </button>
+                    </div>
+                    <div class="w-full flex justify-center mt-2"><button class="btn ghost" id="openHistory">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6l3.75 2.25a.75.75 0 1 0 .75-1.23l-3-1.8V6Z" clip-rule="evenodd" />
+                        </svg>
+                        Histórico
+                    </button></div>
+                </div>
+            </section>
+
+            <!-- Simple love screen -->
+            <section id="screenSimple" class="screen">
+                <div class="field"><label for="s_nome1">Nome 1</label><input id="s_nome1" type="text"
+                        placeholder="Ex.: Ana"></div>
+                <div class="field"><label for="s_gender1Input">Gênero/Sexo 1</label>
+                    <input id="s_gender1Input" type="text" readonly placeholder="Selecionar gênero/sexo..." class="cursor-pointer" value="Não Selecionado"/>
+                </div>
+                <div class="field"><label for="s_nome2">Nome 2</label><input id="s_nome2" type="text"
+                        placeholder="Ex.: Bruno"></div>
+                <div class="field"><label for="s_gender2Input">Gênero/Sexo 2</label>
+                    <input id="s_gender2Input" type="text" readonly placeholder="Selecionar gênero/sexo..." class="cursor-pointer" value="Não Selecionado"/>
+                </div>
+
+                <div class="row mb-3">
+                    <button class="btn flex-1" id="calcSimple">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg>
+                        Calcular
+                    </button>
+                    <button class="btn ghost flex-1" id="swapSimple">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M.953 10.03c.436-4.054 3.847-7.243 7.9-7.243 5.376 0 9.542 4.108 9.542 9.227 0 1.029-.118 2.023-.339 2.983s-.583 1.838-.988 2.723-.973 1.636-1.565 2.228a9.456 9.456 0 0 0 1.524 1.579L12 21.018l2.05-2.05a9.782 9.782 0 0 0 3.758-5.344 9.766 9.766 0 0 0-.001-4.717c.523-.623.957-1.391 1.25-2.277.635-1.921.905-4.045.717-6.195-2.583.47-.932-2.138-1.503-2.181-.137-.013-.264-.02-.387-.02-.857 0-1.708.204-2.529.605-2.028.98-3.327 3.328-3.327 5.757 0 .584.062 1.157.18 1.705l-1.428-1.428a.75.75 0 1 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.06 0l2.25-2.25a.75.75 0 0 0-1.06-1.06l-1.428 1.428c-.118-.548-.18-1.121-.18-1.705 0-2.347 1.299-4.66 3.327-5.757a8.214 8.214 0 0 1 2.529-.605c.123 0 .25.007.387.02.571.043 2.062.08 2.203.136.216 2.15.029 4.274-.606 6.195a9.756 9.756 0 0 1-1.25 2.277 9.768 9.768 0 0 1 .001 4.717c-1.226 2.153-2.909 3.907-5.116 5.122-1.366.758-2.909 1.159-4.5 1.159-2.006 0-3.958-.69-5.59-1.928a.75.75 0 0 0-.962.193Z" clip-rule="evenodd" />
+                        </svg>
+                        Inverter
+                    </button>
+                    <button class="btn ghost flex-1" id="clearSimple">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.231 1.474 47.37 47.37 0 0 0-3.693-.468 13.132 13.132 0 0 1-1.57-.376c-.322-.09-.67-.165-1.02-.222a21.753 21.753 0 0 0-2.652-.373 21.754 21.754 0 0 0-2.652.373c-.35.057-.698.132-1.02.222-1.204.33-2.404.643-3.693.468a.75.75 0 0 1-.231-1.474 48.815 48.815 0 0 1 3.878-.512V4.478c0-.414.336-.75.75-.75h.227c.556 0 1.074.113 1.588.32.112.046.223.098.33.158.263.149.518.299.772.454 1.173.749 2.5 1.256 3.948 1.256 1.449 0 2.776-.507 3.948-1.256.254-.155.509-.305.772-.454.107-.06.218-.112.33-.158.514-.207 1.032-.32 1.588-.32h.227c.414 0 .75.336.75.75Zm-1.635 1.547a.75.75 0 0 1 .108-.021A.75.75 0 0 1 19.5 6.478V20.25a.75.75 0 0 1-.75.75H5.25a.75.75 0 0 1-.75-.75V6.478a.75.75 0 0 1 .642-.741 48.243 48.243 0 0 1 .108.021 3.75 3.75 0 0 0-.25 1.087V20.25h14.5V7.594a3.75 3.75 0 0 0-.25-1.087ZM13 10.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM9.75 9.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" clip-rule="evenodd" />
+                        </svg>
+                        Limpar
+                    </button>
+                </div>
+                <!-- Result card no longer used for display, but kept for a cleaner transition if needed -->
+                <div class="result-card hidden" id="resultSimple" aria-live="polite">
+                    <div id="badgeSimple" class="names-badge small">—</div>
+                    <div id="percentSimple" class="percent">—</div>
+                    <div id="msgSimple" class="result-msg">Preencha os nomes, gêneros e toque em Calcular</div>
+                    <div class="hearts-container" style="position:absolute; inset:0; overflow:hidden; pointer-events:none;"></div>
+                </div>
+            </section>
+
+            <!-- Advanced love screen -->
+            <section id="screenAdvanced" class="screen">
+                <div class="flex gap-2 flex-wrap md:flex-nowrap mb-4">
+                    <div class="flex-1 w-full md:w-1/2">
+                        <div class="photo-upload-container">
+                            <input type="file" id="a_photo1" accept="image/*">
+                            <img id="a_photo1_preview" src="" alt="Foto 1" class="hidden">
+                            <span class="placeholder-icon" id="a_photo1_placeholder">📷</span>
+                            <button type="button" class="clear-photo-btn hidden" id="clearA_photo1">X</button>
+                        </div>
+                        <div class="field"><label for="a_nome1">Nome 1</label><input id="a_nome1" type="text"
+                                placeholder="Ex.: Carolina"></div>
+                        <div class="field"><label for="a_gender1Input">Gênero/Sexo 1</label>
+                            <input id="a_gender1Input" type="text" readonly placeholder="Selecionar gênero/sexo..." class="cursor-pointer" value="Não Selecionado"/>
+                        </div>
+                        <div class="field"><label for="pers1Input">Personalidade 1</label>
+                            <input id="pers1Input" type="text" readonly placeholder="Selecionar personalidades..."
+                                class="cursor-pointer" />
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <div class="photo-upload-container">
+                            <input type="file" id="a_photo2" accept="image/*">
+                            <img id="a_photo2_preview" src="" alt="Foto 2" class="hidden">
+                            <span class="placeholder-icon" id="a_photo2_placeholder">📷</span>
+                            <button type="button" class="clear-photo-btn hidden" id="clearA_photo2">X</button>
+                        </div>
+                        <div class="field"><label for="a_nome2">Nome 2</label><input id="a_nome2" type="text"
+                                placeholder="Ex.: Lucas"></div>
+                        <div class="field"><label for="a_gender2Input">Gênero/Sexo 2</label>
+                            <input id="a_gender2Input" type="text" readonly placeholder="Selecionar gênero/sexo..." class="cursor-pointer" value="Não Selecionado"/>
+                        </div>
+                        <div class="field"><label for="pers2Input">Personalidade 2</label>
+                            <input id="pers2Input" type="text" readonly placeholder="Selecionar personalidades..."
+                                class="cursor-pointer" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2 mb-3">
+                    <button class="btn flex-1" id="calcAdvanced">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg>
+                        Calcular Avançado
+                    </button>
+                    <button class="btn ghost flex-1" id="clearAdvanced">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.231 1.474 47.37 47.37 0 0 0-3.693-.468 13.132 13.132 0 0 1-1.57-.376c-.322-.09-.67-.165-1.02-.222a21.753 21.753 0 0 0-2.652-.373 21.754 21.754 0 0 0-2.652.373c-.35.057-.698.132-1.02.222-1.204.33-2.404.643-3.693.468a.75.75 0 0 1-.231-1.474 48.815 48.815 0 0 1 3.878-.512V4.478c0-.414.336-.75.75-.75h.227c.556 0 1.074.113 1.588.32.112.046.223.098.33.158.263.149.518.299.772.454 1.173.749 2.5 1.256 3.948 1.256 1.449 0 2.776-.507 3.948-1.256.254-.155.509-.305.772-.454.107-.06.218-.112.33-.158.514-.207 1.032-.32 1.588-.32h.227c.414 0 .75.336.75.75Zm-1.635 1.547a.75.75 0 0 1 .108-.021A.75.75 0 0 1 19.5 6.478V20.25a.75.75 0 0 1-.75.75H5.25a.75.75 0 0 1-.75-.75V6.478a.75.75 0 0 1 .642-.741 48.243 48.243 0 0 1 .108.021 3.75 3.75 0 0 0-.25 1.087V20.25h14.5V7.594a3.75 3.75 0 0 0-.25-1.087ZM13 10.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM9.75 9.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" clip-rule="evenodd" />
+                        </svg>
+                        Limpar
+                    </button>
+                </div>
+
+                <div class="result-card hidden" id="resultAdvanced">
+                    <div id="badgeAdvanced" class="names-badge small">—</div>
+                    <div id="percentAdvanced" class="percent">—</div>
+                    <div id="msgAdvanced" class="result-msg">Selecione personalidades para um resultado mais
+                        detalhado.</div>
+                    <div class="hearts-container" style="position:absolute; inset:0; overflow:hidden; pointer-events:none;"></div>
+                </div>
+            </section>
+
+            <!-- Advanced Friendship screen -->
+            <section id="screenFriendship" class="screen">
+                <div class="flex gap-2 flex-wrap md:flex-nowrap mb-4">
+                    <div class="flex-1 w-full md:w-1/2">
+                        <div class="photo-upload-container">
+                            <input type="file" id="f_photo1" accept="image/*">
+                            <img id="f_photo1_preview" src="" alt="Foto 1" class="hidden">
+                            <span class="placeholder-icon" id="f_photo1_placeholder">📷</span>
+                            <button type="button" class="clear-photo-btn hidden" id="clearF_photo1">X</button>
+                        </div>
+                        <div class="field"><label for="f_nome1">Nome 1</label><input id="f_nome1" type="text"
+                                placeholder="Ex.: Pedro"></div>
+                        <div class="field"><label for="f_gender1Input">Gênero/Sexo 1</label>
+                            <input id="f_gender1Input" type="text" readonly placeholder="Selecionar gênero/sexo..." class="cursor-pointer" value="Não Selecionado"/>
+                        </div>
+                        <div class="field"><label for="persF1Input">Personalidade 1</label>
+                            <input id="persF1Input" type="text" readonly placeholder="Selecionar personalidades..."
+                                class="cursor-pointer" />
+                        </div>
+                    </div>
+                    <div class="w-full md:w-1/2">
+                        <div class="photo-upload-container">
+                            <input type="file" id="f_photo2" accept="image/*">
+                            <img id="f_photo2_preview" src="" alt="Foto 2" class="hidden">
+                            <span class="placeholder-icon" id="f_photo2_placeholder">📷</span>
+                            <button type="button" class="clear-photo-btn hidden" id="clearF_photo2">X</button>
+                        </div>
+                        <div class="field"><label for="f_nome2">Nome 2</label><input id="f_nome2" type="text"
+                                placeholder="Ex.: Lucas"></div>
+                        <div class="field"><label for="f_gender2Input">Gênero/Sexo 2</label>
+                            <input id="f_gender2Input" type="text" readonly placeholder="Selecionar gênero/sexo..." class="cursor-pointer" value="Não Selecionado"/>
+                        </div>
+                        <div class="field"><label for="persF2Input">Personalidade 2</label>
+                            <input id="persF2Input" type="text" readonly placeholder="Selecionar personalidades..."
+                                class="cursor-pointer" />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2 mb-3">
+                    <button class="btn flex-1" id="calcFriendship">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg>
+                        Calcular Amizade
+                    </button>
+                    <button class="btn ghost flex-1" id="clearFriendship">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.231 1.474 47.37 47.37 0 0 0-3.693-.468 13.132 13.132 0 0 1-1.57-.376c-.322-.09-.67-.165-1.02-.222a21.753 21.753 0 0 0-2.652-.373 21.754 21.754 0 0 0-2.652.373c-.35.057-.698.132-1.02.222-1.204.33-2.404.643-3.693.468a.75.75 0 0 1-.231-1.474 48.815 48.815 0 0 1 3.878-.512V4.478c0-.414.336-.75.75-.75h.227c.556 0 1.074.113 1.588.32.112.046.223.098.33.158.263.149.518.299.772.454 1.173.749 2.5 1.256 3.948 1.256 1.449 0 2.776-.507 3.948-1.256.254-.155.509-.305.772-.454.107-.06.218-.112.33-.158.514-.207 1.032-.32 1.588-.32h.227c.414 0 .75.336.75.75Zm-1.635 1.547a.75.75 0 0 1 .108-.021A.75.75 0 0 1 19.5 6.478V20.25a.75.75 0 0 1-.75.75H5.25a.75.75 0 0 1-.75-.75V6.478a.75.75 0 0 1 .642-.741 48.243 48.243 0 0 1 .108.021 3.75 3.75 0 0 0-.25 1.087V20.25h14.5V7.594a3.75 3.75 0 0 0-.25-1.087ZM13 10.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM9.75 9.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" clip-rule="evenodd" />
+                        </svg>
+                        Limpar
+                    </button>
+                </div>
+
+                <div class="result-card hidden" id="resultFriendship">
+                    <div id="badgeFriendship" class="names-badge small">—</div>
+                    <div id="percentFriendship" class="percent">—</div>
+                    <div id="msgFriendship" class="result-msg">Selecione personalidades para um resultado mais
+                        detalhado.</div>
+                    <div class="hearts-container" style="position:absolute; inset:0; overflow:hidden; pointer-events:none;"></div>
+                </div>
+            </section>
+
+            <!-- History/Shared results -->
+            <section id="screenHistory" class="screen">
+                <h3 class="text-xl font-semibold mb-3">Histórico de Cálculos</h3>
+                <div id="historyList" class="flex flex-col gap-2 mt-2"></div>
+                <div class="mt-3"><button class="btn ghost" id="clearHistory">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M16.5 4.478v.227a48.816 48.816 0 0 1 3.878.512.75.75 0 1 1-.231 1.474 47.37 47.37 0 0 0-3.693-.468 13.132 13.132 0 0 1-1.57-.376c-.322-.09-.67-.165-1.02-.222a21.753 21.753 0 0 0-2.652-.373 21.754 21.754 0 0 0-2.652.373c-.35.057-.698.132-1.02.222-1.204.33-2.404.643-3.693.468a.75.75 0 0 1-.231-1.474 48.815 48.815 0 0 1 3.878-.512V4.478c0-.414.336-.75.75-.75h.227c.556 0 1.074.113 1.588.32.112.046.223.098.33.158.263.149.518.299.772.454 1.173.749 2.5 1.256 3.948 1.256 1.449 0 2.776-.507 3.948-1.256.254-.155.509-.305.772-.454.107-.06.218-.112.33-.158.514-.207 1.032-.32 1.588-.32h.227c.414 0 .75.336.75.75Zm-1.635 1.547a.75.75 0 0 1 .108-.021A.75.75 0 0 1 19.5 6.478V20.25a.75.75 0 0 1-.75.75H5.25a.75.75 0 0 1-.75-.75V6.478a.75.75 0 0 1 .642-.741 48.243 48.243 0 0 1 .108.021 3.75 3.75 0 0 0-.25 1.087V20.25h14.5V7.594a3.75 3.75 0 0 0-.25-1.087ZM13 10.5a.75.75 0 0 1 .75-.75h1.5a.75.75 0 0 1 0 1.5h-1.5a.75.75 0 0 1-.75-.75ZM9.75 9.75a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" clip-rule="evenodd" />
+                        </svg>
+                        Limpar histórico
+                    </button></div>
+            </section>
+
+            <nav class="bottom">
+                <div class="tab active" id="tabHome">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path d="M11.47 3.84a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.06l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 0 0 1.06 1.06l8.69-8.69Z" />
+                        <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15.75a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3c-.414 0-.75.336-.75.75V21h-2.625a1.875 1.875 0 0 1-1.875-1.875V13.67c.03-.028.06-.056.09-.086L12 5.432Z" />
+                    </svg>
+                    Início
+                </div>
+                <div class="tab" id="tabCalculate">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M2.5 6A2.5 2.5 0 0 1 5 3.5h14A2.5 2.5 0 0 1 21.5 6v12A2.5 2.5 0 0 1 19 21.5H5A2.5 2.5 0 0 1 2.5 18V6Zm2.5-1.5h14a1 1 0 0 0 1-1V3.5h-16v1A1 1 0 0 0 5 4.5ZM5 6h14a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1ZM8.25 9a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75Zm3.5 0a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75Zm3.5 0a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75ZM8.25 14.5a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75ZM12 14.5a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75ZM15.75 14.5a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5a.75.75 0 0 0-.75-.75Z" clip-rule="evenodd" />
+                    </svg>
+                    Calcular
+                </div>
+                <div class="tab" id="tabHistory">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 6a.75.75 0 0 0-1.5 0v6l3.75 2.25a.75.75 0 1 0 .75-1.23l-3-1.8V6Z" clip-rule="evenodd" />
+                    </svg>
+                    Histórico
+                </div>
+            </nav>
+
+            <div class="decor" style="position:absolute;right:-40px;top:-40px;font-size:160px;opacity:.06">💗</div>
+        </div>
+    </div>
+
+    <!-- Custom Modal Structure -->
+    <div id="customModal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 id="modalTitle"></h3>
+            <p id="modalMessage"></p>
+            <div id="modalButtons" class="modal-buttons">
+                <!-- Buttons will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Personality Selection Modal -->
+    <div id="personalitySelectionModal" class="modal-overlay hidden">
+        <div class="modal-content !max-w-md w-[95%]">
+            <h3 class="mb-4">Selecione Personalidades</h3>
+            <p class="small text-left mb-3">Escolha até 5 características que melhor descrevem a pessoa.</p>
+            <div id="allPersonalityChips" class="personality justify-center mb-6">
+                <!-- Personality chips will be loaded here -->
+            </div>
+            <div class="modal-buttons">
+                <button class="btn" id="confirmPersonalitySelection">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M19.972 1.763a1.5 1.5 0 0 1 1.059 1.13l.663 4.606a1.5 1.5 0 0 1-.312 1.348l-8.603 8.603a1.5 1.5 0 0 1-2.122 0l-4.223-4.223a1.5 1.5 0 0 1 0-2.122l8.603-8.603a1.5 1.5 0 0 1 1.348-.312l4.606.663a1.5 1.5 0 0 1 1.13 1.059ZM12.978 12.978l-3.235 3.235a.75.75 0 0 1-1.06 0l-1.06-1.06a.75.75 0 0 1 0-1.06l3.235-3.235a.75.75 0 0 1 1.06 0l1.06 1.06a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd" />
+                    </svg>
+                    Confirmar
+                </button>
+                <button class="btn ghost" id="cancelPersonalitySelection">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                    </svg>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gender Selection Modal -->
+    <div id="genderSelectionModal" class="modal-overlay hidden">
+        <div class="modal-content !max-w-xs w-[90%]">
+            <h3 class="mb-4">Selecione Gênero/Sexo</h3>
+            <div id="allGenderChips" class="personality justify-center mb-6">
+                <!-- Gender chips will be loaded here -->
+            </div>
+            <div class="modal-buttons">
+                <button class="btn" id="confirmGenderSelection">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M19.972 1.763a1.5 1.5 0 0 1 1.059 1.13l.663 4.606a1.5 1.5 0 0 1-.312 1.348l-8.603 8.603a1.5 1.5 0 0 1-2.122 0l-4.223-4.223a1.5 1.5 0 0 1 0-2.122l8.603-8.603a1.5 1.5 0 0 1 1.348-.312l4.606.663a1.5 1.5 0 0 1 1.13 1.059ZM12.978 12.978l-3.235 3.235a.75.75 0 0 1-1.06 0l-1.06-1.06a.75.75 0 0 1 0-1.06l3.235-3.235a.75.75 0 0 1 1.06 0l1.06 1.06a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd" />
+                    </svg>
+                    Confirmar
+                </button>
+                <button class="btn ghost" id="cancelGenderSelection">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                    </svg>
+                    Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Calculate Mode Selection Modal -->
+    <div id="calculateModeSelectionModal" class="modal-overlay hidden">
+        <div class="modal-content !max-w-xs w-[90%]">
+            <h3 class="mb-4">Escolha o Modo de Cálculo</h3>
+            <div class="flex flex-col gap-4 mb-6">
+                <button class="btn" id="selectSimpleLove">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm0 12.75a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z" clip-rule="evenodd" />
+                    </svg>
+                    Amor Simples
+                </button>
+                <button class="btn secondary" id="selectAdvancedLove">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path d="M11.644 19.349c-.148.832-.803 1.253-1.487 1.253-.971 0-1.67-.936-2.61-2.924l-.195-.408c-1.393-2.919-2.226-4.6-2.825-5.91-.497-1.077-1.03-2.037-1.636-2.583-1.112-.994-2.217-1.085-3.32-.9-1.81.306-3.033 2.1-3.033 4.237V21a.75.75 0 0 0 .75.75h4.875a.75.75 0 0 0 .75-.75v-1.125A11.025 11.025 0 0 1 12 2.25c5.385 0 9.75 4.365 9.75 9.75 0 1.066-.171 2.083-.483 3.032l-2.016 4.996a.75.75 0 0 1-.75.568H14.5a.75.75 0 0 1-.75-.75v-1.992c0-1.897-.847-3.696-2.285-4.881-.035-.038-.07-.075-.106-.113-1.196-1.166-2.92-1.196-3.092.173L11.644 19.349ZM12 4.5a7.5 7.5 0 0 0-7.29 5.75c.65.626 1.464.912 2.52.88a10.274 10.274 0 0 1 1.77-.19c.125 0 .248 0 .37.008.064-.98-.016-1.9-.387-2.732C8.5 7.9 9.176 6.94 10.5 7.375s2.324 1.2 2.324 2.875v.008c0 2.204 1.791 4 4 4s4-1.796 4-4a7.5 7.5 0 0 0-7.29-5.75Z" />
+                    </svg>
+                    Amor Avançado
+                </button>
+                <button class="btn secondary" id="selectAdvancedFriendship" style="background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2)); box-shadow: 0 10px 30px rgba(108, 172, 228, .14);">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M9.401 3.003c1.155-1.083 2.836-1.083 3.991 0L19.9 6.31c.772.723 1.22 1.758 1.22 2.852v10.388c0 1.272-.924 2.427-2.078 2.618a8.03 8.03 0 0 1-1.385.1c-.886 0-1.768-.236-2.502-.683a40.113 40.113 0 0 0-4.04-2.455 2.518 2.518 0 0 1-2.771 0 40.113 40.113 0 0 0-4.04 2.455c-.734.447-1.616.683-2.502.683a8.03 8.03 0 0 1-1.385-.1c-1.154-.19-2.078-1.346-2.078-2.618V9.162c0-1.094.449-2.129 1.22-2.852L9.401 3.003ZM12 8.25a.75.75 0 0 1 .75.75v3.75c0 .414-.336.75-.75.75h-3a.75.75 0 0 1 0-1.5h2.25V9a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                    </svg>
+                    Friend Tester
+                </button>
+            </div>
+            <button class="btn ghost mt-2" id="cancelModeSelection">Cancelar</button>
+        </div>
+    </div>
+
+    <!-- Result Display Modal -->
+    <div id="resultDisplayModal" class="modal-overlay hidden">
+        <div class="modal-content !max-w-sm w-[90%]">
+            <h3 class="mb-4" id="resultModalTitle">Resultado do Cálculo</h3>
+            <div id="resultModalBadge" class="names-badge small mb-4">—</div>
+            <div id="resultModalPercent" class="percent mb-2 text-6xl md:text-7xl lg:text-8xl">—</div>
+            <div id="resultModalMsg" class="result-msg text-base mb-6"></div>
+            <!-- On-screen hearts container for modal -->
+            <div class="hearts-container" style="position:absolute; inset:0; overflow:hidden; pointer-events:none;"></div>
+            <div class="modal-buttons flex flex-col gap-3">
+                <button class="btn" id="resultModalSave">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5H3Z" clip-rule="evenodd" />
+                    </svg>
+                    Salvar como imagem
+                </button>
+                <button class="btn ghost" id="resultModalShare">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                        <path fill-rule="evenodd" d="M15.75 4.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8.25 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm11.25 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM12.374 16.037a.75.75 0 0 0-.877.368l-2.88-5.759a.75.75 0 0 0-1.15-2.617L9 8.25H4.25a.75.75 0 0 0 0 1.5H8.358l-.877 1.752a.75.75 0 0 0-.279.79l2.88 5.758a.75.75 0 0 0 1.15 2.617l4.137-2.618a.75.75 0 0 0-.877-.368l-3.238 2.049-2.049-4.098Z" clip-rule="evenodd" /></svg>
+                    Compartilhar
+                </button>
+                <button class="btn ghost" id="resultModalClose">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+
+    <script type="module">
+        // --- Utility Functions ---
+        const qs = sel => document.querySelector(sel);
+        const qsa = sel => Array.from(document.querySelectorAll(sel));
+
+        // --- Global State ---
+        let currentAppMode = 'love'; // 'love' or 'friendship'
+
+        // --- Custom Modal Functions ---
+        const customModal = qs('#customModal');
+        const modalTitle = qs('#modalTitle');
+        const modalMessage = qs('#modalMessage');
+        const modalButtons = qs('#modalButtons');
+        const appDevice = qs('#appDevice');
+        const appTitle = qs('#appTitle');
+        const appSubtitle = qs('#appSubtitle');
+        const appFrame = qs('#appFrame');
+
+
+        /**
+         * Shows a custom modal with a title, message, and customizable buttons.
+         * @param {string} title - The title of the modal.
+         * @param {string} message - The message content of the modal.
+         * @param {Array<Object>} buttons - An array of button objects. Each object should have a `text` property, an optional `onClick` function, and an optional `isGhost` boolean.
+         */
+        function showModal(title, message, buttons) {
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+            modalButtons.innerHTML = ''; // Clear previous buttons
+
+            buttons.forEach(btnConfig => {
+                const button = document.createElement('button');
+                button.innerHTML = btnConfig.icon ? `${btnConfig.icon} ${btnConfig.text}` : btnConfig.text;
+                button.classList.add('btn');
+                if (btnConfig.isGhost) {
+                    button.classList.add('ghost');
+                }
+                // Apply friendship mode button style if active and not a ghost button
+                if (currentAppMode === 'friendship' && !btnConfig.isGhost) {
+                     button.style.background = 'linear-gradient(135deg, var(--friend-accent), var(--friend-accent2))';
+                     button.style.boxShadow = '0 10px 30px rgba(108, 172, 228, .14)';
+                } else if (btnConfig.isSecondary && currentAppMode === 'friendship') {
+                     button.style.background = 'linear-gradient(135deg, #4299e1, #5cb85c)';
+                     button.style.boxShadow = '0 10px 30px rgba(66, 153, 225, .14)';
+                }
+
+
+                button.addEventListener('click', () => {
+                    if (btnConfig.onClick) {
+                        btnConfig.onClick();
+                    }
+                    customModal.classList.remove('active'); // Hide modal with fade-out
+                    setTimeout(() => customModal.classList.add('hidden'), 300); // Fully hide after animation
+                });
+                modalButtons.appendChild(button);
+            });
+
+            customModal.classList.remove('hidden');
+            setTimeout(() => customModal.classList.add('active'), 10); // Show modal with fade-in
+            // Apply modal content theme
+            if (currentAppMode === 'friendship') {
+                customModal.querySelector('.modal-content').classList.add('friendship-mode');
+            } else {
+                customModal.querySelector('.modal-content').classList.remove('friendship-mode');
+            }
+        }
+
+        /**
+         * Displays a simple alert-like modal.
+         * @param {string} message - The message to display.
+         * @param {string} [title='Atenção'] - The title of the alert.
+         */
+        function showAlert(message, title = 'Atenção') {
+            showModal(title, message, [{ text: 'OK' }]);
+        }
+
+        /**
+         * Displays a confirmation modal.
+         * @param {string} message - The message to confirm.
+         * @param {Function} onConfirm - Callback function if user confirms.
+         * @param {string} [title='Confirmação'] - The title of the confirmation.
+         * @param {Function} [onCancel] - Optional callback function if user cancels.
+         */
+        function showConfirm(message, onConfirm, title = 'Confirmação', onCancel) {
+            showModal(title, message, [
+                { text: 'Sim', onClick: onConfirm },
+                { text: 'Não', onClick: onCancel || (() => { }), isGhost: true }
+            ]);
+        }
+
+        // --- Fullscreen functionality ---
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                if (appDevice.requestFullscreen) {
+                    appDevice.requestFullscreen();
+                } else if (appDevice.webkitRequestFullscreen) { /* Safari */
+                    appDevice.webkitRequestFullscreen();
+                } else if (appDevice.msRequestFullscreen) { /* IE11 */
+                    appDevice.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) { /* Safari */
+                    document.webkitExitFullscreen();
+                } else if (document.msExitFullscreen) { /* IE11 */
+                    document.msExitFullscreen();
+                }
+            }
+        }
+
+        // --- Screen & Navigation Functions ---
+        const screens = { home: qs('#screenHome'), simple: qs('#screenSimple'), advanced: qs('#screenAdvanced'), friendship: qs('#screenFriendship'), history: qs('#screenHistory') };
+        const tabs = { home: qs('#tabHome'), calculate: qs('#tabCalculate'), history: qs('#tabHistory') };
+
+        function show(screenId) {
+            // Remove active class from all screens and tabs
+            Object.values(screens).forEach(s => s.classList.remove('active'));
+            Object.values(tabs).forEach(t => t.classList.remove('active'));
+
+            // Activate the selected screen
+            screens[screenId].classList.add('active');
+
+            // Activate the corresponding tab
+            if (screenId === 'home') {
+                tabs.home.classList.add('active');
+            } else if (['simple', 'advanced', 'friendship'].includes(screenId)) {
+                tabs.calculate.classList.add('active');
+            } else if (screenId === 'history') {
+                tabs.history.classList.add('active');
+                renderHistory(); // Ensure history is rendered when shown
+            }
+
+            // Apply/Remove friendship mode styling
+            if (screenId === 'friendship') {
+                document.body.classList.add('friendship-mode');
+                appTitle.textContent = 'Friend Tester';
+                appSubtitle.textContent = 'Sua Amizade, Nosso Cálculo';
+                qs('.logo .ico').innerHTML = '🤝'; // Updated icon for friendship mode
+            } else {
+                document.body.classList.remove('friendship-mode');
+                appTitle.textContent = 'Love Tester';
+                appSubtitle.textContent = 'Seu Amor, Nosso Cálculo';
+                qs('.logo .ico').innerHTML = '💖';
+            }
+        }
+
+        // Initial screen on load and fullscreen prompt
+        document.addEventListener('DOMContentLoaded', () => {
+            show('home');
+            showModal('Bem-vindo(a) ao Love Tester!',
+                'Gostaria de ativar o modo de tela cheia para uma experiência mais imersiva?',
+                [
+                    { text: 'Sim', onClick: toggleFullscreen },
+                    { text: 'Não', isGhost: true }
+                ]);
+        });
+
+        // Navigation event listeners
+        tabs.home.addEventListener('click', () => show('home'));
+        tabs.history.addEventListener('click', () => show('history'));
+        qs('#openHistory').addEventListener('click', () => show('history')); // Button on home screen
+
+        // Calculate Mode Selection Modal
+        const calculateModeSelectionModal = qs('#calculateModeSelectionModal');
+        const selectSimpleLoveBtn = qs('#selectSimpleLove');
+        const selectAdvancedLoveBtn = qs('#selectAdvancedLove');
+        const selectAdvancedFriendshipBtn = qs('#selectAdvancedFriendship');
+        const cancelModeSelectionBtn = qs('#cancelModeSelection');
+
+        // Button on home screen to open calculation mode selection
+        qs('#openCalculateModalBtn').addEventListener('click', () => {
+            calculateModeSelectionModal.classList.remove('hidden');
+            setTimeout(() => calculateModeSelectionModal.classList.add('active'), 10);
+            if (currentAppMode === 'friendship') {
+                calculateModeSelectionModal.querySelector('.modal-content').classList.add('friendship-mode');
+            } else {
+                calculateModeSelectionModal.querySelector('.modal-content').classList.remove('friendship-mode');
+            }
+        });
+
+        // Tab to open calculation mode selection
+        tabs.calculate.addEventListener('click', () => {
+            calculateModeSelectionModal.classList.remove('hidden');
+            setTimeout(() => calculateModeSelectionModal.classList.add('active'), 10);
+            if (currentAppMode === 'friendship') {
+                calculateModeSelectionModal.querySelector('.modal-content').classList.add('friendship-mode');
+            } else {
+                calculateModeSelectionModal.querySelector('.modal-content').classList.remove('friendship-mode');
+            }
+        });
+
+        selectSimpleLoveBtn.addEventListener('click', () => {
+            currentAppMode = 'love';
+            show('simple');
+            calculateModeSelectionModal.classList.remove('active');
+            setTimeout(() => calculateModeSelectionModal.classList.add('hidden'), 300);
+        });
+
+        selectAdvancedLoveBtn.addEventListener('click', () => {
+            currentAppMode = 'love';
+            show('advanced');
+            calculateModeSelectionModal.classList.remove('active');
+            setTimeout(() => calculateModeSelectionModal.classList.add('hidden'), 300);
+        });
+
+        selectAdvancedFriendshipBtn.addEventListener('click', () => {
+            currentAppMode = 'friendship';
+            show('friendship');
+            calculateModeSelectionModal.classList.remove('active');
+            setTimeout(() => calculateModeSelectionModal.classList.add('hidden'), 300);
+        });
+
+        cancelModeSelectionBtn.addEventListener('click', () => {
+            calculateModeSelectionModal.classList.remove('active');
+            setTimeout(() => calculateModeSelectionModal.classList.add('hidden'), 300);
+        });
+
+
+        // Header help button with Fullscreen option
+        qs('#btnHelp').addEventListener('click', () => {
+            showModal('Sobre o Love Tester',
+                'Calcule a compatibilidade entre dois nomes nos modos Simples, Amor Avançado ou Friend Tester. Salve seus resultados como imagem e compartilhe com amigos!',
+                [
+                    { text: 'OK' },
+                    {
+                        text: 'Tela Cheia',
+                        onClick: toggleFullscreen,
+                        isGhost: true,
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                <path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                            </svg>`
+                    }
+                ]);
+        });
+
+
+        // --- Personality Chips Logic ---
+        const allPersonalities = [
+            { val: 'Romântica', label: 'Romântica', type: 'love', weight: 6 }, { val: 'Aventureira', label: 'Aventureira', type: 'both', weight: 4 }, { val: 'Intelectual', label: 'Intelectual', type: 'both', weight: 3 },
+            { val: 'Brincalhona', label: 'Brincalhona', type: 'both', weight: 5 }, { val: 'Calma', label: 'Calma', type: 'both', weight: 2 }, { val: 'Empática', label: 'Empática', type: 'both', weight: 7 },
+            { val: 'Leal', label: 'Leal', type: 'both', weight: 8 }, { val: 'Criativa', label: 'Criativa', type: 'love', weight: 3 }, { val: 'Racional', label: 'Racional', type: 'both', weight: 2 },
+            { val: 'Otimista', label: 'Otimista', type: 'both', weight: 5 }, { val: 'Determinada', label: 'Determinada', type: 'love', weight: 5 }, { val: 'Misteriosa', label: 'Misteriosa', type: 'love', weight: 3 },
+            { val: 'Extrovertida', label: 'Extrovertida', type: 'both', weight: 6 }, { val: 'Introvertida', label: 'Introvertida', type: 'both', weight: 2 }, { val: 'Espontânea', label: 'Espontânea', type: 'both', weight: 5 },
+            { val: 'Organizada', label: 'Organizada', type: 'both', weight: 1 }, { val: 'Curiosa', label: 'Curiosa', type: 'both', weight: 4 }, { val: 'Generosa', label: 'Generosa', type: 'both', weight: 7 },
+            { val: 'Prática', label: 'Prática', type: 'both', weight: 2 }, { val: 'Independente', label: 'Independente', type: 'both', weight: 3 }, { val: 'Comunicativa', label: 'Comunicativa', type: 'both', weight: 6 },
+            { val: 'Observadora', label: 'Observadora', type: 'both', weight: 3 }, { val: 'Paciente', label: 'Paciente', type: 'both', weight: 4 }, { val: 'Sonhadora', label: 'Sonhadora', type: 'love', weight: 5 },
+            { val: 'Divertida', label: 'Divertida', type: 'friendship', weight: 7 }, { val: 'Apoio', label: 'Apoio', type: 'friendship', weight: 8 }, { val: 'Honesta', label: 'Honesta', type: 'friendship', weight: 7 }
+        ];
+
+        let currentSelectedPers1 = [];
+        let currentSelectedPers2 = [];
+        let activePersonalityTargetInput = null; // To track which input triggered the modal
+
+        const personalitySelectionModal = qs('#personalitySelectionModal');
+        const allPersonalityChipsContainer = qs('#allPersonalityChips');
+        const confirmPersonalitySelectionBtn = qs('#confirmPersonalitySelection');
+        const cancelPersonalitySelectionBtn = qs('#cancelPersonalitySelection');
+
+        function showPersonalitySelectionModal(initialSelections, onConfirmCallback, mode = 'love') {
+            allPersonalityChipsContainer.innerHTML = ''; // Clear existing chips
+
+            let currentModalSelections = [...initialSelections]; // Work with a copy for the modal session
+
+            allPersonalities.filter(p => p.type === 'both' || p.type === mode).forEach(p => {
+                const chip = document.createElement('button');
+                chip.classList.add('chip');
+                chip.textContent = p.label;
+                chip.dataset.val = p.val;
+
+                if (currentModalSelections.includes(p.val)) {
+                    chip.classList.add('active');
+                }
+
+                chip.addEventListener('click', () => {
+                    // Limit to 5 selections
+                    if (chip.classList.contains('active')) {
+                        chip.classList.remove('active');
+                        currentModalSelections = currentModalSelections.filter(val => val !== p.val);
+                    } else {
+                        if (currentModalSelections.length < 5) {
+                            chip.classList.add('active');
+                            currentModalSelections.push(p.val);
+                        } else {
+                            // This alert modal will now appear on top due to z-index fix
+                            showAlert('Você pode selecionar no máximo 5 personalidades.', 'Limite Atingido');
+                        }
+                    }
+                });
+                allPersonalityChipsContainer.appendChild(chip);
+            });
+
+            confirmPersonalitySelectionBtn.onclick = () => {
+                onConfirmCallback(currentModalSelections);
+                personalitySelectionModal.classList.remove('active');
+                setTimeout(() => personalitySelectionModal.classList.add('hidden'), 300);
+            };
+
+            cancelPersonalitySelectionBtn.onclick = () => {
+                personalitySelectionModal.classList.remove('active');
+                setTimeout(() => personalitySelectionModal.classList.add('hidden'), 300);
+            };
+
+            personalitySelectionModal.classList.remove('hidden');
+            setTimeout(() => personalitySelectionModal.classList.add('active'), 10);
+
+            // Apply modal content theme
+            if (currentAppMode === 'friendship') {
+                personalitySelectionModal.querySelector('.modal-content').classList.add('friendship-mode');
+            } else {
+                personalitySelectionModal.querySelector('.modal-content').classList.remove('friendship-mode');
+            }
+        }
+
+        // Event listeners for personality inputs (Advanced Love)
+        qs('#pers1Input').addEventListener('click', () => {
+            activePersonalityTargetInput = qs('#pers1Input');
+            showPersonalitySelectionModal(currentSelectedPers1, (selected) => {
+                currentSelectedPers1 = selected;
+                qs('#pers1Input').value = selected.join(', ') || 'Nenhuma selecionada';
+            }, currentAppMode);
+        });
+
+        qs('#pers2Input').addEventListener('click', () => {
+            activePersonalityTargetInput = qs('#pers2Input');
+            showPersonalitySelectionModal(currentSelectedPers2, (selected) => {
+                currentSelectedPers2 = selected;
+                qs('#pers2Input').value = selected.join(', ') || 'Nenhuma selecionada';
+            }, currentAppMode);
+        });
+
+        // Event listeners for personality inputs (Advanced Friendship)
+        qs('#persF1Input').addEventListener('click', () => {
+            activePersonalityTargetInput = qs('#persF1Input');
+            showPersonalitySelectionModal(currentSelectedPers1, (selected) => {
+                currentSelectedPers1 = selected;
+                qs('#persF1Input').value = selected.join(', ') || 'Nenhuma selecionada';
+            }, 'friendship'); // Always friendship mode for this input
+        });
+
+        qs('#persF2Input').addEventListener('click', () => {
+            activePersonalityTargetInput = qs('#persF2Input');
+            showPersonalitySelectionModal(currentSelectedPers2, (selected) => {
+                currentSelectedPers2 = selected;
+                qs('#persF2Input').value = selected.join(', ') || 'Nenhuma selecionada';
+            }, 'friendship'); // Always friendship mode for this input
+        });
+
+
+        // --- Gender Selection Logic ---
+        const allGenders = [
+            { val: 'Feminino', label: 'Feminino ♀️' },
+            { val: 'Masculino', label: 'Masculino ♂️' },
+            { val: 'Não-binário', label: 'Não-binário 🚻' },
+            { val: 'Outro', label: 'Outro' },
+        ];
+
+        let currentSelectedGender1 = 'Não Selecionado';
+        let currentSelectedGender2 = 'Não Selecionado';
+        let activeGenderTargetInput = null; // To track which input triggered the modal
+
+        const genderSelectionModal = qs('#genderSelectionModal');
+        const allGenderChipsContainer = qs('#allGenderChips');
+        const confirmGenderSelectionBtn = qs('#confirmGenderSelection');
+        const cancelGenderSelectionBtn = qs('#cancelGenderSelection');
+
+        function showGenderSelectionModal(initialSelection, onConfirmCallback) {
+            allGenderChipsContainer.innerHTML = ''; // Clear existing chips
+
+            let currentModalSelection = initialSelection; // Work with a copy for the modal session
+
+            allGenders.forEach(g => {
+                const chip = document.createElement('button');
+                chip.classList.add('chip');
+                chip.innerHTML = g.label;
+                chip.dataset.val = g.val;
+
+                if (currentModalSelection === g.val) {
+                    chip.classList.add('active');
+                }
+
+                chip.addEventListener('click', () => {
+                    qsa('#allGenderChips .chip').forEach(c => c.classList.remove('active')); // Deselect others
+                    chip.classList.add('active');
+                    currentModalSelection = g.val;
+                });
+                allGenderChipsContainer.appendChild(chip);
+            });
+
+            confirmGenderSelectionBtn.onclick = () => {
+                onConfirmCallback(currentModalSelection);
+                genderSelectionModal.classList.remove('active');
+                setTimeout(() => genderSelectionModal.classList.add('hidden'), 300);
+            };
+
+            cancelGenderSelectionBtn.onclick = () => {
+                genderSelectionModal.classList.remove('active');
+                setTimeout(() => genderSelectionModal.classList.add('hidden'), 300);
+            };
+
+            genderSelectionModal.classList.remove('hidden');
+            setTimeout(() => genderSelectionModal.classList.add('active'), 10);
+
+            // Apply modal content theme
+            if (currentAppMode === 'friendship') {
+                genderSelectionModal.querySelector('.modal-content').classList.add('friendship-mode');
+            } else {
+                genderSelectionModal.querySelector('.modal-content').classList.remove('friendship-mode');
+            }
+        }
+
+        // Event listeners for gender inputs
+        qs('#s_gender1Input').addEventListener('click', () => {
+            activeGenderTargetInput = qs('#s_gender1Input');
+            showGenderSelectionModal(currentSelectedGender1, (selected) => {
+                currentSelectedGender1 = selected;
+                qs('#s_gender1Input').value = selected;
+            });
+        });
+
+        qs('#s_gender2Input').addEventListener('click', () => {
+            activeGenderTargetInput = qs('#s_gender2Input');
+            showGenderSelectionModal(currentSelectedGender2, (selected) => {
+                currentSelectedGender2 = selected;
+                qs('#s_gender2Input').value = selected;
+            });
+        });
+
+        qs('#a_gender1Input').addEventListener('click', () => {
+            activeGenderTargetInput = qs('#a_gender1Input');
+            showGenderSelectionModal(currentSelectedGender1, (selected) => {
+                currentSelectedGender1 = selected;
+                qs('#a_gender1Input').value = selected;
+            });
+        });
+
+        qs('#a_gender2Input').addEventListener('click', () => {
+            activeGenderTargetInput = qs('#a_gender2Input');
+            showGenderSelectionModal(currentSelectedGender2, (selected) => {
+                currentSelectedGender2 = selected;
+                qs('#a_gender2Input').value = selected;
+            });
+        });
+
+        qs('#f_gender1Input').addEventListener('click', () => {
+            activeGenderTargetInput = qs('#f_gender1Input');
+            showGenderSelectionModal(currentSelectedGender1, (selected) => {
+                currentSelectedGender1 = selected;
+                qs('#f_gender1Input').value = selected;
+            });
+        });
+
+        qs('#f_gender2Input').addEventListener('click', () => {
+            activeGenderTargetInput = qs('#f_gender2Input');
+            showGenderSelectionModal(currentSelectedGender2, (selected) => {
+                currentSelectedGender2 = selected;
+                qs('#f_gender2Input').value = selected;
+            });
+        });
+
+
+        // --- Normalization & Smarter Percentage Calculation ---
+        function normalize(str) {
+            return (str || '').toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/[^a-z\s]/g, '').trim();
+        }
+
+        // Helper for name similarity: checks common characters and positions
+        function getNameSimilarity(n1, n2) {
+            let commonCharScore = 0;
+            const lenDiff = Math.abs(n1.length - n2.length);
+            const minLen = Math.min(n1.length, n2.length);
+
+            // Character presence
+            const chars1 = new Set(n1);
+            const chars2 = new Set(n2);
+            for (const char of chars1) {
+                if (chars2.has(char)) {
+                    commonCharScore += 3;
+                }
+            }
+
+            // Character position (rough)
+            for (let i = 0; i < minLen; i++) {
+                if (n1[i] === n2[i]) {
+                    commonCharScore += 5;
+                }
+            }
+
+            // Length factor
+            commonCharScore -= lenDiff * 2;
+
+            return Math.max(0, commonCharScore);
+        }
+
+        // Advanced Love Calculation
+        function calculateSmarterLovePercent(name1, name2, gender1, gender2, personalities1 = [], personalities2 = []) {
+            const n1 = normalize(name1);
+            const n2 = normalize(name2);
+            if (!n1 || !n2) return null;
+
+            let score = 40; // Base score for love
+
+            // Name Similarity (more sophisticated)
+            score += getNameSimilarity(n1, n2);
+
+            // Personality Compatibility
+            if (personalities1.length > 0 && personalities2.length > 0) {
+                let personalityLoveScore = 0;
+                const loveCompMatrix = {
+                    'Romântica': { 'Romântica': 15, 'Aventureira': 7, 'Empática': 12, 'Sonhadora': 18, 'Criativa': 8 },
+                    'Aventureira': { 'Aventureira': 10, 'Romântica': 7, 'Espontânea': 14, 'Otimista': 9 },
+                    'Intelectual': { 'Intelectual': 12, 'Racional': 10, 'Curiosa': 8 },
+                    'Brincalhona': { 'Brincalhona': 10, 'Aventureira': 8, 'Espontânea': 7, 'Calma': 5 },
+                    'Calma': { 'Calma': 9, 'Empática': 8, 'Paciente': 6, 'Aventureira': -3 },
+                    'Empática': { 'Empática': 13, 'Romântica': 12, 'Leal': 10, 'Generosa': 11, 'Calma': 8 },
+                    'Leal': { 'Leal': 15, 'Empática': 10, 'Determinada': 8 },
+                    'Criativa': { 'Criativa': 10, 'Sonhadora': 14, 'Espontânea': 9 },
+                    'Racional': { 'Racional': 12, 'Intelectual': 10, 'Prática': 7, 'Romântica': -7 },
+                    'Otimista': { 'Otimista': 12, 'Aventureira': 9, 'Espontânea': 8 },
+                    'Determinada': { 'Determinada': 11, 'Leal': 9, 'Prática': 6 },
+                    'Misteriosa': { 'Misteriosa': 10, 'Introvertida': 9, 'Extrovertida': -5 },
+                    'Extrovertida': { 'Extrovertida': 10, 'Comunicativa': 12, 'Aventureira': 9 },
+                    'Introvertida': { 'Introvertida': 9, 'Observadora': 10, 'Extrovertida': -5, 'Misteriosa': 8 },
+                    'Espontânea': { 'Espontânea': 12, 'Aventureira': 10, 'Criativa': 9 },
+                    'Organizada': { 'Organizada': 8, 'Prática': 7, 'Calma': 6, 'Espontânea': -6 },
+                    'Curiosa': { 'Curiosa': 9, 'Intelectual': 8, 'Aventureira': 7 },
+                    'Generosa': { 'Generosa': 13, 'Empática': 12, 'Leal': 10 },
+                    'Prática': { 'Prática': 9, 'Racional': 8, 'Organizada': 7, 'Criativa': -7 },
+                    'Independente': { 'Independente': 9, 'Aventureira': 8 },
+                    'Comunicativa': { 'Comunicativa': 11, 'Extrovertida': 10 },
+                    'Observadora': { 'Observadora': 8, 'Intelectual': 9 },
+                    'Paciente': { 'Paciente': 9, 'Calma': 8, 'Leal': 7 },
+                    'Sonhadora': { 'Sonhadora': 14, 'Romântica': 10, 'Criativa': 9 }
+                };
+
+                for (const p1 of personalities1) {
+                    for (const p2 of personalities2) {
+                        personalityLoveScore += (loveCompMatrix[p1] && loveCompMatrix[p1][p2]) ? loveCompMatrix[p1][p2] : 0;
+                        personalityLoveScore += (loveCompMatrix[p2] && loveCompMatrix[p2][p1]) ? loveCompMatrix[p2][p1] : 0;
+                    }
+                }
+                score += Math.max(-25, Math.min(25, personalityLoveScore / 4));
+            }
+
+            // Gender Influence
+            if (gender1 === 'Feminino' && gender2 === 'Masculino' || gender1 === 'Masculino' && gender2 === 'Feminino') {
+                score += 5; // Traditional pairing
+            } else if (gender1 === 'Não-binário' || gender2 === 'Não-binário') {
+                score += 2; // Openness
+            } else if (gender1 === gender2 && gender1 !== 'Não Selecionado' && gender1 !== 'Outro') {
+                score += 3; // Same-gender pairing
+            }
+
+            // Final blend with deterministic randomness to ensure variety but still grounded
+            const baseDeterministicSeed = deterministicPercent(name1, name2, score);
+            score = (score + baseDeterministicSeed) / 2;
+
+            return Math.round(Math.max(0, Math.min(100, score)));
+        }
+
+        // Advanced Friendship Calculation
+        function calculateFriendshipPercent(name1, name2, gender1, gender2, personalities1 = [], personalities2 = []) {
+            const n1 = normalize(name1);
+            const n2 = normalize(name2);
+            if (!n1 || !n2) return null;
+
+            let score = 60; // Base score for friendship, generally higher
+
+            // Name Similarity
+            score += getNameSimilarity(n1, n2) / 1.5; // Slightly less impact than love
+
+            // Personality Compatibility for Friendship
+            if (personalities1.length > 0 && personalities2.length > 0) {
+                let personalityFriendshipScore = 0;
+                const friendCompMatrix = {
+                    'Aventureira': { 'Aventureira': 12, 'Brincalhona': 10, 'Espontânea': 15, 'Otimista': 11, 'Curiosa': 9 },
+                    'Brincalhona': { 'Brincalhona': 12, 'Aventureira': 10, 'Divertida': 15, 'Extrovertida': 12 },
+                    'Empática': { 'Empática': 13, 'Generosa': 12, 'Leal': 11, 'Paciente': 10, 'Apoio': 15 },
+                    'Leal': { 'Leal': 15, 'Empática': 12, 'Honesta': 13, 'Apoio': 14 },
+                    'Otimista': { 'Otimista': 12, 'Aventureira': 10, 'Espontânea': 9, 'Divertida': 11 },
+                    'Extrovertida': { 'Extrovertida': 12, 'Comunicativa': 14, 'Brincalhona': 11 },
+                    'Introvertida': { 'Introvertida': 10, 'Observadora': 11, 'Paciente': 9, 'Extrovertida': 3 }, // Introverts can be good friends with extroverts
+                    'Espontânea': { 'Espontânea': 13, 'Aventureira': 11, 'Brincalhona': 10 },
+                    'Curiosa': { 'Curiosa': 11, 'Intelectual': 10, 'Aventureira': 9 },
+                    'Generosa': { 'Generosa': 14, 'Empática': 13, 'Leal': 12, 'Apoio': 15 },
+                    'Comunicativa': { 'Comunicativa': 13, 'Extrovertida': 12, 'Divertida': 11 },
+                    'Observadora': { 'Observadora': 11, 'Intelectual': 10, 'Introvertida': 9 },
+                    'Paciente': { 'Paciente': 11, 'Calma': 10, 'Empática': 9 },
+                    'Divertida': { 'Divertida': 15, 'Brincalhona': 14, 'Otimista': 13, 'Extrovertida': 12 },
+                    'Apoio': { 'Apoio': 16, 'Empática': 15, 'Generosa': 14, 'Leal': 13 },
+                    'Honesta': { 'Honesta': 14, 'Leal': 13, 'Empática': 12 }
+                };
+
+                for (const p1 of personalities1) {
+                    for (const p2 of personalities2) {
+                        personalityFriendshipScore += (friendCompMatrix[p1] && friendCompMatrix[p1][p2]) ? friendCompMatrix[p1][p2] : 0;
+                        personalityFriendshipScore += (friendCompMatrix[p2] && friendCompMatrix[p2][p1]) ? friendCompMatrix[p2][p1] : 0;
+                    }
+                }
+                score += Math.max(-20, Math.min(20, personalityFriendshipScore / 4)); // Friendship scores tend to be less extreme
+            }
+
+            // Gender Influence for Friendship (less impactful)
+            if (gender1 === 'Feminino' && gender2 === 'Feminino' || gender1 === 'Masculino' && gender2 === 'Masculino') {
+                score += 3; // Slight boost for same-gender friendship
+            } else if (gender1 === 'Não-binário' || gender2 === 'Não-binário') {
+                score += 1;
+            }
+
+            // Final blend with deterministic randomness
+            const baseDeterministicSeed = deterministicPercent(name1, name2, score);
+            score = (score + baseDeterministicSeed) / 2;
+
+            return Math.round(Math.max(0, Math.min(100, score)));
+        }
+
+        // Original deterministic hash for a base random component (used internally)
+        function deterministicPercent(a, b, seed = 0) {
+            const n1 = normalize(a);
+            const n2 = normalize(b);
+            if (!n1 || !n2) return null;
+            const pair = [n1, n2].sort().join('♥') + '::' + String(seed);
+            let h = 2166136261 >>> 0;
+            for (let i = 0; i < pair.length; i++) {
+                h ^= pair.charCodeAt(i);
+                h = Math.imul(h, 16777619);
+            }
+            h ^= h >>> 13;
+            h = Math.imul(h, 0x5bd1e995);
+            h ^= h >>> 15;
+            return Math.abs(h) % 101;
+        }
+
+
+        // --- Phrase Banks (Expanded with emojis for both Love and Friendship) ---
+        const phrases = {
+            love: [
+                { min: 95, text: ['💞 Almas gêmeas detectadas! Destinados a um amor épico e duradouro.', '✨ Encontro cósmico! Uma conexão rara e mágica que transcende o comum.', '💖 Casamento de novela — apenas jogue o buquê e prepare-se para o "felizes para sempre"!', '🌟 Sintonia perfeita! Cada detalhe entre vocês canta uma canção de amor. Incrível!', '🌈 Amor que inspira! Uma união que todos admiram e desejam. Que sorte!', '♾️ Conexão de outro mundo! Vocês são a definição de par perfeito.' ] },
+                { min: 80, text: ['🔥 Química poderosa — cuidem desse carinho, ele é a base de algo muito especial!', '⚡ Conexão intensa — a vibe é para algo sério, construam juntos um futuro brilhante.', '🥰 Fácil de se apaixonar — é mágico como vocês se complementam e se encantam mutuamente.', '💫 Faíscas e emoções! Um relacionamento vibrante e cheio de descobertas. Viva o amor!', '🌸 Muita afinidade, floresçam juntos! O futuro promete.' ] },
+                { min: 65, text: ['💚 Muito compatíveis! Vale investir tempo juntos para ver essa chama crescer ainda mais.', '🚀 Potencial grande — comuniquem-se abertamente e vejam essa relação florescer.', '🌶️ Combinação quente — explorem esse sentimento e descubram novas paixões juntos.', '🌟 Boa energia! Há muito o que explorar e construir juntos. A jornada será linda.' ] },
+                { min: 50, text: ['🧡 Afinidade moderada — com um empurrãozinho e um pouco de esforço, pode virar algo realmente legal.', '🌱 Tem boa base; tempo e diálogo sincero ajudarão a aprofundar essa conexão.', '⚖️ Meio termo — pode surpreender com intenção e dedicação, o futuro está em suas mãos.', '🤝 Um bom começo! Com dedicação, pode se tornar algo grandioso e inesperado.' ] },
+                { min: 30, text: ['🤔 Compatibilidade baixa — talvez mais amizade que romance, mas tudo é possível no amor!', '🧩 Pode ser que a amizade seja o caminho, com faíscas ocasionais, quem sabe?', '🚧 Diferenças existentes; a curiosidade pode aproximar, mas esteja aberto a surpresas.', '🛤️ Caminhos diferentes. Explore a beleza das distinções entre vocês. Quem sabe onde vai dar?' ] },
+                { min: 0, text: ['😅 Fofo, talvez só amizade — ainda assim vale a pena conhecer e valorizar a conexão.', '🤯 Às vezes opostos se atraem — surpreendam-se e descubram o inesperado!', '💡 Diferenças podem ser interessantes — descubram mais um sobre o outro com mente aberta.', '🎢 Cuidado com expectativas — aproveite o momento e o que a vida tem a oferecer.', '🎲 A vida é uma caixinha de surpresas! Quem sabe o que o futuro reserva? Divirtam-se!'] }
+            ],
+            friendship: [
+                { min: 95, text: ['🎉 Amigos para sempre! Uma conexão de ouro, rara e verdadeira. Que sorte!', '🤝 Sintonia perfeita de amizade! Vocês são a dupla imbatível, sempre juntos.', '🌟 Laços inquebráveis! Essa amizade é um tesouro que vale a pena guardar.', '😂 Companheirismo puro! Rir e chorar, vocês fazem tudo juntos e é incrível.', '🌍 Amizade de alma! Uma conexão que atravessa qualquer desafio.'] },
+                { min: 80, text: ['✨ Grande potencial de amizade! Construam memórias incríveis e duradouras.', '🚀 Uma dupla dinâmica! Vocês se completam e se motivam, uma amizade para se orgulhar.', '😊 Vibe muito boa! A amizade de vocês é contagiante e cheia de boas energias.', '🤩 Parceria para a vida! Há muito a explorar e crescer juntos.'] },
+                { min: 65, text: ['👍 Boa conexão! Vale a pena investir mais tempo e criar laços mais fortes.', '🌱 Amizade em crescimento! Com dedicação, pode se tornar algo grandioso.', '💬 Comunicação fluida! Vocês se entendem bem, um ótimo sinal para a amizade.', '🌟 Bom começo! Há potencial para uma amizade sólida e divertida.'] },
+                { min: 50, text: ['😉 Afinidade legal! Com um pouco mais de esforço e abertura, pode ser uma amizade muito boa.', '❓ Pode surpreender! Deem uma chance e vejam essa amizade florescer.', '🤝 Boas bases! Explore os interesses em comum e aprofunde o vínculo.', '😊 Companhia agradável! Um bom ponto de partida para um relacionamento mais próximo.'] },
+                { min: 30, text: ['😅 Interessante... talvez o foco seja em outras amizades. Mas tudo pode mudar!', '🤔 Caminhos diferentes, mas podem aprender um com o outro. Quem sabe?', '🚧 Pontos distintos. Respeitem as diferenças e descubram novas perspectivas.', '🤷‍♀️ Amizade casual. Aproveite os momentos e as experiências que surgirem.'] },
+                { min: 0, text: ['🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.', '🙃 Diferenças podem ser desafiadoras. Busquem o que realmente ressoa.', '🧐 Amizades diversas são importantes. Explore diferentes grupos.', '🤫 Nem sempre dá match, e está tudo bem! A vida é cheia de surpresas.'] }
+            ]
+        };
+
+        function pickPhrase(pct, mode = 'love') {
+            const currentPhrases = phrases[mode] || phrases.love; // Default to love phrases
+            for (const bucket of currentPhrases)
+                if (pct >= bucket.min) return bucket.text[Math.floor(Math.random() * bucket.text.length)];
+            return 'Resultado inesperado — tente novamente!';
+        }
+
+        // Render helpers (badge)
+        function badgeText(a, b) {
+            return `${a} + ${b}`;
+        }
+
+        // --- Percentage Animation ---
+        function animatePercentage(element, finalValue, container) {
+            let currentValue = 0;
+            const duration = 1000; // milliseconds
+            const startTime = performance.now();
+
+            function update() {
+                const elapsed = performance.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1); // Clamp between 0 and 1
+                currentValue = Math.floor(progress * finalValue); // Animate smoothly
+                element.textContent = currentValue + '%';
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = finalValue + '%'; // Ensure final value is set accurately
+                    // Trigger hearts animation if high percentage and in love mode
+                    if (finalValue >= 80 && currentAppMode === 'love') {
+                        spawnHearts(container, finalValue);
+                    } else if (finalValue >= 80 && currentAppMode === 'friendship') {
+                        spawnFriendsEmojis(container, finalValue); // New function for friendship
+                    }
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // --- On-screen Hearts Animation ---
+        function spawnHearts(container, percentage) {
+            // Adjust quantity based on percentage, max 10 for on-screen
+            const numEmojis = percentage > 90 ? 7 : (percentage > 80 ? 5 : 3);
+
+            for (let i = 0; i < numEmojis; i++) {
+                const heart = document.createElement('span');
+                heart.classList.add('heart-particle');
+                heart.textContent = (Math.random() > 0.5) ? '💖' : '✨';
+                // Adjust position to be less central, focus on top-left/right
+                heart.style.left = `${Math.random() * 80 + 10}%`; // From 10% to 90% width
+                heart.style.top = `${Math.random() * 30}%`; // Start from top 30%
+                heart.style.fontSize = `${20 + Math.random() * 10}px`; // Vary size
+                heart.style.animationDelay = `${Math.random() * 0.5}s`; // Stagger animation
+                heart.style.animationDuration = `${1.5 + Math.random() * 1}s`; // Vary duration
+                container.appendChild(heart);
+
+                heart.addEventListener('animationend', () => heart.remove());
+            }
+        }
+
+        // --- On-screen Friendship Emojis Animation ---
+        function spawnFriendsEmojis(container, percentage) {
+            const friendEmojis = ['🤝', '😄', '🌟', '🫂', '🥳'];
+            // Adjust quantity based on percentage, max 10 for on-screen
+            const numEmojis = percentage > 90 ? 7 : (percentage > 80 ? 5 : 3);
+
+            for (let i = 0; i < numEmojis; i++) {
+                const emoji = document.createElement('span');
+                emoji.classList.add('heart-particle'); // Reuse heart-particle class for animation
+                emoji.textContent = friendEmojis[Math.floor(Math.random() * friendEmojis.length)];
+                // Adjust position to be less central, focus on top-left/right
+                emoji.style.left = `${Math.random() * 80 + 10}%`; // From 10% to 90% width
+                emoji.style.top = `${Math.random() * 30}%`; // Start from top 30%
+                emoji.style.fontSize = `${20 + Math.random() * 10}px`; // Vary size
+                emoji.style.animationDelay = `${Math.random() * 0.5}s`;
+                emoji.style.animationDuration = `${1.5 + Math.random() * 1}s`;
+                container.appendChild(emoji);
+
+                emoji.addEventListener('animationend', () => emoji.remove());
+            }
+        }
+
+
+        /**
+         * Renders the result card content onto a canvas and returns it as a Blob.
+         * @param {string} title - Title for the canvas image (e.g., "Amor Simples").
+         * @param {string} badge - The names badge text (e.g., "Ana + Bruno").
+         * @param {number} pct - The compatibility percentage.
+         * @param {string} msg - The message describing the result.
+         * @param {string} [photo1Url=''] - URL of the first person's photo.
+         * @param {string} [photo2Url=''] - URL of the second person's photo.
+         * @param {string} [mode='love'] - 'love' or 'friendship' for styling
+         * @param {string} [when=''] - Timestamp for when the result was generated.
+         * @returns {Promise<Blob>} A promise that resolves with the image Blob.
+         */
+        async function renderCardToCanvas(title, badge, pct, msg, photo1Url = '', photo2Url = '', mode = 'love', when = new Date()) {
+            return new Promise(async resolve => {
+                const w = 900, h = 1200;
+                const c = document.createElement('canvas');
+                c.width = w;
+                c.height = h;
+                const ctx = c.getContext('2d');
+
+                const primaryColor = (mode === 'friendship') ? '#6CACE4' : '#ff4d8d';
+                const secondaryColor = (mode === 'friendship') ? '#4CAF50' : '#8b5cf6';
+                const textColor = '#f8f5ff';
+                const mutedTextColor = '#cdbfe8';
+                const cardBg1 = (mode === 'friendship') ? '#1A5276' : '#28003a'; // Slightly darker for canvas bg
+                const cardBg2 = (mode === 'friendship') ? '#0A2E36' : '#0f0412'; // Slightly darker for canvas bg
+
+                // Load images if available
+                const loadImage = (url) => {
+                    return new Promise(imgResolve => {
+                        if (!url) {
+                            imgResolve(null);
+                            return;
+                        }
+                        const img = new Image();
+                        img.onload = () => imgResolve(img);
+                        img.onerror = () => {
+                            console.error("Failed to load image:", url);
+                            imgResolve(null); // Resolve with null on error
+                        };
+                        img.src = url;
+                    });
+                };
+
+                const [img1, img2] = await Promise.all([loadImage(photo1Url), loadImage(photo2Url)]);
+
+
+                // Background gradient
+                const bgGradient = ctx.createLinearGradient(0, 0, 0, h);
+                bgGradient.addColorStop(0, cardBg2);
+                bgGradient.addColorStop(1, cardBg1);
+                ctx.fillStyle = bgGradient;
+                ctx.fillRect(0, 0, w, h);
+
+                // Overlay with subtle pattern (dynamic colors, less dense)
+                ctx.fillStyle = `rgba(${parseInt(primaryColor.substring(1,3), 16)}, ${parseInt(primaryColor.substring(3,5), 16)}, ${parseInt(primaryColor.substring(5,7), 16)}, 0.03)`; // Less opacity
+                for(let i=0; i<30; i++){ // Fewer elements
+                    const x = Math.random() * w;
+                    const y = Math.random() * h;
+                    const size = 8 + Math.random() * 15; // Smaller size range
+                    ctx.beginPath();
+                    ctx.arc(x, y, size/2, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                // Header card background
+                ctx.fillStyle = `rgba(255,255,255,0.06)`; // Slightly less opaque
+                roundRect(ctx, 60, 90, w - 120, 220, 28);
+                ctx.fill();
+
+                // Small decorative elements (emojis based on mode)
+                ctx.font = '50px Poppins, serif';
+                ctx.fillStyle = `rgba(255, 255, 255, 0.3)`; // Less opacity
+                if (mode === 'love') {
+                    ctx.fillText('💖', 120, 150);
+                    ctx.fillText('✨', w - 120, 150);
+                } else {
+                    ctx.fillText('🤝', 120, 150);
+                    ctx.fillText('😄', w - 120, 150);
+                }
+
+
+                // Big central icon
+                ctx.font = '120px Poppins, serif';
+                ctx.textAlign = 'center';
+                ctx.fillStyle = textColor;
+                ctx.fillText((mode === 'love') ? '💞' : '🤝', w / 2, 200);
+
+                // Title
+                ctx.font = '40px Poppins, sans-serif';
+                ctx.fillStyle = textColor;
+                ctx.fillText(title, w / 2, 310);
+
+                // Photos if available
+                const photoSize = 150;
+                const photoY = 380;
+                const photoGap = 60;
+
+                // Draw image helper with aspect ratio correction
+                const drawCroppedCircularImage = (ctx, img, x, y, size) => {
+                    if (!img) {
+                        ctx.fillStyle = 'rgba(255,255,255,0.1)';
+                        ctx.beginPath();
+                        ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2, true);
+                        ctx.fill();
+                        ctx.font = '70px Poppins';
+                        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+                        ctx.fillText('📷', x + size / 2, y + size / 2 + 25);
+                        return;
+                    }
+
+                    const aspectRatio = img.width / img.height;
+                    let sx, sy, sWidth, sHeight;
+
+                    if (aspectRatio > 1) {
+                        sHeight = img.height;
+                        sWidth = img.height;
+                        sx = (img.width - sWidth) / 2;
+                        sy = 0;
+                    } else {
+                        sWidth = img.width;
+                        sHeight = img.width;
+                        sx = 0;
+                        sy = (img.height - sHeight) / 2;
+                    }
+
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.arc(x + size / 2, y + size / 2, size / 2, 0, Math.PI * 2, true);
+                    ctx.closePath();
+                    ctx.clip();
+                    ctx.drawImage(img, sx, sy, sWidth, sHeight, x, y, size, size);
+                    ctx.restore();
+                };
+
+                drawCroppedCircularImage(ctx, img1, w / 2 - photoSize - photoGap / 2, photoY, photoSize);
+                drawCroppedCircularImage(ctx, img2, w / 2 + photoGap / 2, photoY, photoSize);
+
+                // Plus sign or friendship icon between photos
+                ctx.font = '70px Poppins';
+                ctx.fillStyle = textColor;
+                ctx.fillText((mode === 'love') ? '+' : '🫂', w / 2, photoY + photoSize / 2 + 25);
+
+
+                // Badge for names
+                ctx.font = '36px Poppins';
+                ctx.fillStyle = textColor;
+                ctx.fillText(badge, w / 2, photoY + photoSize + 80);
+
+
+                // Percent with glow effect
+                const originalFillStyle = ctx.fillStyle;
+                const originalFont = ctx.font;
+
+                // Simulate glow by drawing multiple blurred layers
+                for (let i = 0; i < 5; i++) {
+                    ctx.shadowBlur = 5 + i * 3;
+                    ctx.shadowColor = primaryColor;
+                    ctx.fillStyle = `rgba(${parseInt(primaryColor.substring(1,3), 16)}, ${parseInt(primaryColor.substring(3,5), 16)}, ${parseInt(primaryColor.substring(5,7), 16)}, ${0.1 + i * 0.05})`;
+                    ctx.font = '200px Poppins';
+                    ctx.fillText(pct + '%', w / 2, 880); // Adjusted Y position
+                }
+                ctx.shadowBlur = 0; // Reset shadow
+
+                ctx.fillStyle = primaryColor; // Draw main text
+                ctx.fillText(pct + '%', w / 2, 880); // Adjusted Y position
+
+                ctx.fillStyle = originalFillStyle; // Restore original styles
+                ctx.font = originalFont;
+
+
+                // Emojis for high percentage on canvas (controlled)
+                if (pct >= 80) {
+                    const canvasEmojis = (mode === 'love') ? ['💖', '✨'] : ['🤝', '😄', '🌟'];
+                    const numCanvasEmojis = pct > 90 ? 8 : (pct > 80 ? 6 : 4); // Reduced quantity
+
+                    for (let i = 0; i < numCanvasEmojis; i++) {
+                        const emoji = canvasEmojis[Math.floor(Math.random() * canvasEmojis.length)];
+                        const emojiSize = 20 + Math.random() * 15; // Smaller size range
+                        // Position emojis in the top-left/right corners and bottom-left/right corners, away from center content
+                        const edgePadding = 100;
+                        let emojiX, emojiY;
+
+                        // Randomly choose a corner area
+                        const corner = Math.floor(Math.random() * 4); // 0: TL, 1: TR, 2: BL, 3: BR
+
+                        switch (corner) {
+                            case 0: // Top-Left
+                                emojiX = Math.random() * (w / 2 - edgePadding * 1.5) + edgePadding / 2;
+                                emojiY = Math.random() * (h / 2 - edgePadding * 1.5) + edgePadding / 2;
+                                break;
+                            case 1: // Top-Right
+                                emojiX = w / 2 + edgePadding / 2 + Math.random() * (w / 2 - edgePadding * 1.5);
+                                emojiY = Math.random() * (h / 2 - edgePadding * 1.5) + edgePadding / 2;
+                                break;
+                            case 2: // Bottom-Left
+                                emojiX = Math.random() * (w / 2 - edgePadding * 1.5) + edgePadding / 2;
+                                emojiY = h / 2 + edgePadding / 2 + Math.random() * (h / 2 - edgePadding * 1.5);
+                                break;
+                            case 3: // Bottom-Right
+                                emojiX = w / 2 + edgePadding / 2 + Math.random() * (w / 2 - edgePadding * 1.5);
+                                emojiY = h / 2 + edgePadding / 2 + Math.random() * (h / 2 - edgePadding * 1.5);
+                                break;
+                        }
+
+                        ctx.font = `${emojiSize}px Poppins`;
+                        ctx.fillStyle = `rgba(255, 255, 255, ${0.15 + Math.random() * 0.25})`; // Lower opacity
+                        ctx.fillText(emoji, emojiX, emojiY);
+                    }
+                }
+
+                // Message block
+                ctx.font = '30px Poppins';
+                wrapText(ctx, msg, w / 2, 1020, w - 200, 40);
+
+                // Footer with timestamp
+                ctx.font = '20px Poppins';
+                ctx.fillStyle = mutedTextColor;
+                ctx.fillText(`Love Tester • Seu Amor, Nosso Cálculo ✨ (${mode === 'friendship' ? 'Amizade' : 'Amor'})`, w / 2, h - 50);
+                ctx.font = '16px Poppins';
+                ctx.fillText(`Gerado em: ${new Date(when).toLocaleString()}`, w / 2, h - 20); // Add timestamp
+
+                c.toBlob(blob => resolve(blob));
+
+                // Helper functions (already defined in previous version)
+                function roundRect(ctx, x, y, w, h, r) {
+                    if (w < 2 * r) r = w / 2;
+                    if (h < 2 * r) r = h / 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x + r, y);
+                    ctx.arcTo(x + w, y, x + w, y + h, r);
+                    ctx.arcTo(x + w, y + h, x, y + h, r);
+                    ctx.arcTo(x, y + h, x, y, r);
+                    ctx.arcTo(x, y, x + w, y, r);
+                    ctx.closePath();
+                }
+
+                function wrapText(ctx, text, x, y, maxWidth, lineHeight) {
+                    ctx.textAlign = 'center';
+                    const words = text.split(' ');
+                    let line = '';
+                    let test = '';
+                    let curY = y;
+                    for (let n = 0; n < words.length; n++) {
+                        test = line + words[n] + ' ';
+                        const metrics = ctx.measureText(test);
+                        if (metrics.width > maxWidth && n > 0) {
+                            ctx.fillText(line, x, curY);
+                            line = words[n] + ' ';
+                            curY += lineHeight;
+                        } else {
+                            line = test;
+                        }
+                    }
+                    ctx.fillText(line, x, curY);
+                }
+            });
+        }
+
+        // Save blob as file and prompt download
+        function saveBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        // --- Local Storage History Functions ---
+
+        /**
+         * Retrieves history from local storage.
+         * @returns {Array<Object>} The array of history items.
+         */
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem('lt_history') || '[]');
+            } catch (e) {
+                console.error("Erro ao carregar histórico do armazenamento local:", e);
+                return [];
+            }
+        }
+
+        /**
+         * Generates a unique key for a history item for deduplication.
+         * Normalizes names and sorts them to ensure consistent keys regardless of input order.
+         * @param {Object} item - The history item.
+         * @returns {string} A unique key for the item.
+         */
+        function getHistoryItemKey(item) {
+            const normalizedNames = [normalize(item.a), normalize(item.b)].sort().join('-');
+            const personalitiesKey1 = item.pers1 ? item.pers1.slice().sort().join(',') : '';
+            const personalitiesKey2 = item.pers2 ? item.pers2.slice().sort().join(',') : '';
+            const genderKey1 = item.gender1 || '';
+            const genderKey2 = item.gender2 || '';
+            const photo1Hash = item.photo1Url ? btoa(item.photo1Url.substring(0, Math.min(50, item.photo1Url.length))) : ''; // Simple hash of start of data URL
+            const photo2Hash = item.photo2Url ? btoa(item.photo2Url.substring(0, Math.min(50, item.photo2Url.length))) : '';
+
+            return `${item.mode}-${normalizedNames}-${genderKey1}-${genderKey2}-${personalitiesKey1}-${personalitiesKey2}-${photo1Hash}-${photo2Hash}`;
+        }
+
+
+        /**
+         * Saves a calculation result to local storage history, avoiding duplicates.
+         * @param {Object} obj - The history item to save.
+         */
+        function saveToHistory(obj) {
+            const h = getHistory();
+            const newItemKey = getHistoryItemKey(obj);
+
+            // Check for existing similar item
+            const existingIndex = h.findIndex(item => getHistoryItemKey(item) === newItemKey);
+
+            if (existingIndex !== -1) {
+                // If exists, just update its timestamp and move to front
+                const existingItem = h.splice(existingIndex, 1)[0];
+                existingItem.when = new Date().toISOString();
+                h.unshift(existingItem);
+            } else {
+                // If new, add it to the beginning
+                h.unshift(obj);
+            }
+
+            localStorage.setItem('lt_history', JSON.stringify(h.slice(0, 30))); // Keep last 30 items
+            renderHistory(); // Re-render history after saving
+        }
+
+        /**
+         * Renders the history list from local storage.
+         */
+        function renderHistory() {
+            const list = qs('#historyList');
+            list.innerHTML = ''; // Clear existing list
+
+            const h = getHistory();
+            if (!h.length) {
+                list.textContent = 'Sem histórico ainda — salve algum resultado.';
+                list.classList.add('text-center', 'text-muted');
+                return;
+            }
+            list.classList.remove('text-center', 'text-muted');
+
+            h.forEach((it, idx) => appendHistoryItem(list, it, idx));
+        }
+
+        /**
+         * Appends a history item to the list.
+         * @param {HTMLElement} listElement - The UL or DIV element to append to.
+         * @param {Object} item - The history item data.
+         * @param {number} idx - The index of the item.
+         */
+        function appendHistoryItem(listElement, item, idx) {
+            const el = document.createElement('div');
+            el.classList.add('flex', 'justify-between', 'items-center', 'gap-2', 'p-2', 'border', 'rounded-xl', 'history-item', 'transition-all', 'duration-200');
+
+            // Apply friendship mode styling for history item if it was a friendship calculation
+            if (item.mode === 'friendship') {
+                el.classList.add('friendship-mode'); // For background/border changes
+            }
+
+            const modeText = item.mode === 'simple' ? 'Amor Simples' : (item.mode === 'advanced' ? 'Amor Avançado' : 'Friend Tester');
+            const colorStyle = `color:${item.mode === 'friendship' ? 'var(--friend-accent)' : '#ff6aa0'}`;
+
+            el.innerHTML = `
+                <div class="flex-1">
+                    <div class="font-bold text-base">${item.a} + ${item.b} <span class="font-semibold" style="${colorStyle}">${item.pct}%</span></div>
+                    <div class="small">${modeText} — ${new Date(item.when).toLocaleString()}</div>
+                </div>
+                <div class="flex gap-2">
+                    <button class='btn ghost text-sm p-2' data-idx='${idx}' data-action="download">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                            <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.295a.75.75 0 0 0-1.06 1.06l4.5 4.5a.75.75 0 0 0 1.06 0l4.5-4.5a.75.75 0 0 0-1.06-1.06l-2.905 2.905V2.75Z" />
+                            <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
+                        </svg>
+                        Baixar
+                    </button>
+                    <button class='btn ghost text-sm p-2' data-idx='${idx}' data-action="delete">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+                            <path fill-rule="evenodd" d="M8.75 1A2.75 2.75 0 0 0 6 3.75v.443c-.795.077-1.584.176-2.365.277a.75.75 0 0 0 .14 1.494c.312-.03.62-.063.925-.097C7.5 5.515 9.1 5.25 10 5.25c.9 0 2.5.265 4.102.471.01.002.02.004.03.007l.004.002c.311.049.61.108.905.174.1.023.196.04-.265.116a.75.75 0 0 0 .14-1.494 44.025 44.025 0 0 0-2.365-.277V3.75C14 2.348 12.65 1 11 1h-2C7.35 1 6 2.348 6 3.75v.443Z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M8.75 5.75a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Zm3.5 0a.75.75 0 0 1 .75.75v3.5a.75.75 0 0 1-1.5 0v-3.5a.75.75 0 0 1 .75-.75Z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M10 11.25a.75.75 0 0 0-1.5 0v3.5a.75.75 0 0 0 1.5 0v-3.5Z" clip-rule="evenodd" />
+                            <path fill-rule="evenodd" d="M5.5 6.478V20.25a.75.75 0 0 0 .75.75h7.5a.75.75 0 0 0 .75-.75V6.478a.75.75 0 0 1 1.5 0V20.25a2.25 2.25 0 0 1-2.25 2.25h-7.5A2.25 2.25 0 0 1 4 20.25V6.478a.75.75 0 0 1 1.5 0Z" clip-rule="evenodd" />
+                        </svg>
+                        Apagar
+                    </button>
+                </div>
+            `;
+            listElement.appendChild(el);
+        }
+
+        // Event delegation for history buttons (download/delete)
+        qs('#historyList').addEventListener('click', async (e) => {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+
+            const idx = parseInt(btn.dataset.idx);
+            const action = btn.dataset.action;
+            const history = getHistory();
+            const item = history[idx];
+
+            if (action === 'download' && item) {
+                btn.innerHTML = `<span class="loading-spinner"></span> Baixando...`;
+                btn.disabled = true;
+                try {
+                    const blob = await renderCardToCanvas(
+                        item.mode === 'simple' ? 'Amor Simples' : (item.mode === 'advanced' ? 'Amor Avançado' : 'Friend Tester'),
+                        badgeText(item.a, item.b),
+                        item.pct,
+                        item.msg,
+                        item.photo1Url || '',
+                        item.photo2Url || '',
+                        item.mode, // Pass the mode directly
+                        item.when
+                    );
+                    saveBlob(blob, `lovetester_resultado_${normalize(item.a)}_${normalize(item.b)}.png`);
+                } catch (error) {
+                    console.error('Falha ao baixar a imagem:', error);
+                    showAlert('Falha ao baixar a imagem.', 'Erro');
+                } finally {
+                    btn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.295a.75.75 0 0 0-1.06 1.06l4.5 4.5a.75.75 0 0 0 1.06 0l4.5-4.5a.75.75 0 0 0-1.06-1.06l-2.905 2.905V2.75Z" /><path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" /></svg> Baixar`;
+                    btn.disabled = false;
+                }
+            } else if (action === 'delete' && item) {
+                showConfirm(`Tem certeza que deseja apagar o resultado de ${item.a} + ${item.b}?`, () => {
+                    history.splice(idx, 1); // Remove item from array
+                    localStorage.setItem('lt_history', JSON.stringify(history));
+                    renderHistory(); // Re-render the list
+                }, 'Apagar Item');
+            }
+        });
+
+        // Clear all history
+        qs('#clearHistory').addEventListener('click', () => {
+            showConfirm('Tem certeza que deseja apagar todo o histórico?', () => {
+                localStorage.removeItem('lt_history');
+                renderHistory();
+            }, 'Limpar Histórico');
+        });
+
+
+        // --- Photo Upload Utility ---
+        function setupPhotoUpload(inputElement, previewElement, placeholderElement, clearButton, photoUrlVariable) {
+            inputElement.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        photoUrlVariable.value = event.target.result; // Update the passed ref
+                        previewElement.src = photoUrlVariable.value;
+                        previewElement.classList.remove('hidden');
+                        placeholderElement.classList.add('hidden');
+                        clearButton.classList.remove('hidden');
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    photoUrlVariable.value = '';
+                    previewElement.src = '';
+                    previewElement.classList.add('hidden');
+                    placeholderElement.classList.remove('hidden');
+                    clearButton.classList.add('hidden');
+                }
+            });
+
+            clearButton.addEventListener('click', () => {
+                inputElement.value = ''; // Clear the file input
+                photoUrlVariable.value = ''; // Clear the stored URL
+                previewElement.src = '';
+                previewElement.classList.add('hidden');
+                placeholderElement.classList.remove('hidden');
+                clearButton.classList.add('hidden');
+            });
+        }
+
+        // --- Result Display Modal Logic ---
+        const resultDisplayModal = qs('#resultDisplayModal');
+        const resultModalTitle = qs('#resultModalTitle');
+        const resultModalBadge = qs('#resultModalBadge');
+        const resultModalPercent = qs('#resultModalPercent');
+        const resultModalMsg = qs('#resultModalMsg');
+        const resultModalSaveBtn = qs('#resultModalSave');
+        const resultModalShareBtn = qs('#resultModalShare');
+        const resultModalCloseBtn = qs('#resultModalClose');
+
+        let currentResultData = null; // Store data for save/share functionality
+
+        /**
+         * Shows the result modal with calculation details.
+         * @param {string} title - The title for the modal (e.g., "Resultado do Amor Simples").
+         * @param {string} namesBadge - The names string (e.g., "Ana + Bruno").
+         * @param {number} percentage - The calculated compatibility percentage.
+         * @param {string} message - The result message.
+         * @param {string} photo1Url - URL of the first photo (empty string if none).
+         * @param {string} photo2Url - URL of the second photo (empty string if none).
+         * @param {string} mode - 'love' or 'friendship'
+         * @param {string} [gender1=''] - Gender of the first person.
+         * @param {string} [gender2=''] - Gender of the second person.
+         * @param {Array<string>} [pers1=[]] - Personalities of the first person.
+         * @param {Array<string>} [pers2=[]] - Personalities of the second person.
+         */
+        function showResultModal(title, namesBadge, percentage, message, photo1Url = '', photo2Url = '', mode = 'love', gender1 = '', gender2 = '', pers1 = [], pers2 = []) {
+            currentResultData = { title, namesBadge, percentage, message, photo1Url, photo2Url, mode, gender1, gender2, pers1, pers2, when: new Date() };
+
+            resultModalTitle.textContent = title;
+            resultModalBadge.textContent = namesBadge;
+            resultModalMsg.textContent = message;
+            resultModalPercent.textContent = '--'; // Reset before animating
+
+            // Clear previous hearts/emojis
+            qs('#resultDisplayModal .hearts-container').innerHTML = '';
+
+            // Apply friendship mode styling for the modal content
+            if (mode === 'friendship') {
+                resultDisplayModal.querySelector('.modal-content').classList.add('friendship-mode');
+                resultModalPercent.style.color = 'var(--friend-accent)';
+                resultModalSaveBtn.style.background = 'linear-gradient(135deg, var(--friend-accent), var(--friend-accent2))';
+                resultModalSaveBtn.style.boxShadow = '0 10px 30px rgba(108, 172, 228, .14)';
+                resultModalShareBtn.style.background = 'transparent'; // Reset for ghost
+                resultModalShareBtn.style.borderColor = 'rgba(255, 255, 255, .06)';
+                resultModalShareBtn.style.color = 'var(--muted)';
+            } else {
+                resultDisplayModal.querySelector('.modal-content').classList.remove('friendship-mode');
+                resultModalPercent.style.color = '#ff6aa0';
+                resultModalSaveBtn.style.background = 'linear-gradient(135deg, var(--accent), #ff82b5)';
+                resultModalSaveBtn.style.boxShadow = '0 10px 30px rgba(255, 77, 141, .14)';
+                resultModalShareBtn.style.background = 'transparent'; // Reset for ghost
+                resultModalShareBtn.style.borderColor = 'rgba(255, 255, 255, .06)';
+                resultModalShareBtn.style.color = 'var(--muted)';
+            }
+
+            resultDisplayModal.classList.remove('hidden');
+            setTimeout(() => resultDisplayModal.classList.add('active'), 10);
+
+            // Animate percentage
+            animatePercentage(resultModalPercent, percentage, qs('#resultDisplayModal .hearts-container'));
+        }
+
+        resultModalCloseBtn.addEventListener('click', () => {
+            resultDisplayModal.classList.remove('active');
+            setTimeout(() => resultDisplayModal.classList.add('hidden'), 300);
+            currentResultData = null; // Clear stored data
+        });
+
+        resultModalSaveBtn.addEventListener('click', async () => {
+            if (!currentResultData) return;
+
+            resultModalSaveBtn.innerHTML = `<span class="loading-spinner"></span> Salvando...`;
+            resultModalSaveBtn.disabled = true;
+
+            try {
+                const blob = await renderCardToCanvas(
+                    currentResultData.title,
+                    currentResultData.namesBadge,
+                    currentResultData.percentage,
+                    currentResultData.message,
+                    currentResultData.photo1Url,
+                    currentResultData.photo2Url,
+                    currentResultData.mode,
+                    currentResultData.when
+                );
+                saveBlob(blob, `lovetester_resultado_${normalize(currentResultData.namesBadge.split(' + ')[0])}_${normalize(currentResultData.namesBadge.split(' + ')[1])}.png`);
+            } catch (error) {
+                console.error('Falha ao salvar a imagem:', error);
+                showAlert('Falha ao salvar a imagem.', 'Erro');
+            } finally {
+                resultModalSaveBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5H3Z" clip-rule="evenodd" /></svg> Salvar como imagem`;
+                resultModalSaveBtn.disabled = false;
+            }
+        });
+
+        resultModalShareBtn.addEventListener('click', async () => {
+            if (!currentResultData) return;
+
+            resultModalShareBtn.innerHTML = `<span class="loading-spinner"></span> Compartilhando...`;
+            resultModalShareBtn.disabled = true;
+
+            try {
+                const blob = await renderCardToCanvas(
+                    currentResultData.title,
+                    currentResultData.namesBadge,
+                    currentResultData.percentage,
+                    currentResultData.message,
+                    currentResultData.photo1Url,
+                    currentResultData.photo2Url,
+                    currentResultData.mode,
+                    currentResultData.when
+                );
+                const filename = `lovetester_resultado_${normalize(currentResultData.namesBadge.split(' + ')[0])}_${normalize(currentResultData.namesBadge.split(' + ')[1])}.png`;
+                const file = new File([blob], filename, { type: 'image/png' });
+
+                if (navigator.share && navigator.canShare({ files: [file] })) {
+                    await navigator.share({
+                        files: [file],
+                        title: `Meu Resultado do Love Tester (${currentResultData.mode === 'friendship' ? 'Amizade' : 'Amor'})!`,
+                        text: `${currentResultData.namesBadge} tiveram ${currentResultData.percentage}% de compatibilidade! ${currentResultData.message}`,
+                    });
+                } else {
+                    saveBlob(blob, filename);
+                    showAlert('Seu navegador não suporta compartilhamento direto de arquivos. A imagem foi baixada.', 'Compartilhamento');
+                }
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Falha ao compartilhar:', error);
+                    showAlert('Falha ao compartilhar o resultado.', 'Erro');
+                }
+            } finally {
+                resultModalShareBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M15.75 4.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM8.25 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm11.25 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0ZM12.374 16.037a.75.75 0 0 0-.877.368l-2.88-5.759a.75.75 0 0 0-1.15-2.617L9 8.25H4.25a.75.75 0 0 0 0 1.5H8.358l-.877 1.752a.75.75 0 0 0-.279.79l2.88 5.758a.75.75 0 0 0 1.15 2.617l4.137-2.618a.75.75 0 0 0-.877-.368l-3.238 2.049-2.049-4.098Z" clip-rule="evenodd" /></svg> Compartilhar`;
+                resultModalShareBtn.disabled = false;
+            }
+        });
+
+
+        // --- Simple Love Tester Logic ---
+        const s_nome1 = qs('#s_nome1');
+        const s_nome2 = qs('#s_nome2');
+        const calcSimpleBtn = qs('#calcSimple');
+        const swapSimpleBtn = qs('#swapSimple');
+        const clearSimpleBtn = qs('#clearSimple');
+
+        calcSimpleBtn.addEventListener('click', async () => {
+            const name1 = s_nome1.value.trim();
+            const name2 = s_nome2.value.trim();
+            const gender1 = currentSelectedGender1;
+            const gender2 = currentSelectedGender2;
+
+            if (!name1 || !name2) {
+                showAlert('Por favor, preencha ambos os nomes.', 'Nomes Ausentes');
+                return;
+            }
+            if (gender1 === 'Não Selecionado' || gender2 === 'Não Selecionado') {
+                showAlert('Por favor, selecione o gênero/sexo para ambas as pessoas.', 'Gênero/Sexo Ausente');
+                return;
+            }
+
+            // Disable buttons and show loading spinner
+            calcSimpleBtn.innerHTML = `<span class="loading-spinner"></span> Calculando...`;
+            calcSimpleBtn.disabled = true;
+            swapSimpleBtn.disabled = true;
+            clearSimpleBtn.disabled = true;
+
+
+            try {
+                currentAppMode = 'love'; // Ensure correct mode for calculation and phrases
+                const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2);
+                const message = pickPhrase(percent, currentAppMode);
+
+                showResultModal('Resultado do Amor Simples', badgeText(name1, name2), percent, message, '', '', 'love', gender1, gender2);
+
+                // Save to history
+                saveToHistory({
+                    a: name1,
+                    b: name2,
+                    pct: percent,
+                    msg: message,
+                    mode: 'simple',
+                    gender1: gender1,
+                    gender2: gender2,
+                    when: new Date().toISOString()
+                });
+            } catch (error) {
+                console.error("Erro ao calcular amor simples:", error);
+                showAlert("Ocorreu um erro ao calcular a compatibilidade. Tente novamente.", "Erro de Cálculo");
+            } finally {
+                // Re-enable buttons
+                calcSimpleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg> Calcular`;
+                calcSimpleBtn.disabled = false;
+                swapSimpleBtn.disabled = false;
+                clearSimpleBtn.disabled = false;
+            }
+        });
+
+        swapSimpleBtn.addEventListener('click', () => {
+            const tempName = s_nome1.value;
+            s_nome1.value = s_nome2.value;
+            s_nome2.value = tempName;
+
+            const tempGender = currentSelectedGender1;
+            currentSelectedGender1 = currentSelectedGender2;
+            currentSelectedGender2 = tempGender;
+            qs('#s_gender1Input').value = currentSelectedGender1;
+            qs('#s_gender2Input').value = currentSelectedGender2;
+        });
+
+        clearSimpleBtn.addEventListener('click', () => {
+            s_nome1.value = '';
+            s_nome2.value = '';
+            qs('#s_gender1Input').value = 'Não Selecionado';
+            qs('#s_gender2Input').value = 'Não Selecionado';
+            currentSelectedGender1 = 'Não Selecionado';
+            currentSelectedGender2 = 'Não Selecionado';
+            currentResultData = null; // Clear stored data
+        });
+
+
+        // --- Advanced Love Tester Logic ---
+        const a_nome1 = qs('#a_nome1');
+        const a_nome2 = qs('#a_nome2');
+        const a_photo1 = qs('#a_photo1');
+        const a_photo2 = qs('#a_photo2');
+        const a_photo1_preview = qs('#a_photo1_preview');
+        const a_photo2_preview = qs('#a_photo2_preview');
+        const a_photo1_placeholder = qs('#a_photo1_placeholder');
+        const a_photo2_placeholder = qs('#a_photo2_placeholder');
+        const clearA_photo1_btn = qs('#clearA_photo1');
+        const clearA_photo2_btn = qs('#clearA_photo2');
+
+        let photo1Url_love = { value: '' }; // Use object to pass by reference
+        let photo2Url_love = { value: '' };
+
+        setupPhotoUpload(a_photo1, a_photo1_preview, a_photo1_placeholder, clearA_photo1_btn, photo1Url_love);
+        setupPhotoUpload(a_photo2, a_photo2_preview, a_photo2_placeholder, clearA_photo2_btn, photo2Url_love);
+
+
+        const calcAdvancedBtn = qs('#calcAdvanced');
+        const clearAdvancedBtn = qs('#clearAdvanced');
+
+        calcAdvancedBtn.addEventListener('click', async () => {
+            const name1 = a_nome1.value.trim();
+            const name2 = a_nome2.value.trim();
+            const gender1 = currentSelectedGender1;
+            const gender2 = currentSelectedGender2;
+
+            if (!name1 || !name2) {
+                showAlert('Por favor, preencha ambos os nomes.', 'Nomes Ausentes');
+                return;
+            }
+            if (gender1 === 'Não Selecionado' || gender2 === 'Não Selecionado') {
+                showAlert('Por favor, selecione o gênero/sexo para ambas as pessoas.', 'Gênero/Sexo Ausente');
+                return;
+            }
+            if (currentSelectedPers1.length === 0 || currentSelectedPers2.length === 0) {
+                showAlert('Por favor, selecione as personalidades para ambos os nomes.', 'Personalidades Ausentes');
+                return;
+            }
+
+            // Disable buttons and show loading spinner
+            calcAdvancedBtn.innerHTML = `<span class="loading-spinner"></span> Calculando...`;
+            calcAdvancedBtn.disabled = true;
+            clearAdvancedBtn.disabled = true;
+
+
+            try {
+                currentAppMode = 'love'; // Ensure correct mode
+                const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
+                const message = pickPhrase(percent, currentAppMode);
+
+                showResultModal('Resultado do Amor Avançado', badgeText(name1, name2), percent, message, photo1Url_love.value, photo2Url_love.value, 'love', gender1, gender2, currentSelectedPers1, currentSelectedPers2);
+
+                // Save to history
+                saveToHistory({
+                    a: name1,
+                    b: name2,
+                    pct: percent,
+                    msg: message,
+                    mode: 'advanced',
+                    gender1: gender1,
+                    gender2: gender2,
+                    pers1: currentSelectedPers1,
+                    pers2: currentSelectedPers2,
+                    photo1Url: photo1Url_love.value,
+                    photo2Url: photo2Url_love.value,
+                    when: new Date().toISOString()
+                });
+            } catch (error) {
+                console.error("Erro ao calcular amor avançado:", error);
+                showAlert("Ocorreu um erro ao calcular a compatibilidade. Tente novamente.", "Erro de Cálculo");
+            } finally {
+                // Re-enable buttons
+                calcAdvancedBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg> Calcular Avançado`;
+                calcAdvancedBtn.disabled = false;
+                clearAdvancedBtn.disabled = false;
+            }
+        });
+
+        clearAdvancedBtn.addEventListener('click', () => {
+            a_nome1.value = '';
+            a_nome2.value = '';
+            qs('#a_gender1Input').value = 'Não Selecionado';
+            qs('#a_gender2Input').value = 'Não Selecionado';
+            currentSelectedGender1 = 'Não Selecionado';
+            currentSelectedGender2 = 'Não Selecionado';
+            qs('#pers1Input').value = '';
+            qs('#pers2Input').value = '';
+            currentSelectedPers1 = [];
+            currentSelectedPers2 = [];
+
+            // Clear photo previews
+            a_photo1.value = '';
+            a_photo1_preview.src = '';
+            a_photo1_preview.classList.add('hidden');
+            a_photo1_placeholder.classList.remove('hidden');
+            clearA_photo1_btn.classList.add('hidden');
+            photo1Url_love.value = '';
+
+            a_photo2.value = '';
+            a_photo2_preview.src = '';
+            a_photo2_preview.classList.add('hidden');
+            a_photo2_placeholder.classList.remove('hidden');
+            clearA_photo2_btn.classList.add('hidden');
+            photo2Url_love.value = '';
+
+            currentResultData = null; // Clear stored data
+        });
+
+        // --- Advanced Friendship Tester Logic ---
+        const f_nome1 = qs('#f_nome1');
+        const f_nome2 = qs('#f_nome2');
+        const f_photo1 = qs('#f_photo1');
+        const f_photo2 = qs('#f_photo2');
+        const f_photo1_preview = qs('#f_photo1_preview');
+        const f_photo2_preview = qs('#f_photo2_preview');
+        const f_photo1_placeholder = qs('#f_photo1_placeholder');
+        const f_photo2_placeholder = qs('#f_photo2_placeholder');
+        const clearF_photo1_btn = qs('#clearF_photo1');
+        const clearF_photo2_btn = qs('#clearF_photo2');
+
+
+        let photo1Url_friendship = { value: '' }; // Use object to pass by reference
+        let photo2Url_friendship = { value: '' };
+
+        setupPhotoUpload(f_photo1, f_photo1_preview, f_photo1_placeholder, clearF_photo1_btn, photo1Url_friendship);
+        setupPhotoUpload(f_photo2, f_photo2_preview, f_photo2_placeholder, clearF_photo2_btn, photo2Url_friendship);
+
+
+        const calcFriendshipBtn = qs('#calcFriendship');
+        const clearFriendshipBtn = qs('#clearFriendship');
+
+        calcFriendshipBtn.addEventListener('click', async () => {
+            const name1 = f_nome1.value.trim();
+            const name2 = f_nome2.value.trim();
+            const gender1 = currentSelectedGender1;
+            const gender2 = currentSelectedGender2;
+
+            if (!name1 || !name2) {
+                showAlert('Por favor, preencha ambos os nomes.', 'Nomes Ausentes');
+                return;
+            }
+            if (gender1 === 'Não Selecionado' || gender2 === 'Não Selecionado') {
+                showAlert('Por favor, selecione o gênero/sexo para ambas as pessoas.', 'Gênero/Sexo Ausente');
+                return;
+            }
+            if (currentSelectedPers1.length === 0 || currentSelectedPers2.length === 0) {
+                showAlert('Por favor, selecione as personalidades para ambos os nomes.', 'Personalidades Ausentes');
+                return;
+            }
+
+            // Disable buttons and show loading spinner
+            calcFriendshipBtn.innerHTML = `<span class="loading-spinner"></span> Calculando...`;
+            calcFriendshipBtn.disabled = true;
+            clearFriendshipBtn.disabled = true;
+
+            try {
+                currentAppMode = 'friendship'; // Ensure correct mode
+                const percent = calculateFriendshipPercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
+                const message = pickPhrase(percent, currentAppMode);
+
+                showResultModal('Resultado do Friend Tester', badgeText(name1, name2), percent, message, photo1Url_friendship.value, photo2Url_friendship.value, 'friendship', gender1, gender2, currentSelectedPers1, currentSelectedPers2);
+
+                // Save to history
+                saveToHistory({
+                    a: name1,
+                    b: name2,
+                    pct: percent,
+                    msg: message,
+                    mode: 'friendship',
+                    gender1: gender1,
+                    gender2: gender2,
+                    pers1: currentSelectedPers1,
+                    pers2: currentSelectedPers2,
+                    photo1Url: photo1Url_friendship.value,
+                    photo2Url: photo2Url_friendship.value,
+                    when: new Date().toISOString()
+                });
+            } catch (error) {
+                console.error("Erro ao calcular amizade avançada:", error);
+                showAlert("Ocorreu um erro ao calcular a compatibilidade. Tente novamente.", "Erro de Cálculo");
+            } finally {
+                // Re-enable buttons
+                calcFriendshipBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg> Calcular Amizade`;
+                calcFriendshipBtn.disabled = false;
+                clearFriendshipBtn.disabled = false;
+            }
+        });
+
+        clearFriendshipBtn.addEventListener('click', () => {
+            f_nome1.value = '';
+            f_nome2.value = '';
+            qs('#f_gender1Input').value = 'Não Selecionado';
+            qs('#f_gender2Input').value = 'Não Selecionado';
+            currentSelectedGender1 = 'Não Selecionado';
+            currentSelectedGender2 = 'Não Selecionado';
+            qs('#persF1Input').value = '';
+            qs('#persF2Input').value = '';
+            currentSelectedPers1 = [];
+            currentSelectedPers2 = [];
+
+            // Clear photo previews
+            f_photo1.value = '';
+            f_photo1_preview.src = '';
+            f_photo1_preview.classList.add('hidden');
+            f_photo1_placeholder.classList.remove('hidden');
+            clearF_photo1_btn.classList.add('hidden');
+            photo1Url_friendship.value = '';
+
+            f_photo2.value = '';
+            f_photo2_preview.src = '';
+            f_photo2_preview.classList.add('hidden');
+            f_photo2_placeholder.classList.remove('hidden');
+            clearF_photo2_btn.classList.add('hidden');
+            photo2Url_friendship.value = '';
+
+            currentResultData = null; // Clear stored data
+        });
+    </script>
+</body>
+</html>
