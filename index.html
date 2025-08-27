@@ -36,11 +36,15 @@
             height: 100%;
             margin: 0;
             font-family: 'Poppins', system-ui, Arial;
+            /* Default love mode background */
             background: linear-gradient(180deg, var(--bg1), var(--bg2));
             color: var(--text);
             -webkit-font-smoothing: antialiased;
             -moz-osx-osx-font-smoothing: grayscale;
             transition: background 0.5s ease-in-out; /* Smooth background transition */
+            display: flex; /* Ensure body takes up full height for centering */
+            justify-content: center;
+            align-items: center;
         }
 
         /* Friendship mode specific styles */
@@ -50,17 +54,17 @@
         .friendship-mode .device {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)); /* Keep device background slightly transparent */
             border: 1px solid rgba(255, 255, 255, .06);
-            transition: background 0.5s ease-in-out, border 0.5s ease-in-out; /* Added transition */
+            transition: background 0.5s ease-in-out, border 0.5s ease-in-out;
         }
         .friendship-mode .appbar {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            transition: background 0.5s ease-in-out, border-bottom 0.5s ease-in-out; /* Added transition */
+            transition: background 0.5s ease-in-out, border-bottom 0.5s ease-in-out;
         }
         .friendship-mode .logo .ico {
             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
             box-shadow: 0 8px 20px rgba(108, 172, 228, .18);
-            transition: background 0.5s ease-in-out, box-shadow 0.5s ease-in-out; /* Added transition */
+            transition: background 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
         }
         .friendship-mode .btn {
             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
@@ -98,15 +102,26 @@
             transition: background 0.5s ease-in-out;
         }
 
-
-        /* App viewport container to center like a mobile app (vertical/horizontal) */
+        /* App frame to encompass the entire app, allowing it to go fullscreen */
         .app-frame {
             width: 100%;
-            min-height: 100vh;
-            display: grid;
-            place-items: center;
+            height: 100%; /* Occupy full body height */
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
+        /* Ensure app-frame fully covers the screen when in fullscreen mode */
+        .app-frame:fullscreen,
+        .app-frame:-webkit-full-screen,
+        .app-frame:-moz-full-screen,
+        .app-frame:-ms-full-screen {
+            width: 100vw; /* Use viewport units for true fullscreen */
+            height: 100vh;
+            /* Inherit background from body for dynamic colors in fullscreen */
+            background: inherit;
+        }
+
 
         .device {
             width: min(420px, 94vw);
@@ -121,6 +136,19 @@
             flex-direction: column;
             transition: background 0.5s ease-in-out, border 0.5s ease-in-out;
         }
+
+        /* For fullscreen, the device should also expand to fill its frame */
+        .app-frame:fullscreen .device,
+        .app-frame:-webkit-full-screen .device,
+        .app-frame:-moz-full-screen .device,
+        .app-frame:-ms-full-screen .device {
+            width: 100%;
+            height: 100%;
+            max-width: 100%; /* Override min/max constraints */
+            max-height: 100%;
+            border-radius: 0; /* Optional: remove border-radius in fullscreen */
+        }
+
 
         /* header */
         header.appbar {
@@ -1088,12 +1116,12 @@
         // --- Fullscreen functionality ---
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                if (appDevice.requestFullscreen) {
-                    appDevice.requestFullscreen();
-                } else if (appDevice.webkitRequestFullscreen) { /* Safari */
-                    appDevice.webkitRequestFullscreen();
-                } else if (appDevice.msRequestFullscreen) { /* IE11 */
-                    appDevice.msRequestFullscreen();
+                if (appFrame.requestFullscreen) {
+                    appFrame.requestFullscreen();
+                } else if (appFrame.webkitRequestFullscreen) { /* Safari */
+                    appFrame.webkitRequestFullscreen();
+                } else if (appFrame.msRequestFullscreen) { /* IE11 */
+                    appFrame.msRequestFullscreen();
                 }
             } else {
                 if (document.exitFullscreen) {
@@ -1109,6 +1137,17 @@
         // --- Screen & Navigation Functions ---
         const screens = { home: qs('#screenHome'), simple: qs('#screenSimple'), advanced: qs('#screenAdvanced'), friendship: qs('#screenFriendship'), history: qs('#screenHistory') };
         const tabs = { home: qs('#tabHome'), calculate: qs('#tabCalculate'), history: qs('#tabHistory') };
+
+        /**
+         * Updates the body background based on the current app mode.
+         */
+        function updateBodyBackground() {
+            if (currentAppMode === 'friendship') {
+                document.body.classList.add('friendship-mode');
+            } else {
+                document.body.classList.remove('friendship-mode');
+            }
+        }
 
         function show(screenId) {
             // Remove active class from all screens and tabs
@@ -1130,16 +1169,17 @@
 
             // Apply/Remove friendship mode styling
             if (screenId === 'friendship') {
-                document.body.classList.add('friendship-mode');
+                currentAppMode = 'friendship'; // Update global mode
                 appTitle.textContent = 'Friend Tester';
                 appSubtitle.textContent = 'Sua Amizade, Nosso Cálculo';
                 qs('.logo .ico').innerHTML = '🤝'; // Updated icon for friendship mode
             } else {
-                document.body.classList.remove('friendship-mode');
+                currentAppMode = 'love'; // Update global mode
                 appTitle.textContent = 'Love Tester';
                 appSubtitle.textContent = 'Seu Amor, Nosso Cálculo';
-                qs('.logo .ico').innerHTML = '💖';
+                qs('.logo .ico').innerHTML = '�';
             }
+            updateBodyBackground(); // Update body background based on new mode
         }
 
         // Initial screen on load and fullscreen prompt
@@ -1188,21 +1228,18 @@
         });
 
         selectSimpleLoveBtn.addEventListener('click', () => {
-            currentAppMode = 'love';
             show('simple');
             calculateModeSelectionModal.classList.remove('active');
             setTimeout(() => calculateModeSelectionModal.classList.add('hidden'), 300);
         });
 
         selectAdvancedLoveBtn.addEventListener('click', () => {
-            currentAppMode = 'love';
             show('advanced');
             calculateModeSelectionModal.classList.remove('active');
             setTimeout(() => calculateModeSelectionModal.classList.add('hidden'), 300);
         });
 
         selectAdvancedFriendshipBtn.addEventListener('click', () => {
-            currentAppMode = 'friendship';
             show('friendship');
             calculateModeSelectionModal.classList.remove('active');
             setTimeout(() => calculateModeSelectionModal.classList.add('hidden'), 300);
@@ -1315,7 +1352,7 @@
             showPersonalitySelectionModal(currentSelectedPers1, (selected) => {
                 currentSelectedPers1 = selected;
                 qs('#pers1Input').value = selected.join(', ') || 'Nenhuma selecionada';
-            }, currentAppMode);
+            }, 'love'); // Always love mode for this input
         });
 
         qs('#pers2Input').addEventListener('click', () => {
@@ -1323,7 +1360,7 @@
             showPersonalitySelectionModal(currentSelectedPers2, (selected) => {
                 currentSelectedPers2 = selected;
                 qs('#pers2Input').value = selected.join(', ') || 'Nenhuma selecionada';
-            }, currentAppMode);
+            }, 'love'); // Always love mode for this input
         });
 
         // Event listeners for personality inputs (Advanced Friendship)
@@ -1827,7 +1864,7 @@
 
                 // Photos if available
                 const photoSize = 150;
-                const photoY = 380;
+                const photoY = 400; // Adjusted Y position for photos
                 const photoGap = 60;
 
                 // Draw image helper with aspect ratio correction
@@ -1892,12 +1929,12 @@
                     ctx.shadowColor = primaryColor;
                     ctx.fillStyle = `rgba(${parseInt(primaryColor.substring(1,3), 16)}, ${parseInt(primaryColor.substring(3,5), 16)}, ${parseInt(primaryColor.substring(5,7), 16)}, ${0.1 + i * 0.05})`;
                     ctx.font = '200px Poppins';
-                    ctx.fillText(pct + '%', w / 2, 880); // Adjusted Y position
+                    ctx.fillText(pct + '%', w / 2, 880);
                 }
                 ctx.shadowBlur = 0; // Reset shadow
 
                 ctx.fillStyle = primaryColor; // Draw main text
-                ctx.fillText(pct + '%', w / 2, 880); // Adjusted Y position
+                ctx.fillText(pct + '%', w / 2, 880);
 
                 ctx.fillStyle = originalFillStyle; // Restore original styles
                 ctx.font = originalFont;
@@ -2380,7 +2417,7 @@
                 const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2);
                 const message = pickPhrase(percent, currentAppMode);
 
-                showResultModal('Resultado do Amor Simples', badgeText(name1, name2), percent, message, '', '', 'love', gender1, gender2);
+                showResultModal('Resultado do Amor Simples', badgeText(name1, name2), percent, message, '', '', 'love');
 
                 // Save to history
                 saveToHistory({
@@ -2480,7 +2517,7 @@
                 const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
                 const message = pickPhrase(percent, currentAppMode);
 
-                showResultModal('Resultado do Amor Avançado', badgeText(name1, name2), percent, message, photo1Url_love.value, photo2Url_love.value, 'love', gender1, gender2, currentSelectedPers1, currentSelectedPers2);
+                showResultModal('Resultado do Amor Avançado', badgeText(name1, name2), percent, message, photo1Url_love.value, photo2Url_love.value, 'love');
 
                 // Save to history
                 saveToHistory({
@@ -2590,7 +2627,7 @@
                 const percent = calculateFriendshipPercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
                 const message = pickPhrase(percent, currentAppMode);
 
-                showResultModal('Resultado do Friend Tester', badgeText(name1, name2), percent, message, photo1Url_friendship.value, photo2Url_friendship.value, 'friendship', gender1, gender2, currentSelectedPers1, currentSelectedPers2);
+                showResultModal('Resultado do Friend Tester', badgeText(name1, name2), percent, message, photo1Url_friendship.value, photo2Url_friendship.value, 'friendship');
 
                 // Save to history
                 saveToHistory({
