@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN for modern styling and responsiveness -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,eyJpY29ucyI6W3sic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3BuZyIsInNyYyI6Imh0dHBzOi8vcGxhY2Vob2xkLmNvLzE5MngxOTIvZmY0ZDg5L2ZmZj90ZXh0PTUxfFAlMjUzRDQ4JnJzJTNEMSU3QyUzRXN2ZyUyMCU3QyUzRGFyYyUyMCUzRSUzQyUyRmNsaXJjbGUlMjAlM0UlM0N0ZXh0JTIwJTNFIiUyQyJwdXJwb3NlcyI6InN0bGF5ZWJscGF0eSIsImxhc2tlZCI6InRlc2RhdGFzIn0seyJzaXplcyI6IjUxMnU1MTIiLCJ0eXBlIjoiY3VzdG9tL2luc3RhbGwiLCJzcmMiOiJodHRwczovL3BsYWNlaG9sZC5jby81MTJ1NTEyL2ZmNGQ4OS9mZmY/dGV4dD01MXxQJTI1M0Q0OCZycyUzRDElN0N4c2x2ZyUyMCU3QyUzRGFyYyUyMCUzRSUzQyUyRmNsaXJjbGUlMjAlM0UlM0N0ZXh0JTIwJTNFIiUyQ3B1cnBvc2VzIjoibXN0YSIsImxhc2tlZCI6InRlc3RkYXRhIn1dLCJkaXNwbGF5IjoiY2xpcHByZWZpeCIsInN0YXJ0X3VybCI6Ii4iLCJuYW1lIjoiTG92ZSBUZXN0ZXIiLCJzaG9ydF9uYW1lIjoiTG92ZSBUZXN0ZXIiLCJkZXNjcmlwdGlvbiI6IkNhbGN1bGUgYSBjb21wYXRpYmlsaWRhZGUgZW50cmUgbm9tZXMgZSBwZXJzb25hbGlkYWRlcyIsInRoZW1lX2NvbG9yIjoiI2ZmNGQ4ZCIsImJhY2tncm91bmRfY29sb3IiOiIjMGYwNDEyIn0=">
+
     <style>
         /* Custom CSS variables and base styles */
         :root {
@@ -36,60 +39,59 @@
             height: 100%;
             margin: 0;
             font-family: 'Poppins', system-ui, Arial;
-            /* Default love mode background */
-            background: linear-gradient(180deg, var(--bg1), var(--bg2));
+            background: linear-gradient(180deg, var(--bg1), var(--bg2)); /* Default love mode background */
             color: var(--text);
             -webkit-font-smoothing: antialiased;
             -moz-osx-osx-font-smoothing: grayscale;
             transition: background 0.5s ease-in-out; /* Smooth background transition */
-            display: flex; /* Ensure body takes up full height for centering */
+            display: flex; /* For centering app-frame */
             justify-content: center;
             align-items: center;
+            overflow: hidden; /* Prevent body scroll, let inner device scroll */
         }
 
-        /* Friendship mode specific styles */
+        /* Fullscreen (F11-like) mode styling */
+        body.f11-mode {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden; /* Hide scrollbars if content overflows viewport in fullscreen */
+        }
+
         body.friendship-mode {
             background: linear-gradient(180deg, var(--friend-bg1), var(--friend-bg2));
         }
+
         .friendship-mode .device {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01)); /* Keep device background slightly transparent */
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
             border: 1px solid rgba(255, 255, 255, .06);
-            transition: background 0.5s ease-in-out, border 0.5s ease-in-out;
         }
         .friendship-mode .appbar {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
-            transition: background 0.5s ease-in-out, border-bottom 0.5s ease-in-out;
         }
         .friendship-mode .logo .ico {
             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
             box-shadow: 0 8px 20px rgba(108, 172, 228, .18);
-            transition: background 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
         }
         .friendship-mode .btn {
             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
             box-shadow: 0 10px 30px rgba(108, 172, 228, .14);
-            transition: all 0.2s ease-in-out;
         }
         .friendship-mode .btn.secondary {
-            background: linear-gradient(135deg, #4299e1, #5cb85c); /* Adjust secondary for friendship */
+            background: linear-gradient(135deg, #4299e1, #5cb85c);
             box-shadow: 0 10px 30px rgba(66, 153, 225, .14);
-            transition: all 0.2s ease-in-out;
         }
         .friendship-mode input[type=text]:focus,
         .friendship-mode select:focus {
             border-color: var(--friend-accent);
-            transition: border-color 0.2s ease;
         }
         .friendship-mode .chip.active {
             border-color: var(--friend-accent);
             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
             box-shadow: 0 10px 24px rgba(108, 172, 228, .15);
-            transition: all 0.2s ease-in-out;
         }
         .friendship-mode .percent {
             color: var(--friend-accent);
-            transition: color 0.5s ease-in-out;
         }
         .friendship-mode .history-item .font-bold span {
             color: var(--friend-accent);
@@ -99,29 +101,18 @@
         }
         .friendship-mode .modal-content {
             background: var(--friend-card);
-            transition: background 0.5s ease-in-out;
         }
 
-        /* App frame to encompass the entire app, allowing it to go fullscreen */
+
         .app-frame {
             width: 100%;
-            height: 100%; /* Occupy full body height */
+            height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            box-sizing: border-box; /* Include padding in width/height */
         }
-        /* Ensure app-frame fully covers the screen when in fullscreen mode */
-        .app-frame:fullscreen,
-        .app-frame:-webkit-full-screen,
-        .app-frame:-moz-full-screen,
-        .app-frame:-ms-full-screen {
-            width: 100vw; /* Use viewport units for true fullscreen */
-            height: 100vh;
-            /* Inherit background from body for dynamic colors in fullscreen */
-            background: inherit;
-        }
-
 
         .device {
             width: min(420px, 94vw);
@@ -134,21 +125,18 @@
             position: relative;
             display: flex;
             flex-direction: column;
-            transition: background 0.5s ease-in-out, border 0.5s ease-in-out;
+            transition: background 0.5s ease-in-out, border 0.5s ease-in-out, transform 0.3s ease-in-out;
         }
 
-        /* For fullscreen, the device should also expand to fill its frame */
-        .app-frame:fullscreen .device,
-        .app-frame:-webkit-full-screen .device,
-        .app-frame:-moz-full-screen .device,
-        .app-frame:-ms-full-screen .device {
-            width: 100%;
-            height: 100%;
-            max-width: 100%; /* Override min/max constraints */
-            max-height: 100%;
-            border-radius: 0; /* Optional: remove border-radius in fullscreen */
+        /* Ensure device expands properly when body is in f11-mode */
+        body.f11-mode .device {
+            width: 100vw;
+            height: 100vh;
+            max-width: 100vw;
+            max-height: 100vh;
+            border-radius: 0;
+            box-shadow: none;
         }
-
 
         /* header */
         header.appbar {
@@ -159,6 +147,7 @@
             background: linear-gradient(180deg, rgba(255, 255, 255, .02), transparent);
             border-bottom: 1px solid rgba(255, 255, 255, .03);
             transition: background 0.5s ease-in-out, border-bottom 0.5s ease-in-out;
+            flex-shrink: 0; /* Prevent header from shrinking */
         }
 
         .logo {
@@ -200,10 +189,10 @@
             padding: 18px;
             opacity: 0;
             pointer-events: none;
-            position: absolute; /* Keep hidden screens from affecting layout */
+            position: absolute;
             width: 100%;
             height: 100%;
-            transition: opacity 0.3s ease-in-out; /* Smooth transition for screen changes */
+            transition: opacity 0.3s ease-in-out;
         }
 
         .screen.active {
@@ -306,8 +295,8 @@
             align-items: center;
             gap: 8px;
             text-align: center;
-            position: relative; /* For hearts animation */
-            overflow: hidden; /* Ensure hearts stay within card bounds */
+            position: relative;
+            overflow: hidden;
         }
 
         .percent {
@@ -331,6 +320,7 @@
             padding: 12px;
             border-top: 1px solid rgba(255, 255, 255, .03);
             background: linear-gradient(180deg, transparent, rgba(0, 0, 0, .02));
+            flex-shrink: 0; /* Prevent nav from shrinking */
         }
 
         nav.bottom .tab {
@@ -509,7 +499,6 @@
 
         .modal-overlay.hidden {
             display: none;
-            /* Fully hide when not active to prevent interaction issues */
         }
 
         .modal-content {
@@ -551,22 +540,19 @@
         /* History list item specific styles */
         .history-item {
             background: rgba(255, 255, 255, 0.05);
-            /* Slightly darker background for better contrast */
             border: 1px solid rgba(255, 255, 255, .08);
-            /* More visible border */
             transition: background 0.2s ease-in-out, border 0.2s ease-in-out;
         }
 
         .history-item:hover {
             background: rgba(255, 255, 255, 0.1);
-            /* Hover effect */
         }
         .history-item.friendship-mode {
-            background: rgba(108, 172, 228, 0.08); /* Adjusted background for friendship mode */
-            border: 1px solid rgba(108, 172, 228, 0.15); /* Adjusted border for friendship mode */
+            background: rgba(108, 172, 228, 0.08);
+            border: 1px solid rgba(108, 172, 228, 0.15);
         }
         .history-item.friendship-mode:hover {
-            background: rgba(108, 172, 228, 0.12); /* Adjusted hover for friendship mode */
+            background: rgba(108, 172, 228, 0.12);
         }
 
         /* Photo Upload Styling */
@@ -626,7 +612,7 @@
             color: white;
             font-size: 14px;
             cursor: pointer;
-            z-index: 20; /* Above the image */
+            z-index: 20;
             opacity: 0.8;
             transition: opacity 0.2s ease;
         }
@@ -1023,13 +1009,66 @@
     </div>
 
 
-    <script type="module">
+    <script>
+        // Register Service Worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    }).catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+        // Inline Service Worker (minimal for caching)
+        const serviceWorkerScript = `
+            self.addEventListener('install', (event) => {
+                event.waitUntil(
+                    caches.open('love-tester-cache-v1').then((cache) => {
+                        return cache.addAll([
+                            '/',
+                            '/index.html',
+                            'https://cdn.tailwindcss.com',
+                            'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap',
+                            'https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8PhlEeNAuVFQkNE.woff2'
+                            // Add other critical assets here
+                        ]);
+                    })
+                );
+            });
+
+            self.addEventListener('fetch', (event) => {
+                event.respondWith(
+                    caches.match(event.request).then((response) => {
+                        return response || fetch(event.request);
+                    })
+                );
+            });
+        `;
+        const blob = new Blob([serviceWorkerScript], { type: 'application/javascript' });
+        const serviceWorkerUrl = URL.createObjectURL(blob);
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(serviceWorkerUrl)
+                    .then(registration => {
+                        console.log('SW registered: ', registration);
+                    }).catch(registrationError => {
+                        console.log('SW registration failed: ', registrationError);
+                    });
+            });
+        }
+
+
         // --- Utility Functions ---
         const qs = sel => document.querySelector(sel);
         const qsa = sel => Array.from(document.querySelectorAll(sel));
 
         // --- Global State ---
         let currentAppMode = 'love'; // 'love' or 'friendship'
+        let deferredInstallPrompt = null; // For PWA installation prompt
 
         // --- Custom Modal Functions ---
         const customModal = qs('#customModal');
@@ -1059,14 +1098,19 @@
                 button.classList.add('btn');
                 if (btnConfig.isGhost) {
                     button.classList.add('ghost');
+                } else if (btnConfig.isSecondary) {
+                    button.classList.add('secondary');
                 }
+
                 // Apply friendship mode button style if active and not a ghost button
-                if (currentAppMode === 'friendship' && !btnConfig.isGhost) {
-                     button.style.background = 'linear-gradient(135deg, var(--friend-accent), var(--friend-accent2))';
-                     button.style.boxShadow = '0 10px 30px rgba(108, 172, 228, .14)';
-                } else if (btnConfig.isSecondary && currentAppMode === 'friendship') {
-                     button.style.background = 'linear-gradient(135deg, #4299e1, #5cb85c)';
-                     button.style.boxShadow = '0 10px 30px rgba(66, 153, 225, .14)';
+                if (currentAppMode === 'friendship') {
+                    if (!btnConfig.isGhost && !btnConfig.isSecondary) {
+                        button.style.background = 'linear-gradient(135deg, var(--friend-accent), var(--friend-accent2))';
+                        button.style.boxShadow = '0 10px 30px rgba(108, 172, 228, .14)';
+                    } else if (btnConfig.isSecondary) {
+                        button.style.background = 'linear-gradient(135deg, #4299e1, #5cb85c)';
+                        button.style.boxShadow = '0 10px 30px rgba(66, 153, 225, .14)';
+                    }
                 }
 
 
@@ -1113,24 +1157,39 @@
             ]);
         }
 
-        // --- Fullscreen functionality ---
+        // --- Fullscreen (F11-like) functionality ---
+        let isF11Mode = false;
         function toggleFullscreen() {
-            if (!document.fullscreenElement) {
-                if (appFrame.requestFullscreen) {
-                    appFrame.requestFullscreen();
-                } else if (appFrame.webkitRequestFullscreen) { /* Safari */
-                    appFrame.webkitRequestFullscreen();
-                } else if (appFrame.msRequestFullscreen) { /* IE11 */
-                    appFrame.msRequestFullscreen();
-                }
+            if (!isF11Mode) {
+                document.body.classList.add('f11-mode');
+                isF11Mode = true;
             } else {
-                if (document.exitFullscreen) {
-                    document.exitFullscreen();
-                } else if (document.webkitExitFullscreen) { /* Safari */
-                    document.webkitExitFullscreen();
-                } else if (document.msExitFullscreen) { /* IE11 */
-                    document.msExitFullscreen();
-                }
+                document.body.classList.remove('f11-mode');
+                isF11Mode = false;
+            }
+        }
+
+        // --- PWA Install Prompt ---
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault(); // Prevent the mini-infobar from appearing on mobile
+            deferredInstallPrompt = e; // Stash the event so it can be triggered later.
+            // You might want to update your UI to indicate that the app can be installed.
+            console.log('PWA installation prompt ready.');
+        });
+
+        function installPWA() {
+            if (deferredInstallPrompt) {
+                deferredInstallPrompt.prompt(); // Show the install prompt
+                deferredInstallPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('User accepted the PWA installation');
+                    } else {
+                        console.log('User dismissed the PWA installation');
+                    }
+                    deferredInstallPrompt = null; // Clear the prompt
+                });
+            } else {
+                showAlert('Para instalar, adicione este site à sua tela inicial através das opções do navegador.', 'Instalação Manual');
             }
         }
 
@@ -1177,7 +1236,7 @@
                 currentAppMode = 'love'; // Update global mode
                 appTitle.textContent = 'Love Tester';
                 appSubtitle.textContent = 'Seu Amor, Nosso Cálculo';
-                qs('.logo .ico').innerHTML = ' ';
+                qs('.logo .ico').innerHTML = '💖';
             }
             updateBodyBackground(); // Update body background based on new mode
         }
@@ -1251,21 +1310,34 @@
         });
 
 
-        // Header help button with Fullscreen option
+        // Header help button with Fullscreen and PWA install option
         qs('#btnHelp').addEventListener('click', () => {
+            const helpButtons = [
+                { text: 'OK' },
+                {
+                    text: isF11Mode ? 'Sair da Tela Cheia' : 'Entrar em Tela Cheia',
+                    onClick: toggleFullscreen,
+                    isGhost: true,
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                        </svg>`
+                }
+            ];
+
+            if (deferredInstallPrompt) {
+                helpButtons.push({
+                    text: 'Instalar App',
+                    onClick: installPWA,
+                    isSecondary: true, // Use a different style for install button
+                    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                            <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5H3Z" clip-rule="evenodd" />
+                        </svg>`
+                });
+            }
+
             showModal('Sobre o Love Tester',
-                'Calcule a compatibilidade entre dois nomes nos modos Simples, Amor Avançado ou Friend Tester. Salve seus resultados como imagem e compartilhe com amigos!',
-                [
-                    { text: 'OK' },
-                    {
-                        text: 'Tela Cheia',
-                        onClick: toggleFullscreen,
-                        isGhost: true,
-                        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                                <path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
-                            </svg>`
-                    }
-                ]);
+                'Calcule a compatibilidade entre dois nomes nos modos Simples, Amor Avançado ou Friend Tester. Salve seus resultados como imagem e compartilhe com amigos! Use as opções do navegador para instalar o app.',
+                helpButtons);
         });
 
 
@@ -1284,7 +1356,7 @@
 
         let currentSelectedPers1 = [];
         let currentSelectedPers2 = [];
-        let activePersonalityTargetInput = null; // To track which input triggered the modal
+        let activePersonalityTargetInputId = null; // Store the ID of the input field that triggered the modal
 
         const personalitySelectionModal = qs('#personalitySelectionModal');
         const allPersonalityChipsContainer = qs('#allPersonalityChips');
@@ -1316,7 +1388,6 @@
                             chip.classList.add('active');
                             currentModalSelections.push(p.val);
                         } else {
-                            // This alert modal will now appear on top due to z-index fix
                             showAlert('Você pode selecionar no máximo 5 personalidades.', 'Limite Atingido');
                         }
                     }
@@ -1338,7 +1409,6 @@
             personalitySelectionModal.classList.remove('hidden');
             setTimeout(() => personalitySelectionModal.classList.add('active'), 10);
 
-            // Apply modal content theme
             if (currentAppMode === 'friendship') {
                 personalitySelectionModal.querySelector('.modal-content').classList.add('friendship-mode');
             } else {
@@ -1346,38 +1416,37 @@
             }
         }
 
-        // Event listeners for personality inputs (Advanced Love)
-        qs('#pers1Input').addEventListener('click', () => {
-            activePersonalityTargetInput = qs('#pers1Input');
-            showPersonalitySelectionModal(currentSelectedPers1, (selected) => {
-                currentSelectedPers1 = selected;
-                qs('#pers1Input').value = selected.join(', ') || 'Nenhuma selecionada';
-            }, 'love'); // Always love mode for this input
-        });
+        // Helper to get correct personality array and input element based on active ID
+        function getPersonalityStateAndInput(inputId) {
+            let selectedPers;
+            let inputElement;
+            if (inputId === 'pers1Input' || inputId === 'persF1Input') {
+                selectedPers = currentSelectedPers1;
+                inputElement = qs(currentAppMode === 'love' ? '#pers1Input' : '#persF1Input');
+            } else if (inputId === 'pers2Input' || inputId === 'persF2Input') {
+                selectedPers = currentSelectedPers2;
+                inputElement = qs(currentAppMode === 'love' ? '#pers2Input' : '#persF2Input');
+            }
+            return { selectedPers, inputElement };
+        }
 
-        qs('#pers2Input').addEventListener('click', () => {
-            activePersonalityTargetInput = qs('#pers2Input');
-            showPersonalitySelectionModal(currentSelectedPers2, (selected) => {
-                currentSelectedPers2 = selected;
-                qs('#pers2Input').value = selected.join(', ') || 'Nenhuma selecionada';
-            }, 'love'); // Always love mode for this input
-        });
-
-        // Event listeners for personality inputs (Advanced Friendship)
-        qs('#persF1Input').addEventListener('click', () => {
-            activePersonalityTargetInput = qs('#persF1Input');
-            showPersonalitySelectionModal(currentSelectedPers1, (selected) => {
-                currentSelectedPers1 = selected;
-                qs('#persF1Input').value = selected.join(', ') || 'Nenhuma selecionada';
-            }, 'friendship'); // Always friendship mode for this input
-        });
-
-        qs('#persF2Input').addEventListener('click', () => {
-            activePersonalityTargetInput = qs('#persF2Input');
-            showPersonalitySelectionModal(currentSelectedPers2, (selected) => {
-                currentSelectedPers2 = selected;
-                qs('#persF2Input').value = selected.join(', ') || 'Nenhuma selecionada';
-            }, 'friendship'); // Always friendship mode for this input
+        // Event listeners for personality inputs
+        ['#pers1Input', '#pers2Input', '#persF1Input', '#persF2Input'].forEach(selector => {
+            qs(selector).addEventListener('click', (e) => {
+                activePersonalityTargetInputId = e.target.id;
+                const { selectedPers } = getPersonalityStateAndInput(activePersonalityTargetInputId);
+                showPersonalitySelectionModal(selectedPers, (selected) => {
+                    const { inputElement } = getPersonalityStateAndInput(activePersonalityTargetInputId);
+                    if (activePersonalityTargetInputId === 'pers1Input' || activePersonalityTargetInputId === 'persF1Input') {
+                        currentSelectedPers1 = selected;
+                    } else if (activePersonalityTargetInputId === 'pers2Input' || activePersonalityTargetInputId === 'persF2Input') {
+                        currentSelectedPers2 = selected;
+                    }
+                    if (inputElement) {
+                        inputElement.value = selected.join(', ') || 'Nenhuma selecionada';
+                    }
+                }, currentAppMode); // Pass currentAppMode to filter personalities
+            });
         });
 
 
@@ -1391,7 +1460,7 @@
 
         let currentSelectedGender1 = 'Não Selecionado';
         let currentSelectedGender2 = 'Não Selecionado';
-        let activeGenderTargetInput = null; // To track which input triggered the modal
+        let activeGenderTargetInputId = null;
 
         const genderSelectionModal = qs('#genderSelectionModal');
         const allGenderChipsContainer = qs('#allGenderChips');
@@ -1399,9 +1468,9 @@
         const cancelGenderSelectionBtn = qs('#cancelGenderSelection');
 
         function showGenderSelectionModal(initialSelection, onConfirmCallback) {
-            allGenderChipsContainer.innerHTML = ''; // Clear existing chips
+            allGenderChipsContainer.innerHTML = '';
 
-            let currentModalSelection = initialSelection; // Work with a copy for the modal session
+            let currentModalSelection = initialSelection;
 
             allGenders.forEach(g => {
                 const chip = document.createElement('button');
@@ -1414,7 +1483,7 @@
                 }
 
                 chip.addEventListener('click', () => {
-                    qsa('#allGenderChips .chip').forEach(c => c.classList.remove('active')); // Deselect others
+                    qsa('#allGenderChips .chip').forEach(c => c.classList.remove('active'));
                     chip.classList.add('active');
                     currentModalSelection = g.val;
                 });
@@ -1435,7 +1504,6 @@
             genderSelectionModal.classList.remove('hidden');
             setTimeout(() => genderSelectionModal.classList.add('active'), 10);
 
-            // Apply modal content theme
             if (currentAppMode === 'friendship') {
                 genderSelectionModal.querySelector('.modal-content').classList.add('friendship-mode');
             } else {
@@ -1443,52 +1511,34 @@
             }
         }
 
+        // Helper to get correct gender variable and input element based on active ID
+        function getGenderStateAndInput(inputId) {
+            let selectedGender;
+            let inputElement = qs(`#${inputId}`);
+            if (inputId.includes('gender1')) {
+                selectedGender = currentSelectedGender1;
+            } else if (inputId.includes('gender2')) {
+                selectedGender = currentSelectedGender2;
+            }
+            return { selectedGender, inputElement };
+        }
+
         // Event listeners for gender inputs
-        qs('#s_gender1Input').addEventListener('click', () => {
-            activeGenderTargetInput = qs('#s_gender1Input');
-            showGenderSelectionModal(currentSelectedGender1, (selected) => {
-                currentSelectedGender1 = selected;
-                qs('#s_gender1Input').value = selected;
-            });
-        });
-
-        qs('#s_gender2Input').addEventListener('click', () => {
-            activeGenderTargetInput = qs('#s_gender2Input');
-            showGenderSelectionModal(currentSelectedGender2, (selected) => {
-                currentSelectedGender2 = selected;
-                qs('#s_gender2Input').value = selected;
-            });
-        });
-
-        qs('#a_gender1Input').addEventListener('click', () => {
-            activeGenderTargetInput = qs('#a_gender1Input');
-            showGenderSelectionModal(currentSelectedGender1, (selected) => {
-                currentSelectedGender1 = selected;
-                qs('#a_gender1Input').value = selected;
-            });
-        });
-
-        qs('#a_gender2Input').addEventListener('click', () => {
-            activeGenderTargetInput = qs('#a_gender2Input');
-            showGenderSelectionModal(currentSelectedGender2, (selected) => {
-                currentSelectedGender2 = selected;
-                qs('#a_gender2Input').value = selected;
-            });
-        });
-
-        qs('#f_gender1Input').addEventListener('click', () => {
-            activeGenderTargetInput = qs('#f_gender1Input');
-            showGenderSelectionModal(currentSelectedGender1, (selected) => {
-                currentSelectedGender1 = selected;
-                qs('#f_gender1Input').value = selected;
-            });
-        });
-
-        qs('#f_gender2Input').addEventListener('click', () => {
-            activeGenderTargetInput = qs('#f_gender2Input');
-            showGenderSelectionModal(currentSelectedGender2, (selected) => {
-                currentSelectedGender2 = selected;
-                qs('#f_gender2Input').value = selected;
+        ['#s_gender1Input', '#s_gender2Input', '#a_gender1Input', '#a_gender2Input', '#f_gender1Input', '#f_gender2Input'].forEach(selector => {
+            qs(selector).addEventListener('click', (e) => {
+                activeGenderTargetInputId = e.target.id;
+                const { selectedGender } = getGenderStateAndInput(activeGenderTargetInputId);
+                showGenderSelectionModal(selectedGender, (selected) => {
+                    const { inputElement } = getGenderStateAndInput(activeGenderTargetInputId);
+                    if (activeGenderTargetInputId.includes('gender1')) {
+                        currentSelectedGender1 = selected;
+                    } else if (activeGenderTargetInputId.includes('gender2')) {
+                        currentSelectedGender2 = selected;
+                    }
+                    if (inputElement) {
+                        inputElement.value = selected;
+                    }
+                });
             });
         });
 
@@ -1532,7 +1582,7 @@
             const n2 = normalize(name2);
             if (!n1 || !n2) return null;
 
-            let score = 40; // Base score for love
+            let score = 45; // Base score for love - slightly higher
 
             // Name Similarity (more sophisticated)
             score += getNameSimilarity(n1, n2);
@@ -1541,48 +1591,50 @@
             if (personalities1.length > 0 && personalities2.length > 0) {
                 let personalityLoveScore = 0;
                 const loveCompMatrix = {
-                    'Romântica': { 'Romântica': 15, 'Aventureira': 7, 'Empática': 12, 'Sonhadora': 18, 'Criativa': 8 },
-                    'Aventureira': { 'Aventureira': 10, 'Romântica': 7, 'Espontânea': 14, 'Otimista': 9 },
-                    'Intelectual': { 'Intelectual': 12, 'Racional': 10, 'Curiosa': 8 },
-                    'Brincalhona': { 'Brincalhona': 10, 'Aventureira': 8, 'Espontânea': 7, 'Calma': 5 },
-                    'Calma': { 'Calma': 9, 'Empática': 8, 'Paciente': 6, 'Aventureira': -3 },
-                    'Empática': { 'Empática': 13, 'Romântica': 12, 'Leal': 10, 'Generosa': 11, 'Calma': 8 },
+                    'Romântica': { 'Romântica': 15, 'Aventureira': 7, 'Empática': 12, 'Sonhadora': 18, 'Criativa': 8, 'Racional': -5, 'Prática': -5 },
+                    'Aventureira': { 'Aventureira': 10, 'Romântica': 7, 'Espontânea': 14, 'Otimista': 9, 'Calma': -3, 'Organizada': -4 },
+                    'Intelectual': { 'Intelectual': 12, 'Racional': 10, 'Curiosa': 8, 'Brincalhona': 2 },
+                    'Brincalhona': { 'Brincalhona': 10, 'Aventureira': 8, 'Espontânea': 7, 'Calma': 5, 'Intelectual': 2, 'Misteriosa': -2 },
+                    'Calma': { 'Calma': 9, 'Empática': 8, 'Paciente': 6, 'Brincalhona': 5, 'Aventureira': -3 },
+                    'Empática': { 'Empática': 13, 'Romântica': 12, 'Leal': 10, 'Generosa': 11, 'Calma': 8, 'Racional': -4 },
                     'Leal': { 'Leal': 15, 'Empática': 10, 'Determinada': 8 },
-                    'Criativa': { 'Criativa': 10, 'Sonhadora': 14, 'Espontânea': 9 },
-                    'Racional': { 'Racional': 12, 'Intelectual': 10, 'Prática': 7, 'Romântica': -7 },
+                    'Criativa': { 'Criativa': 10, 'Sonhadora': 14, 'Espontânea': 9, 'Prática': -7 },
+                    'Racional': { 'Racional': 12, 'Intelectual': 10, 'Prática': 7, 'Romântica': -7, 'Sonhadora': -6 },
                     'Otimista': { 'Otimista': 12, 'Aventureira': 9, 'Espontânea': 8 },
                     'Determinada': { 'Determinada': 11, 'Leal': 9, 'Prática': 6 },
-                    'Misteriosa': { 'Misteriosa': 10, 'Introvertida': 9, 'Extrovertida': -5 },
-                    'Extrovertida': { 'Extrovertida': 10, 'Comunicativa': 12, 'Aventureira': 9 },
-                    'Introvertida': { 'Introvertida': 9, 'Observadora': 10, 'Extrovertida': -5, 'Misteriosa': 8 },
-                    'Espontânea': { 'Espontânea': 12, 'Aventureira': 10, 'Criativa': 9 },
+                    'Misteriosa': { 'Misteriosa': 10, 'Introvertida': 9, 'Extrovertida': -5, 'Brincalhona': -2 },
+                    'Extrovertida': { 'Extrovertida': 10, 'Comunicativa': 12, 'Aventureira': 9, 'Introvertida': -5, 'Misteriosa': -5 },
+                    'Introvertida': { 'Introvertida': 9, 'Observadora': 10, 'Misteriosa': 8, 'Extrovertida': -5, 'Comunicativa': -4 },
+                    'Espontânea': { 'Espontânea': 12, 'Aventureira': 10, 'Criativa': 9, 'Organizada': -6 },
                     'Organizada': { 'Organizada': 8, 'Prática': 7, 'Calma': 6, 'Espontânea': -6 },
                     'Curiosa': { 'Curiosa': 9, 'Intelectual': 8, 'Aventureira': 7 },
                     'Generosa': { 'Generosa': 13, 'Empática': 12, 'Leal': 10 },
-                    'Prática': { 'Prática': 9, 'Racional': 8, 'Organizada': 7, 'Criativa': -7 },
+                    'Prática': { 'Prática': 9, 'Racional': 8, 'Organizada': 7, 'Criativa': -7, 'Romântica': -5 },
                     'Independente': { 'Independente': 9, 'Aventureira': 8 },
-                    'Comunicativa': { 'Comunicativa': 11, 'Extrovertida': 10 },
-                    'Observadora': { 'Observadora': 8, 'Intelectual': 9 },
+                    'Comunicativa': { 'Comunicativa': 11, 'Extrovertida': 10, 'Introvertida': -4 },
+                    'Observadora': { 'Observadora': 8, 'Intelectual': 9, 'Introvertida': 10 },
                     'Paciente': { 'Paciente': 9, 'Calma': 8, 'Leal': 7 },
-                    'Sonhadora': { 'Sonhadora': 14, 'Romântica': 10, 'Criativa': 9 }
+                    'Sonhadora': { 'Sonhadora': 14, 'Romântica': 10, 'Criativa': 9, 'Racional': -6 }
                 };
+
 
                 for (const p1 of personalities1) {
                     for (const p2 of personalities2) {
                         personalityLoveScore += (loveCompMatrix[p1] && loveCompMatrix[p1][p2]) ? loveCompMatrix[p1][p2] : 0;
+                        // For reciprocal score, use p2 as key for p1's compatibility
                         personalityLoveScore += (loveCompMatrix[p2] && loveCompMatrix[p2][p1]) ? loveCompMatrix[p2][p1] : 0;
                     }
                 }
-                score += Math.max(-25, Math.min(25, personalityLoveScore / 4));
+                score += Math.max(-30, Math.min(30, personalityLoveScore / 4)); // Increased range for personality impact
             }
 
             // Gender Influence
             if (gender1 === 'Feminino' && gender2 === 'Masculino' || gender1 === 'Masculino' && gender2 === 'Feminino') {
-                score += 5; // Traditional pairing
+                score += 8; // Traditional pairing - increased impact
             } else if (gender1 === 'Não-binário' || gender2 === 'Não-binário') {
-                score += 2; // Openness
+                score += 4; // Openness - increased impact
             } else if (gender1 === gender2 && gender1 !== 'Não Selecionado' && gender1 !== 'Outro') {
-                score += 3; // Same-gender pairing
+                score += 5; // Same-gender pairing - increased impact
             }
 
             // Final blend with deterministic randomness to ensure variety but still grounded
@@ -1598,23 +1650,23 @@
             const n2 = normalize(name2);
             if (!n1 || !n2) return null;
 
-            let score = 60; // Base score for friendship, generally higher
+            let score = 65; // Base score for friendship, generally higher, slightly adjusted
 
             // Name Similarity
-            score += getNameSimilarity(n1, n2) / 1.5; // Slightly less impact than love
+            score += getNameSimilarity(n1, n2) / 1.2; // Slightly less impact than love, adjusted divider
 
             // Personality Compatibility for Friendship
             if (personalities1.length > 0 && personalities2.length > 0) {
                 let personalityFriendshipScore = 0;
                 const friendCompMatrix = {
-                    'Aventureira': { 'Aventureira': 12, 'Brincalhona': 10, 'Espontânea': 15, 'Otimista': 11, 'Curiosa': 9 },
-                    'Brincalhona': { 'Brincalhona': 12, 'Aventureira': 10, 'Divertida': 15, 'Extrovertida': 12 },
-                    'Empática': { 'Empática': 13, 'Generosa': 12, 'Leal': 11, 'Paciente': 10, 'Apoio': 15 },
+                    'Aventureira': { 'Aventureira': 12, 'Brincalhona': 10, 'Espontânea': 15, 'Otimista': 11, 'Curiosa': 9, 'Calma': 2, 'Organizada': -2 },
+                    'Brincalhona': { 'Brincalhona': 12, 'Aventureira': 10, 'Divertida': 15, 'Extrovertida': 12, 'Introvertida': 3, 'Misteriosa': 0 },
+                    'Empática': { 'Empática': 13, 'Generosa': 12, 'Leal': 11, 'Paciente': 10, 'Apoio': 15, 'Racional': 3 },
                     'Leal': { 'Leal': 15, 'Empática': 12, 'Honesta': 13, 'Apoio': 14 },
                     'Otimista': { 'Otimista': 12, 'Aventureira': 10, 'Espontânea': 9, 'Divertida': 11 },
-                    'Extrovertida': { 'Extrovertida': 12, 'Comunicativa': 14, 'Brincalhona': 11 },
-                    'Introvertida': { 'Introvertida': 10, 'Observadora': 11, 'Paciente': 9, 'Extrovertida': 3 }, // Introverts can be good friends with extroverts
-                    'Espontânea': { 'Espontânea': 13, 'Aventureira': 11, 'Brincalhona': 10 },
+                    'Extrovertida': { 'Extrovertida': 12, 'Comunicativa': 14, 'Brincalhona': 11, 'Introvertida': 3 },
+                    'Introvertida': { 'Introvertida': 10, 'Observadora': 11, 'Paciente': 9, 'Extrovertida': 3, 'Brincalhona': 3 },
+                    'Espontânea': { 'Espontânea': 13, 'Aventureira': 11, 'Brincalhona': 10, 'Organizada': -4 },
                     'Curiosa': { 'Curiosa': 11, 'Intelectual': 10, 'Aventureira': 9 },
                     'Generosa': { 'Generosa': 14, 'Empática': 13, 'Leal': 12, 'Apoio': 15 },
                     'Comunicativa': { 'Comunicativa': 13, 'Extrovertida': 12, 'Divertida': 11 },
@@ -1631,14 +1683,14 @@
                         personalityFriendshipScore += (friendCompMatrix[p2] && friendCompMatrix[p2][p1]) ? friendCompMatrix[p2][p1] : 0;
                     }
                 }
-                score += Math.max(-20, Math.min(20, personalityFriendshipScore / 4)); // Friendship scores tend to be less extreme
+                score += Math.max(-25, Math.min(25, personalityFriendshipScore / 3)); // Increased range for friendship personality impact
             }
 
             // Gender Influence for Friendship (less impactful)
             if (gender1 === 'Feminino' && gender2 === 'Feminino' || gender1 === 'Masculino' && gender2 === 'Masculino') {
-                score += 3; // Slight boost for same-gender friendship
+                score += 5; // Slight boost for same-gender friendship - adjusted
             } else if (gender1 === 'Não-binário' || gender2 === 'Não-binário') {
-                score += 1;
+                score += 2; // Adjusted
             }
 
             // Final blend with deterministic randomness
@@ -1748,7 +1800,7 @@
 
         // --- On-screen Friendship Emojis Animation ---
         function spawnFriendsEmojis(container, percentage) {
-            const friendEmojis = ['🤝', '😄', '🌟', '🫂', '🥳'];
+            const friendEmojis = [' ', '😄', '🌟', '🫂', '🥳'];
             // Adjust quantity based on percentage, max 10 for on-screen
             const numEmojis = percentage > 90 ? 7 : (percentage > 80 ? 5 : 3);
 
@@ -1793,8 +1845,8 @@
                 const secondaryColor = (mode === 'friendship') ? '#4CAF50' : '#8b5cf6';
                 const textColor = '#f8f5ff';
                 const mutedTextColor = '#cdbfe8';
-                const cardBg1 = (mode === 'friendship') ? '#1A5276' : '#28003a'; // Slightly darker for canvas bg
-                const cardBg2 = (mode === 'friendship') ? '#0A2E36' : '#0f0412'; // Slightly darker for canvas bg
+                const cardBg1 = (mode === 'friendship') ? '#1A5276' : '#28003a';
+                const cardBg2 = (mode === 'friendship') ? '#0A2E36' : '#0f0412';
 
                 // Load images if available
                 const loadImage = (url) => {
@@ -1824,30 +1876,28 @@
                 ctx.fillRect(0, 0, w, h);
 
                 // Overlay with subtle pattern (dynamic colors, less dense)
-                ctx.fillStyle = `rgba(${parseInt(primaryColor.substring(1,3), 16)}, ${parseInt(primaryColor.substring(3,5), 16)}, ${parseInt(primaryColor.substring(5,7), 16)}, 0.03)`; // Less opacity
-                for(let i=0; i<30; i++){ // Fewer elements
+                ctx.fillStyle = `rgba(${parseInt(primaryColor.substring(1,3), 16)}, ${parseInt(primaryColor.substring(3,5), 16)}, ${parseInt(primaryColor.substring(5,7), 16)}, 0.03)`;
+                for(let i=0; i<30; i++){
                     const x = Math.random() * w;
                     const y = Math.random() * h;
-                    const size = 8 + Math.random() * 15; // Smaller size range
+                    const size = 8 + Math.random() * 15;
                     ctx.beginPath();
                     ctx.arc(x, y, size/2, 0, Math.PI * 2);
                     ctx.fill();
                 }
 
-                // Header card background
-                ctx.fillStyle = `rgba(255,255,255,0.06)`; // Slightly less opaque
-                roundRect(ctx, 60, 90, w - 120, 220, 28);
-                ctx.fill();
+                // Header card background - A more integrated look
+                // Removed separate header card for a cleaner, unified canvas output
 
-                // Small decorative elements (emojis based on mode)
+                // Small decorative elements (emojis based on mode) - Placed strategically for minimal interference
                 ctx.font = '50px Poppins, serif';
-                ctx.fillStyle = `rgba(255, 255, 255, 0.3)`; // Less opacity
+                ctx.fillStyle = `rgba(255, 255, 255, 0.3)`;
                 if (mode === 'love') {
-                    ctx.fillText('💖', 120, 150);
-                    ctx.fillText('✨', w - 120, 150);
+                    ctx.fillText('💖', 80, 80);
+                    ctx.fillText('✨', w - 80, 80);
                 } else {
-                    ctx.fillText('🤝', 120, 150);
-                    ctx.fillText('😄', w - 120, 150);
+                    ctx.fillText('🤝', 80, 80);
+                    ctx.fillText('😄', w - 80, 80);
                 }
 
 
@@ -1864,7 +1914,7 @@
 
                 // Photos if available
                 const photoSize = 150;
-                const photoY = 400; // Adjusted Y position for photos
+                const photoY = 400;
                 const photoGap = 60;
 
                 // Draw image helper with aspect ratio correction
@@ -1923,7 +1973,6 @@
                 const originalFillStyle = ctx.fillStyle;
                 const originalFont = ctx.font;
 
-                // Simulate glow by drawing multiple blurred layers
                 for (let i = 0; i < 5; i++) {
                     ctx.shadowBlur = 5 + i * 3;
                     ctx.shadowColor = primaryColor;
@@ -1931,51 +1980,49 @@
                     ctx.font = '200px Poppins';
                     ctx.fillText(pct + '%', w / 2, 880);
                 }
-                ctx.shadowBlur = 0; // Reset shadow
+                ctx.shadowBlur = 0;
 
-                ctx.fillStyle = primaryColor; // Draw main text
+                ctx.fillStyle = primaryColor;
                 ctx.fillText(pct + '%', w / 2, 880);
 
-                ctx.fillStyle = originalFillStyle; // Restore original styles
+                ctx.fillStyle = originalFillStyle;
                 ctx.font = originalFont;
 
 
                 // Emojis for high percentage on canvas (controlled)
                 if (pct >= 80) {
                     const canvasEmojis = (mode === 'love') ? ['💖', '✨'] : ['🤝', '😄', '🌟'];
-                    const numCanvasEmojis = pct > 90 ? 8 : (pct > 80 ? 6 : 4); // Reduced quantity
+                    const numCanvasEmojis = pct > 90 ? 8 : (pct > 80 ? 6 : 4);
 
                     for (let i = 0; i < numCanvasEmojis; i++) {
                         const emoji = canvasEmojis[Math.floor(Math.random() * canvasEmojis.length)];
-                        const emojiSize = 20 + Math.random() * 15; // Smaller size range
-                        // Position emojis in the top-left/right corners and bottom-left/right corners, away from center content
+                        const emojiSize = 20 + Math.random() * 15;
                         const edgePadding = 100;
                         let emojiX, emojiY;
 
-                        // Randomly choose a corner area
-                        const corner = Math.floor(Math.random() * 4); // 0: TL, 1: TR, 2: BL, 3: BR
+                        const corner = Math.floor(Math.random() * 4);
 
                         switch (corner) {
-                            case 0: // Top-Left
+                            case 0:
                                 emojiX = Math.random() * (w / 2 - edgePadding * 1.5) + edgePadding / 2;
                                 emojiY = Math.random() * (h / 2 - edgePadding * 1.5) + edgePadding / 2;
                                 break;
-                            case 1: // Top-Right
+                            case 1:
                                 emojiX = w / 2 + edgePadding / 2 + Math.random() * (w / 2 - edgePadding * 1.5);
                                 emojiY = Math.random() * (h / 2 - edgePadding * 1.5) + edgePadding / 2;
                                 break;
-                            case 2: // Bottom-Left
+                            case 2:
                                 emojiX = Math.random() * (w / 2 - edgePadding * 1.5) + edgePadding / 2;
                                 emojiY = h / 2 + edgePadding / 2 + Math.random() * (h / 2 - edgePadding * 1.5);
                                 break;
-                            case 3: // Bottom-Right
+                            case 3:
                                 emojiX = w / 2 + edgePadding / 2 + Math.random() * (w / 2 - edgePadding * 1.5);
                                 emojiY = h / 2 + edgePadding / 2 + Math.random() * (h / 2 - edgePadding * 1.5);
                                 break;
                         }
 
                         ctx.font = `${emojiSize}px Poppins`;
-                        ctx.fillStyle = `rgba(255, 255, 255, ${0.15 + Math.random() * 0.25})`; // Lower opacity
+                        ctx.fillStyle = `rgba(255, 255, 255, ${0.15 + Math.random() * 0.25})`;
                         ctx.fillText(emoji, emojiX, emojiY);
                     }
                 }
@@ -1989,11 +2036,10 @@
                 ctx.fillStyle = mutedTextColor;
                 ctx.fillText(`Love Tester • Seu Amor, Nosso Cálculo ✨ (${mode === 'friendship' ? 'Amizade' : 'Amor'})`, w / 2, h - 50);
                 ctx.font = '16px Poppins';
-                ctx.fillText(`Gerado em: ${new Date(when).toLocaleString()}`, w / 2, h - 20); // Add timestamp
+                ctx.fillText(`Gerado em: ${new Date(when).toLocaleString()}`, w / 2, h - 20);
 
                 c.toBlob(blob => resolve(blob));
 
-                // Helper functions (already defined in previous version)
                 function roundRect(ctx, x, y, w, h, r) {
                     if (w < 2 * r) r = w / 2;
                     if (h < 2 * r) r = h / 2;
@@ -2127,9 +2173,8 @@
             const el = document.createElement('div');
             el.classList.add('flex', 'justify-between', 'items-center', 'gap-2', 'p-2', 'border', 'rounded-xl', 'history-item', 'transition-all', 'duration-200');
 
-            // Apply friendship mode styling for history item if it was a friendship calculation
             if (item.mode === 'friendship') {
-                el.classList.add('friendship-mode'); // For background/border changes
+                el.classList.add('friendship-mode');
             }
 
             const modeText = item.mode === 'simple' ? 'Amor Simples' : (item.mode === 'advanced' ? 'Amor Avançado' : 'Friend Tester');
@@ -2183,7 +2228,7 @@
                         item.msg,
                         item.photo1Url || '',
                         item.photo2Url || '',
-                        item.mode, // Pass the mode directly
+                        item.mode,
                         item.when
                     );
                     saveBlob(blob, `lovetester_resultado_${normalize(item.a)}_${normalize(item.b)}.png`);
@@ -2196,9 +2241,9 @@
                 }
             } else if (action === 'delete' && item) {
                 showConfirm(`Tem certeza que deseja apagar o resultado de ${item.a} + ${item.b}?`, () => {
-                    history.splice(idx, 1); // Remove item from array
+                    history.splice(idx, 1);
                     localStorage.setItem('lt_history', JSON.stringify(history));
-                    renderHistory(); // Re-render the list
+                    renderHistory();
                 }, 'Apagar Item');
             }
         });
@@ -2219,7 +2264,7 @@
                 if (file) {
                     const reader = new FileReader();
                     reader.onload = (event) => {
-                        photoUrlVariable.value = event.target.result; // Update the passed ref
+                        photoUrlVariable.value = event.target.result;
                         previewElement.src = photoUrlVariable.value;
                         previewElement.classList.remove('hidden');
                         placeholderElement.classList.add('hidden');
@@ -2236,8 +2281,8 @@
             });
 
             clearButton.addEventListener('click', () => {
-                inputElement.value = ''; // Clear the file input
-                photoUrlVariable.value = ''; // Clear the stored URL
+                inputElement.value = '';
+                photoUrlVariable.value = '';
                 previewElement.src = '';
                 previewElement.classList.add('hidden');
                 placeholderElement.classList.remove('hidden');
@@ -2255,7 +2300,7 @@
         const resultModalShareBtn = qs('#resultModalShare');
         const resultModalCloseBtn = qs('#resultModalClose');
 
-        let currentResultData = null; // Store data for save/share functionality
+        let currentResultData = null;
 
         /**
          * Shows the result modal with calculation details.
@@ -2277,18 +2322,16 @@
             resultModalTitle.textContent = title;
             resultModalBadge.textContent = namesBadge;
             resultModalMsg.textContent = message;
-            resultModalPercent.textContent = '--'; // Reset before animating
+            resultModalPercent.textContent = '--';
 
-            // Clear previous hearts/emojis
             qs('#resultDisplayModal .hearts-container').innerHTML = '';
 
-            // Apply friendship mode styling for the modal content
             if (mode === 'friendship') {
                 resultDisplayModal.querySelector('.modal-content').classList.add('friendship-mode');
                 resultModalPercent.style.color = 'var(--friend-accent)';
                 resultModalSaveBtn.style.background = 'linear-gradient(135deg, var(--friend-accent), var(--friend-accent2))';
                 resultModalSaveBtn.style.boxShadow = '0 10px 30px rgba(108, 172, 228, .14)';
-                resultModalShareBtn.style.background = 'transparent'; // Reset for ghost
+                resultModalShareBtn.style.background = 'transparent';
                 resultModalShareBtn.style.borderColor = 'rgba(255, 255, 255, .06)';
                 resultModalShareBtn.style.color = 'var(--muted)';
             } else {
@@ -2296,7 +2339,7 @@
                 resultModalPercent.style.color = '#ff6aa0';
                 resultModalSaveBtn.style.background = 'linear-gradient(135deg, var(--accent), #ff82b5)';
                 resultModalSaveBtn.style.boxShadow = '0 10px 30px rgba(255, 77, 141, .14)';
-                resultModalShareBtn.style.background = 'transparent'; // Reset for ghost
+                resultModalShareBtn.style.background = 'transparent';
                 resultModalShareBtn.style.borderColor = 'rgba(255, 255, 255, .06)';
                 resultModalShareBtn.style.color = 'var(--muted)';
             }
@@ -2304,14 +2347,13 @@
             resultDisplayModal.classList.remove('hidden');
             setTimeout(() => resultDisplayModal.classList.add('active'), 10);
 
-            // Animate percentage
             animatePercentage(resultModalPercent, percentage, qs('#resultDisplayModal .hearts-container'));
         }
 
         resultModalCloseBtn.addEventListener('click', () => {
             resultDisplayModal.classList.remove('active');
             setTimeout(() => resultDisplayModal.classList.add('hidden'), 300);
-            currentResultData = null; // Clear stored data
+            currentResultData = null;
         });
 
         resultModalSaveBtn.addEventListener('click', async () => {
@@ -2405,7 +2447,6 @@
                 return;
             }
 
-            // Disable buttons and show loading spinner
             calcSimpleBtn.innerHTML = `<span class="loading-spinner"></span> Calculando...`;
             calcSimpleBtn.disabled = true;
             swapSimpleBtn.disabled = true;
@@ -2413,13 +2454,12 @@
 
 
             try {
-                currentAppMode = 'love'; // Ensure correct mode for calculation and phrases
+                currentAppMode = 'love';
                 const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2);
                 const message = pickPhrase(percent, currentAppMode);
 
                 showResultModal('Resultado do Amor Simples', badgeText(name1, name2), percent, message, '', '', 'love');
 
-                // Save to history
                 saveToHistory({
                     a: name1,
                     b: name2,
@@ -2434,7 +2474,6 @@
                 console.error("Erro ao calcular amor simples:", error);
                 showAlert("Ocorreu um erro ao calcular a compatibilidade. Tente novamente.", "Erro de Cálculo");
             } finally {
-                // Re-enable buttons
                 calcSimpleBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg> Calcular`;
                 calcSimpleBtn.disabled = false;
                 swapSimpleBtn.disabled = false;
@@ -2461,7 +2500,7 @@
             qs('#s_gender2Input').value = 'Não Selecionado';
             currentSelectedGender1 = 'Não Selecionado';
             currentSelectedGender2 = 'Não Selecionado';
-            currentResultData = null; // Clear stored data
+            currentResultData = null;
         });
 
 
@@ -2477,7 +2516,7 @@
         const clearA_photo1_btn = qs('#clearA_photo1');
         const clearA_photo2_btn = qs('#clearA_photo2');
 
-        let photo1Url_love = { value: '' }; // Use object to pass by reference
+        let photo1Url_love = { value: '' };
         let photo2Url_love = { value: '' };
 
         setupPhotoUpload(a_photo1, a_photo1_preview, a_photo1_placeholder, clearA_photo1_btn, photo1Url_love);
@@ -2506,20 +2545,18 @@
                 return;
             }
 
-            // Disable buttons and show loading spinner
             calcAdvancedBtn.innerHTML = `<span class="loading-spinner"></span> Calculando...`;
             calcAdvancedBtn.disabled = true;
             clearAdvancedBtn.disabled = true;
 
 
             try {
-                currentAppMode = 'love'; // Ensure correct mode
+                currentAppMode = 'love';
                 const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
                 const message = pickPhrase(percent, currentAppMode);
 
                 showResultModal('Resultado do Amor Avançado', badgeText(name1, name2), percent, message, photo1Url_love.value, photo2Url_love.value, 'love');
 
-                // Save to history
                 saveToHistory({
                     a: name1,
                     b: name2,
@@ -2538,7 +2575,6 @@
                 console.error("Erro ao calcular amor avançado:", error);
                 showAlert("Ocorreu um erro ao calcular a compatibilidade. Tente novamente.", "Erro de Cálculo");
             } finally {
-                // Re-enable buttons
                 calcAdvancedBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg> Calcular Avançado`;
                 calcAdvancedBtn.disabled = false;
                 clearAdvancedBtn.disabled = false;
@@ -2557,7 +2593,6 @@
             currentSelectedPers1 = [];
             currentSelectedPers2 = [];
 
-            // Clear photo previews
             a_photo1.value = '';
             a_photo1_preview.src = '';
             a_photo1_preview.classList.add('hidden');
@@ -2572,7 +2607,7 @@
             clearA_photo2_btn.classList.add('hidden');
             photo2Url_love.value = '';
 
-            currentResultData = null; // Clear stored data
+            currentResultData = null;
         });
 
         // --- Advanced Friendship Tester Logic ---
@@ -2588,7 +2623,7 @@
         const clearF_photo2_btn = qs('#clearF_photo2');
 
 
-        let photo1Url_friendship = { value: '' }; // Use object to pass by reference
+        let photo1Url_friendship = { value: '' };
         let photo2Url_friendship = { value: '' };
 
         setupPhotoUpload(f_photo1, f_photo1_preview, f_photo1_placeholder, clearF_photo1_btn, photo1Url_friendship);
@@ -2617,19 +2652,17 @@
                 return;
             }
 
-            // Disable buttons and show loading spinner
             calcFriendshipBtn.innerHTML = `<span class="loading-spinner"></span> Calculando...`;
             calcFriendshipBtn.disabled = true;
             clearFriendshipBtn.disabled = true;
 
             try {
-                currentAppMode = 'friendship'; // Ensure correct mode
+                currentAppMode = 'friendship';
                 const percent = calculateFriendshipPercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
                 const message = pickPhrase(percent, currentAppMode);
 
                 showResultModal('Resultado do Friend Tester', badgeText(name1, name2), percent, message, photo1Url_friendship.value, photo2Url_friendship.value, 'friendship');
 
-                // Save to history
                 saveToHistory({
                     a: name1,
                     b: name2,
@@ -2648,7 +2681,6 @@
                 console.error("Erro ao calcular amizade avançada:", error);
                 showAlert("Ocorreu um erro ao calcular a compatibilidade. Tente novamente.", "Erro de Cálculo");
             } finally {
-                // Re-enable buttons
                 calcFriendshipBtn.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.607-7.812-1.7a.75.75 0 0 1-.437-.695Z" clip-rule="evenodd" /></svg> Calcular Amizade`;
                 calcFriendshipBtn.disabled = false;
                 clearFriendshipBtn.disabled = false;
@@ -2667,7 +2699,6 @@
             currentSelectedPers1 = [];
             currentSelectedPers2 = [];
 
-            // Clear photo previews
             f_photo1.value = '';
             f_photo1_preview.src = '';
             f_photo1_preview.classList.add('hidden');
@@ -2682,7 +2713,7 @@
             clearF_photo2_btn.classList.add('hidden');
             photo2Url_friendship.value = '';
 
-            currentResultData = null; // Clear stored data
+            currentResultData = null;
         });
     </script>
 </body>
