@@ -4,14 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <title>Love Tester • Seu Amor, Nosso Cálculo</title>
-    <meta name="description" content="Love Tester — calcule a compatibilidade entre dois nomes (Simples ou Avançado), adicione fotos e personalidades, salve como imagem e compartilhe com um toque profissional." />
+    <meta name="description" content="Love Tester — calcule a compatibilidade entre dois nomes (Simples ou Avançado), adicione fotos e personalidades, salve como imagem e compartilhe com um toque profissional. Agora com poemas!" />
     <!-- PWA Icon from user provided URL, updated as fallback image. For production, convert to Data URL. -->
-    <link rel="icon" href="https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=small">
+    <link rel="icon" href="https://pbs.twimg.com/media/GzZdmXDW0AAWq1J?format=png&name=small">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN for modern styling and responsiveness -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- PWA Manifest - Updated with provided icon. For production, convert to Data URL with multiple sizes. -->
-    <link rel="manifest" href="data:application/json;base64,eyJpY29ucyI6W3sic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3BuZyIsInNyYyI6Imh0dHBzOi8vcGJzLnR3aW1nLmNvbS9tZWRpYS9HekZkbXhEVzBBQVdxeTFKP2Zvcm1hdD1wbmcmdmFzZT0xOTJ4MTkyIiwicHVycG9zZXMiOiJhbnlfdXNlIn0seyJzaXplcyI6IjUxMnU1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwic3JjIjoiaHR0cHM6Ly9wYnMudHdpbWc comorbidities/GzZdmXDW0AAWq1J?format=png&name=512x512IiwicHVycG9zZXMiOiJhbnlfdXNlIn1dLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImNsaXByZWZpeCI6ImxvdmUtdGVzdGVyIiwic3RhcnRfdXJsIjoiLiIsIm5hbWUiOiJMb3ZlIFRlc3RlciIsInNob3J0X25hbWUiOiJMb3ZlIFRlc3RlciIsImRlc2NyaXB0aW9uIjoiQ2FsY3VsZSBhIGNvbXBhYmF0aWJpbGlkYWRlIGVudHJlIG5vbWVzIGUgcGVyc29uYWxpZGFkZXMiLCJ0aGVtZV9jb2xvciI6IiNmZjRkOGQiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzBmMDQxMiJ9">
+    <link rel="manifest" href="data:application/json;base64,eyJpY29ucyI6W3sic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3BuZyIsInNyYyI6Imh0dHBzOi8vcGJzLnR3aW1nLmNvbS9tZWRpYS9HekZkbXhEVzBBQVdxeTFKP2Zvcm1hdD1wbmcmdmFzZT0xOTJ4MTkyIiwicHVycG9zZXMiOiJhbnlfdXNlIn0seyJzaXplcyI6IjUxMnU1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwic3JjIjoiaHR0cHM6Ly9wYnMudHdpbWc comorbidities/GzZdmXDW0AAWq1J?format=png&name=512x512IiwicHVycG9zZXMiOiJhbnlfdXNlIn1dLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImNsaXByZWZpeCI6ImxvdmUtdGVzdGVyIiwic3RhcnRfdXJsIjoiLiIsIm5hbWUiOiJMb3ZlIFRlc3RlciIsInNob3J0X25hbWUiOiJMb3ZlIFRlc3RlciIsImRlc2NyaXB0aW9uIjoiQ2FsY3VsZSBhIGNvbXBhdGliaWxpZGFkZSBlbnRyZSBub21lcyBlIHBlcnNvbmFsaWRhZGVzIiwiY2xpcHJlZml4IjoibG92ZS10ZXN0ZXIiLCJzdGFydF91cmwiOiIuIiwibmFtZSI6IkxvdmUgVGVzdGVyIiwic2hvcnRfbmFtZSI6IkxvdmUgVGVzdGVyIiwiZGVzY3JpcHRpb24iOiJDYWxjdWxlIGEgY29tcGF0aWJpbGlkYWRlIGVudHJlIG5vbWVzIGUgcGVyc29uYWxpZGFkZXMiLCJ0aGVtZV9jb2xvciI6IiNmZjRkOGQiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzBmMDQxMiJ9">
 
     <style>
         /* Custom CSS variables and base styles */
@@ -30,6 +30,7 @@
             --friend-card: #153F5A;
             --friend-accent: #6CACE4;
             --friend-accent2: #4CAF50;
+            --friend-muted: #A3C9CC;
         }
 
         * {
@@ -111,6 +112,17 @@
         .friendship-mode .modal-content {
             background: var(--friend-card);
             transition: background 0.5s ease-in-out;
+        }
+        .friendship-mode .tab.active {
+            background: rgba(108, 172, 228, 0.1); /* Match with friendship accent */
+            color: var(--text);
+        }
+        .friendship-mode .tab:hover {
+            background: rgba(108, 172, 228, 0.05);
+            color: var(--text);
+        }
+        .friendship-mode .subtitle, .friendship-mode .small, .friendship-mode label {
+            color: var(--friend-muted);
         }
 
 
@@ -252,6 +264,7 @@
 
         .btn.ghost:hover {
             background: rgba(255, 255, 255, .05);
+            color: var(--text);
         }
 
         .btn.secondary {
@@ -585,6 +598,9 @@
         .photo-upload-container:hover {
             border-color: var(--accent);
             background: rgba(255, 255, 255, 0.12);
+        }
+        .friendship-mode .photo-upload-container:hover {
+            border-color: var(--friend-accent);
         }
 
         .photo-upload-container img {
@@ -988,7 +1004,20 @@
                     Friend Tester
                 </button>
             </div>
-            <button class="btn ghost mt-2" id="cancelModeSelection">Cancelar</button>
+            <div class="field text-center">
+                <label for="contentTypeToggle" class="mb-2">Conteúdo do Resultado</label>
+                <div class="flex justify-center gap-4">
+                    <div class="flex items-center">
+                        <input type="radio" id="contentTypePhrases" name="contentType" value="phrases" class="mr-2" checked>
+                        <label for="contentTypePhrases" class="cursor-pointer text-base !mb-0">Frases</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="contentTypePoems" name="contentType" value="poems" class="mr-2">
+                        <label for="contentTypePoems" class="cursor-pointer text-base !mb-0">Poemas Curtos</label>
+                    </div>
+                </div>
+            </div>
+            <button class="btn ghost mt-6" id="cancelModeSelection">Cancelar</button>
         </div>
     </div>
 
@@ -1023,7 +1052,7 @@
         // Inline Service Worker for PWA caching
         // This script will be registered to handle offline capabilities and caching.
         const serviceWorkerScript = `
-            const CACHE_NAME = 'love-tester-cache-v3'; // Increment cache version for updates
+            const CACHE_NAME = 'love-tester-cache-v4'; // Increment cache version for updates
             const urlsToCache = [
                 '/',
                 '/index.html',
@@ -1111,6 +1140,7 @@
 
         // --- Global State ---
         let currentAppMode = 'love'; // 'love' or 'friendship'
+        let currentContentType = 'phrases'; // 'phrases' or 'poems'
         let deferredInstallPrompt = null; // For PWA installation prompt
 
         // --- Custom Modal Functions ---
@@ -1123,6 +1153,13 @@
         const appSubtitle = qs('#appSubtitle');
         const appFrame = qs('#appFrame');
 
+        /**
+         * Checks if the app is running in a standalone PWA environment.
+         * @returns {boolean} True if running as PWA, false otherwise.
+         */
+        function isPWAInstalled() {
+            return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+        }
 
         /**
          * Shows a custom modal with a title, message, and customizable buttons.
@@ -1203,12 +1240,22 @@
         // --- Fullscreen (F11-like) functionality ---
         let isF11Mode = false;
         function toggleFullscreen() {
-            if (!isF11Mode) {
-                document.body.classList.add('f11-mode');
-                isF11Mode = true;
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().then(() => {
+                    document.body.classList.add('f11-mode');
+                    isF11Mode = true;
+                }).catch(err => {
+                    console.error("Erro ao entrar em tela cheia:", err);
+                    showAlert("Não foi possível entrar em tela cheia. Seu navegador pode não permitir ou as permissões estão bloqueadas.", "Erro de Tela Cheia");
+                });
             } else {
-                document.body.classList.remove('f11-mode');
-                isF11Mode = false;
+                document.exitFullscreen().then(() => {
+                    document.body.classList.remove('f11-mode');
+                    isF11Mode = false;
+                }).catch(err => {
+                    console.error("Erro ao sair de tela cheia:", err);
+                    showAlert("Não foi possível sair de tela cheia. Tente novamente.", "Erro de Tela Cheia");
+                });
             }
         }
 
@@ -1216,7 +1263,6 @@
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault(); // Prevent the mini-infobar from appearing on mobile
             deferredInstallPrompt = e; // Stash the event so it can be triggered later.
-            // You might want to update your UI to indicate that the app can be installed.
             console.log('PWA installation prompt ready.');
         });
 
@@ -1289,7 +1335,7 @@
             show('home');
             const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
 
-            if (!hasSeenWelcome) {
+            if (!hasSeenWelcome && !isPWAInstalled()) { // Only show welcome if not PWA installed
                 showModal('Bem-vindo(a) ao Love Tester!',
                     'Gostaria de ativar o modo de tela cheia para uma experiência mais imersiva?',
                     [
@@ -1310,6 +1356,16 @@
         const selectAdvancedLoveBtn = qs('#selectAdvancedLove');
         const selectAdvancedFriendshipBtn = qs('#selectAdvancedFriendship');
         const cancelModeSelectionBtn = qs('#cancelModeSelection');
+        const contentTypePhrasesRadio = qs('#contentTypePhrases');
+        const contentTypePoemsRadio = qs('#contentTypePoems');
+
+        // Update currentContentType when radio buttons change
+        contentTypePhrasesRadio.addEventListener('change', () => {
+            if (contentTypePhrasesRadio.checked) currentContentType = 'phrases';
+        });
+        contentTypePoemsRadio.addEventListener('change', () => {
+            if (contentTypePoemsRadio.checked) currentContentType = 'poems';
+        });
 
         // Button on home screen to open calculation mode selection
         qs('#openCalculateModalBtn').addEventListener('click', () => {
@@ -1319,6 +1375,12 @@
                 calculateModeSelectionModal.querySelector('.modal-content').classList.add('friendship-mode');
             } else {
                 calculateModeSelectionModal.querySelector('.modal-content').classList.remove('friendship-mode');
+            }
+            // Ensure content type radio buttons reflect current state
+            if (currentContentType === 'phrases') {
+                contentTypePhrasesRadio.checked = true;
+            } else {
+                contentTypePoemsRadio.checked = true;
             }
         });
 
@@ -1330,6 +1392,12 @@
                 calculateModeSelectionModal.querySelector('.modal-content').classList.add('friendship-mode');
             } else {
                 calculateModeSelectionModal.querySelector('.modal-content').classList.remove('friendship-mode');
+            }
+            // Ensure content type radio buttons reflect current state
+            if (currentContentType === 'phrases') {
+                contentTypePhrasesRadio.checked = true;
+            } else {
+                contentTypePoemsRadio.checked = true;
             }
         });
 
@@ -1360,26 +1428,29 @@
         // Header help button with Fullscreen and PWA install option
         qs('#btnHelp').addEventListener('click', () => {
             const helpButtons = [
-                { text: 'OK' },
-                {
-                    text: isF11Mode ? 'Sair da Tela Cheia' : 'Entrar em Tela Cheia',
+                { text: 'OK' }
+            ];
+
+            if (!isPWAInstalled()) { // Only show fullscreen and install options if not installed as PWA
+                helpButtons.push({
+                    text: document.fullscreenElement ? 'Sair da Tela Cheia' : 'Entrar em Tela Cheia',
                     onClick: toggleFullscreen,
                     isGhost: true,
                     icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
                             <path fill-rule="evenodd" d="M12.97 3.97a.75.75 0 0 1 1.06 0l7.5 7.5a.75.75 0 0 1 0 1.06l-7.5 7.5a.75.75 0 1 1-1.06-1.06l6.22-6.22H3a.75.75 0 0 1 0-1.5h16.19l-6.22-6.22a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
                         </svg>`
-                }
-            ];
-
-            if (deferredInstallPrompt) {
-                helpButtons.push({
-                    text: 'Instalar App',
-                    onClick: installPWA,
-                    isSecondary: true, // Use a different style for install button
-                    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
-                            <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5H3Z" clip-rule="evenodd" />
-                        </svg>`
                 });
+
+                if (deferredInstallPrompt) {
+                    helpButtons.push({
+                        text: 'Instalar App',
+                        onClick: installPWA,
+                        isSecondary: true, // Use a different style for install button
+                        icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+                                <path fill-rule="evenodd" d="M12 2.25a.75.75 0 0 1 .75.75v11.69l3.22-3.22a.75.75 0 1 1 1.06 1.06l-4.5 4.5a.75.75 0 0 1-1.06 0l-4.5-4.5a.75.75 0 1 1 1.06-1.06l3.22 3.22V3a.75.75 0 0 1 .75-.75Zm-9 13.5a.75.75 0 0 0 0 1.5h18a.75.75 0 0 0 0-1.5H3Z" clip-rule="evenodd" />
+                            </svg>`
+                    });
+                }
             }
 
             showModal('Sobre o Love Tester',
@@ -1398,6 +1469,10 @@
             { val: 'Misteriosa', label: 'Misteriosa', type: 'love', weight: 5 },
             { val: 'Sensível', label: 'Sensível', type: 'love', weight: 7 },
             { val: 'Cativante', label: 'Cativante', type: 'love', weight: 6 },
+            { val: 'Sedutora', label: 'Sedutora', type: 'love', weight: 7 },
+            { val: 'Dedicada', label: 'Dedicada', type: 'love', weight: 8 },
+            { val: 'Cuidadosa', label: 'Cuidadosa', type: 'love', weight: 7 },
+            { val: 'Envolvente', label: 'Envolvente', type: 'love', weight: 6 },
 
             // Friendship focused
             { val: 'Divertida', label: 'Divertida', type: 'friendship', weight: 9 },
@@ -1406,7 +1481,11 @@
             { val: 'Bem-humorada', label: 'Bem-humorada', type: 'friendship', weight: 9 },
             { val: 'Confiável', label: 'Confiável', type: 'friendship', weight: 10 },
             { val: 'Companheira', label: 'Companheira', type: 'friendship', weight: 9 },
-            { val: 'Leal', label: 'Leal', type: 'both', weight: 8 }, // Also good for love
+            { val: 'Conselheira', label: 'Conselheira', type: 'friendship', weight: 8 },
+            { val: 'Genuína', label: 'Genuína', type: 'friendship', weight: 9 },
+            { val: 'Solidária', label: 'Solidária', type: 'friendship', weight: 10 },
+            { val: 'Animada', label: 'Animada', type: 'friendship', weight: 9 },
+            { val: 'Compreensiva', label: 'Compreensiva', type: 'friendship', weight: 8 },
 
             // Both love and friendship
             { val: 'Aventureira', label: 'Aventureira', type: 'both', weight: 6 },
@@ -1431,9 +1510,11 @@
             { val: 'Paciente', label: 'Paciente', type: 'both', weight: 6 },
             { val: 'Protetora', label: 'Protetora', type: 'both', weight: 8 },
             { val: 'Acolhedora', label: 'Acolhedora', type: 'both', weight: 9 },
-            { val: 'Conselheira', label: 'Conselheira', type: 'both', weight: 7 },
-            { val: 'Agradável', label: 'Agradável', type: 'both', weight: 6 },
-            { val: 'Ousada', label: 'Ousada', type: 'both', weight: 5 }
+            { val: 'Focada', label: 'Focada', type: 'both', weight: 5 },
+            { val: 'Flexível', label: 'Flexível', type: 'both', weight: 6 },
+            { val: 'Ponderada', label: 'Ponderada', type: 'both', weight: 7 },
+            { val: 'Ousada', label: 'Ousada', type: 'both', weight: 5 },
+            { val: 'Agradável', label: 'Agradável', type: 'both', weight: 6 }
         ];
 
         let currentSelectedPers1 = [];
@@ -1673,39 +1754,51 @@
             if (personalities1.length > 0 && personalities2.length > 0) {
                 let personalityLoveScore = 0;
                 const loveCompMatrix = {
-                    'Romântica': { 'Romântica': 15, 'Aventureira': 7, 'Empática': 12, 'Sonhadora': 18, 'Criativa': 8, 'Racional': -5, 'Prática': -5, 'Intuitiva': 10, 'Apaixonada': 20, 'Sensível': 12, 'Cativante': 10, 'Ousada': 5 },
-                    'Aventureira': { 'Aventureira': 10, 'Romântica': 7, 'Espontânea': 14, 'Otimista': 9, 'Calma': -3, 'Organizada': -4, 'Ousada': 12, 'Brincalhona': 8 },
-                    'Intelectual': { 'Intelectual': 12, 'Racional': 10, 'Curiosa': 8, 'Brincalhona': 2, 'Observadora': 9 },
-                    'Brincalhona': { 'Brincalhona': 10, 'Aventureira': 8, 'Espontânea': 7, 'Calma': 5, 'Intelectual': 2, 'Misteriosa': -2, 'Otimista': 8 },
-                    'Calma': { 'Calma': 9, 'Empática': 8, 'Paciente': 6, 'Brincalhona': 5, 'Aventureira': -3, 'Sensível': 10 },
-                    'Empática': { 'Empática': 13, 'Romântica': 12, 'Leal': 10, 'Generosa': 11, 'Calma': 8, 'Racional': -4, 'Intuitiva': 9, 'Sensível': 15, 'Acolhedora': 14, 'Conselheira': 11 },
-                    'Leal': { 'Leal': 15, 'Empática': 10, 'Determinada': 8, 'Protetora': 12, 'Confiável': 15 },
-                    'Criativa': { 'Criativa': 10, 'Sonhadora': 14, 'Espontânea': 9, 'Prática': -7, 'Intuitiva': 11, 'Romântica': 8 },
-                    'Racional': { 'Racional': 12, 'Intelectual': 10, 'Prática': 7, 'Romântica': -7, 'Sonhadora': -6, 'Organizada': 8 },
-                    'Otimista': { 'Otimista': 12, 'Aventureira': 9, 'Espontânea': 8, 'Brincalhona': 8 },
-                    'Determinada': { 'Determinada': 11, 'Leal': 9, 'Prática': 6, 'Focada': 10 },
-                    'Misteriosa': { 'Misteriosa': 10, 'Introvertida': 9, 'Extrovertida': -5, 'Brincalhona': -2, 'Intuitiva': 7, 'Cativante': 10, 'Apaixonada': 6 },
-                    'Extrovertida': { 'Extrovertida': 10, 'Comunicativa': 12, 'Aventureira': 9, 'Introvertida': -5, 'Misteriosa': -5, 'Brincalhona': 10, 'Cativante': 8 },
-                    'Introvertida': { 'Introvertida': 9, 'Observadora': 10, 'Misteriosa': 8, 'Extrovertida': -5, 'Comunicativa': -4, 'Intuitiva': 8, 'Sensível': 9 },
-                    'Espontânea': { 'Espontânea': 12, 'Aventureira': 10, 'Criativa': 9, 'Organizada': -6, 'Romântica': 7 },
-                    'Organizada': { 'Organizada': 8, 'Prática': 7, 'Calma': 6, 'Espontânea': -6, 'Racional': 8 },
-                    'Curiosa': { 'Curiosa': 9, 'Intelectual': 8, 'Aventureira': 7, 'Espontânea': 6 },
-                    'Generosa': { 'Generosa': 13, 'Empática': 12, 'Leal': 10, 'Protetora': 11, 'Acolhedora': 12 },
-                    'Prática': { 'Prática': 9, 'Racional': 8, 'Organizada': 7, 'Criativa': -7, 'Romântica': -5, 'Determinada': 6 },
-                    'Independente': { 'Independente': 9, 'Aventureira': 8, 'Determinada': 7, 'Ousada': 10 },
-                    'Comunicativa': { 'Comunicativa': 11, 'Extrovertida': 10, 'Introvertida': -4, 'Brincalhona': 9, 'Conselheira': 8, 'Cativante': 7 },
-                    'Observadora': { 'Observadora': 8, 'Intelectual': 9, 'Introvertida': 10, 'Sensível': 8 },
-                    'Paciente': { 'Paciente': 9, 'Calma': 8, 'Leal': 7, 'Empática': 10, 'Conselheira': 9 },
-                    'Sonhadora': { 'Sonhadora': 14, 'Romântica': 10, 'Criativa': 9, 'Racional': -6, 'Intuitiva': 12, 'Apaixonada': 15 },
-                    'Intuitiva': { 'Intuitiva': 10, 'Romântica': 10, 'Criativa': 11, 'Empática': 9, 'Sonhadora': 12, 'Misteriosa': 8 },
-                    'Apaixonada': { 'Apaixonada': 20, 'Romântica': 15, 'Sonhadora': 15, 'Cativante': 12, 'Ousada': 10 },
-                    'Sensível': { 'Sensível': 12, 'Empática': 15, 'Calma': 10, 'Introvertida': 9, 'Romântica': 10 },
-                    'Cativante': { 'Cativante': 10, 'Romântica': 10, 'Extrovertida': 8, 'Misteriosa': 9, 'Apaixonada': 12 },
-                    'Protetora': { 'Protetora': 12, 'Leal': 12, 'Empática': 13, 'Generosa': 11, 'Acolhedora': 14 },
-                    'Acolhedora': { 'Acolhedora': 12, 'Empática': 14, 'Generosa': 12, 'Protetora': 14, 'Calma': 10, 'Paciente': 8, 'Conselheira': 11 },
-                    'Conselheira': { 'Conselheira': 12, 'Empática': 11, 'Paciente': 10, 'Apoio': 13, 'Acolhedora': 11, 'Honesta': 9 },
-                    'Agradável': { 'Agradável': 8, 'Brincalhona': 7, 'Extrovertida': 9, 'Otimista': 8 },
-                    'Ousada': { 'Ousada': 10, 'Aventureira': 12, 'Independente': 10, 'Apaixonada': 10 }
+                    'Romântica': { 'Romântica': 15, 'Aventureira': 7, 'Empática': 12, 'Sonhadora': 18, 'Criativa': 8, 'Racional': -5, 'Prática': -5, 'Intuitiva': 10, 'Apaixonada': 20, 'Sensível': 12, 'Cativante': 10, 'Ousada': 5, 'Sedutora': 10, 'Dedicada': 12, 'Cuidadosa': 10, 'Envolvente': 9 },
+                    'Aventureira': { 'Aventureira': 10, 'Romântica': 7, 'Espontânea': 14, 'Otimista': 9, 'Calma': -3, 'Organizada': -4, 'Ousada': 12, 'Brincalhona': 8, 'Independente': 8, 'Flexível': 7 },
+                    'Intelectual': { 'Intelectual': 12, 'Racional': 10, 'Curiosa': 8, 'Brincalhona': 2, 'Observadora': 9, 'Ponderada': 7, 'Focada': 8 },
+                    'Brincalhona': { 'Brincalhona': 10, 'Aventureira': 8, 'Espontânea': 7, 'Calma': 5, 'Intelectual': 2, 'Misteriosa': -2, 'Otimista': 8, 'Extrovertida': 7, 'Agradável': 8 },
+                    'Calma': { 'Calma': 9, 'Empática': 8, 'Paciente': 6, 'Brincalhona': 5, 'Aventureira': -3, 'Sensível': 10, 'Ponderada': 7, 'Cuidadosa': 8 },
+                    'Empática': { 'Empática': 13, 'Romântica': 12, 'Leal': 10, 'Generosa': 11, 'Calma': 8, 'Racional': -4, 'Intuitiva': 9, 'Sensível': 15, 'Acolhedora': 14, 'Conselheira': 11, 'Dedicada': 10, 'Cuidadosa': 12, 'Solidária': 13 },
+                    'Leal': { 'Leal': 15, 'Empática': 10, 'Determinada': 8, 'Protetora': 12, 'Confiável': 15, 'Dedicada': 13, 'Genuína': 11 },
+                    'Criativa': { 'Criativa': 10, 'Sonhadora': 14, 'Espontânea': 9, 'Prática': -7, 'Intuitiva': 11, 'Romântica': 8, 'Flexível': 8, 'Ousada': 6 },
+                    'Racional': { 'Racional': 12, 'Intelectual': 10, 'Prática': 7, 'Romântica': -7, 'Sonhadora': -6, 'Organizada': 8, 'Focada': 9, 'Ponderada': 10 },
+                    'Otimista': { 'Otimista': 12, 'Aventureira': 9, 'Espontânea': 8, 'Brincalhona': 8, 'Animada': 9, 'Agradável': 7 },
+                    'Determinada': { 'Determinada': 11, 'Leal': 9, 'Prática': 6, 'Focada': 10, 'Independente': 8, 'Ousada': 9 },
+                    'Misteriosa': { 'Misteriosa': 10, 'Introvertida': 9, 'Extrovertida': -5, 'Brincalhona': -2, 'Intuitiva': 7, 'Cativante': 10, 'Apaixonada': 6, 'Sedutora': 8, 'Envolvente': 9 },
+                    'Extrovertida': { 'Extrovertida': 10, 'Comunicativa': 12, 'Aventureira': 9, 'Introvertida': -5, 'Misteriosa': -5, 'Brincalhona': 10, 'Cativante': 8, 'Animada': 10, 'Agradável': 9 },
+                    'Introvertida': { 'Introvertida': 9, 'Observadora': 10, 'Misteriosa': 8, 'Extrovertida': -5, 'Comunicativa': -4, 'Intuitiva': 8, 'Sensível': 9, 'Ponderada': 7, 'Cuidadosa': 6 },
+                    'Espontânea': { 'Espontânea': 12, 'Aventureira': 10, 'Criativa': 9, 'Organizada': -6, 'Romântica': 7, 'Flexível': 9, 'Ousada': 8 },
+                    'Organizada': { 'Organizada': 8, 'Prática': 7, 'Calma': 6, 'Espontânea': -6, 'Racional': 8, 'Focada': 7, 'Ponderada': 6 },
+                    'Curiosa': { 'Curiosa': 9, 'Intelectual': 8, 'Aventureira': 7, 'Espontânea': 6, 'Observadora': 8 },
+                    'Generosa': { 'Generosa': 13, 'Empática': 12, 'Leal': 10, 'Protetora': 11, 'Acolhedora': 12, 'Dedicada': 10, 'Solidária': 11 },
+                    'Prática': { 'Prática': 9, 'Racional': 8, 'Organizada': 7, 'Criativa': -7, 'Romântica': -5, 'Determinada': 6, 'Focada': 8, 'Independente': 7 },
+                    'Independente': { 'Independente': 9, 'Aventureira': 8, 'Determinada': 7, 'Ousada': 10, 'Focada': 6, 'Flexível': 5 },
+                    'Comunicativa': { 'Comunicativa': 11, 'Extrovertida': 10, 'Introvertida': -4, 'Brincalhona': 9, 'Conselheira': 8, 'Cativante': 7, 'Animada': 8, 'Agradável': 9 },
+                    'Observadora': { 'Observadora': 8, 'Intelectual': 9, 'Introvertida': 10, 'Sensível': 8, 'Ponderada': 9, 'Focada': 7 },
+                    'Paciente': { 'Paciente': 9, 'Calma': 8, 'Leal': 7, 'Empática': 10, 'Conselheira': 9, 'Cuidadosa': 8, 'Ponderada': 10 },
+                    'Sonhadora': { 'Sonhadora': 14, 'Romântica': 10, 'Criativa': 9, 'Racional': -6, 'Intuitiva': 12, 'Apaixonada': 15, 'Sensível': 11, 'Envolvente': 10 },
+                    'Intuitiva': { 'Intuitiva': 10, 'Romântica': 10, 'Criativa': 11, 'Empática': 9, 'Sonhadora': 12, 'Misteriosa': 8, 'Sensível': 10, 'Envolvente': 9 },
+                    'Apaixonada': { 'Apaixonada': 20, 'Romântica': 15, 'Sonhadora': 15, 'Cativante': 12, 'Ousada': 10, 'Sedutora': 14, 'Dedicada': 13, 'Envolvente': 15 },
+                    'Sensível': { 'Sensível': 12, 'Empática': 15, 'Calma': 10, 'Introvertida': 9, 'Romântica': 10, 'Cuidadosa': 12, 'Acolhedora': 11, 'Ponderada': 9 },
+                    'Cativante': { 'Cativante': 10, 'Romântica': 10, 'Extrovertida': 8, 'Misteriosa': 9, 'Apaixonada': 12, 'Sedutora': 11, 'Envolvente': 13 },
+                    'Protetora': { 'Protetora': 12, 'Leal': 12, 'Empática': 13, 'Generosa': 11, 'Acolhedora': 14, 'Dedicada': 13, 'Cuidadosa': 15, 'Solidária': 12 },
+                    'Acolhedora': { 'Acolhedora': 12, 'Empática': 14, 'Generosa': 12, 'Protetora': 14, 'Calma': 10, 'Paciente': 8, 'Conselheira': 11, 'Dedicada': 10, 'Cuidadosa': 12, 'Solidária': 13 },
+                    'Conselheira': { 'Conselheira': 12, 'Empática': 11, 'Paciente': 10, 'Apoio': 13, 'Acolhedora': 11, 'Honesta': 9, 'Comunicativa': 9, 'Genuína': 8, 'Compreensiva': 10, 'Ponderada': 11 },
+                    'Agradável': { 'Agradável': 8, 'Brincalhona': 7, 'Extrovertida': 9, 'Otimista': 8, 'Comunicativa': 10, 'Animada': 9 },
+                    'Ousada': { 'Ousada': 10, 'Aventureira': 12, 'Independente': 10, 'Apaixonada': 10, 'Espontânea': 8, 'Flexível': 7 },
+                    'Sedutora': { 'Sedutora': 10, 'Apaixonada': 14, 'Cativante': 12, 'Misteriosa': 9, 'Envolvente': 13, 'Romântica': 11 },
+                    'Dedicada': { 'Dedicada': 8, 'Leal': 13, 'Empática': 10, 'Acolhedora': 10, 'Protetora': 11, 'Cuidadosa': 12, 'Genuína': 9 },
+                    'Cuidadosa': { 'Cuidadosa': 7, 'Empática': 12, 'Sensível': 11, 'Paciente': 10, 'Dedicada': 11, 'Acolhedora': 10, 'Ponderada': 9, 'Solidária': 10 },
+                    'Envolvente': { 'Envolvente': 6, 'Cativante': 13, 'Apaixonada': 15, 'Misteriosa': 10, 'Sedutora': 14, 'Romântica': 12, 'Espontânea': 9 },
+                    'Focada': { 'Focada': 5, 'Determinada': 9, 'Racional': 8, 'Organizada': 7, 'Intelectual': 8, 'Observadora': 7 },
+                    'Flexível': { 'Flexível': 6, 'Espontânea': 9, 'Aventureira': 8, 'Criativa': 8, 'Otimista': 7, 'Independente': 6 },
+                    'Ponderada': { 'Ponderada': 7, 'Racional': 10, 'Calma': 9, 'Observadora': 9, 'Paciente': 10, 'Conselheira': 11, 'Intelectual': 9, 'Introvertida': 8 },
+                    'Genuína': { 'Genuína': 9, 'Leal': 11, 'Honesta': 10, 'Dedicada': 9, 'Acolhedora': 8, 'Solidária': 9 },
+                    'Solidária': { 'Solidária': 10, 'Empática': 13, 'Generosa': 11, 'Apoio': 14, 'Acolhedora': 12, 'Cuidadosa': 11, 'Genuína': 9 },
+                    'Animada': { 'Animada': 9, 'Divertida': 12, 'Extrovertida': 10, 'Otimista': 9, 'Brincalhona': 11, 'Comunicativa': 10, 'Agradável': 10 },
+                    'Compreensiva': { 'Compreensiva': 8, 'Empática': 12, 'Paciente': 11, 'Conselheira': 10, 'Acolhedora': 9, 'Ponderada': 10, 'Solidária': 11 }
+
                 };
 
                 for (const p1 of personalities1) {
@@ -1748,30 +1841,40 @@
             if (personalities1.length > 0 && personalities2.length > 0) {
                 let personalityFriendshipScore = 0;
                 const friendCompMatrix = {
-                    'Aventureira': { 'Aventureira': 12, 'Brincalhona': 10, 'Espontânea': 15, 'Otimista': 11, 'Curiosa': 9, 'Calma': 2, 'Organizada': -2, 'Ousada': 10, 'Companheira': 10 },
-                    'Brincalhona': { 'Brincalhona': 12, 'Aventureira': 10, 'Divertida': 15, 'Extrovertida': 12, 'Introvertida': 3, 'Misteriosa': 0, 'Otimista': 10, 'Bem-humorada': 15, 'Agradável': 12 },
-                    'Empática': { 'Empática': 13, 'Generosa': 12, 'Leal': 11, 'Paciente': 10, 'Apoio': 15, 'Racional': 3, 'Confiável': 14, 'Acolhedora': 14, 'Conselheira': 12, 'Sensível': 13 },
-                    'Leal': { 'Leal': 15, 'Empática': 12, 'Honesta': 13, 'Apoio': 14, 'Protetora': 12, 'Confiável': 16, 'Companheira': 15 },
-                    'Otimista': { 'Otimista': 12, 'Aventureira': 10, 'Espontânea': 9, 'Divertida': 11, 'Brincalhona': 10, 'Bem-humorada': 13 },
-                    'Extrovertida': { 'Extrovertida': 12, 'Comunicativa': 14, 'Brincalhona': 11, 'Introvertida': 3, 'Otimista': 10, 'Divertida': 12, 'Agradável': 10 },
-                    'Introvertida': { 'Introvertida': 10, 'Observadora': 11, 'Paciente': 9, 'Extrovertida': 3, 'Brincalhona': 3, 'Sensível': 10, 'Conselheira': 8 },
-                    'Espontânea': { 'Espontânea': 13, 'Aventureira': 11, 'Brincalhona': 10, 'Organizada': -4, 'Divertida': 12, 'Ousada': 8 },
-                    'Curiosa': { 'Curiosa': 11, 'Intelectual': 10, 'Aventureira': 9, 'Observadora': 8 },
-                    'Generosa': { 'Generosa': 14, 'Empática': 13, 'Leal': 12, 'Apoio': 15, 'Acolhedora': 13, 'Companheira': 11 },
-                    'Comunicativa': { 'Comunicativa': 13, 'Extrovertida': 12, 'Divertida': 11, 'Bem-humorada': 10, 'Conselheira': 9, 'Agradável': 10 },
-                    'Observadora': { 'Observadora': 11, 'Intelectual': 10, 'Introvertida': 9, 'Paciente': 8 },
-                    'Paciente': { 'Paciente': 11, 'Calma': 10, 'Empática': 9, 'Acolhedora': 8, 'Conselheira': 10, 'Confiável': 9 },
-                    'Divertida': { 'Divertida': 15, 'Brincalhona': 14, 'Otimista': 13, 'Extrovertida': 12, 'Bem-humorada': 15, 'Espontânea': 12, 'Companheira': 13 },
-                    'Apoio': { 'Apoio': 16, 'Empática': 15, 'Generosa': 14, 'Leal': 13, 'Protetora': 14, 'Acolhedora': 15, 'Conselheira': 13, 'Confiável': 16, 'Companheira': 14 },
-                    'Honesta': { 'Honesta': 14, 'Leal': 13, 'Empática': 12, 'Apoio': 11, 'Confiável': 15 },
-                    'Confiável': { 'Confiável': 16, 'Leal': 15, 'Apoio': 16, 'Empática': 14, 'Honesta': 15, 'Companheira': 14, 'Paciente': 10 },
-                    'Companheira': { 'Companheira': 15, 'Leal': 15, 'Divertida': 13, 'Apoio': 14, 'Generosa': 11, 'Acolhedora': 12, 'Confiável': 14 },
-                    'Protetora': { 'Protetora': 12, 'Leal': 12, 'Empática': 13, 'Generosa': 11, 'Acolhedora': 14, 'Calma': 7, 'Apoio': 14, 'Confiável': 13 },
-                    'Acolhedora': { 'Acolhedora': 12, 'Empática': 14, 'Generosa': 12, 'Protetora': 14, 'Calma': 10, 'Paciente': 8, 'Conselheira': 11, 'Apoio': 15, 'Companheira': 12 },
-                    'Conselheira': { 'Conselheira': 12, 'Empática': 11, 'Paciente': 10, 'Apoio': 13, 'Acolhedora': 11, 'Honesta': 9, 'Confiável': 10, 'Comunicativa': 9 },
-                    'Agradável': { 'Agradável': 8, 'Brincalhona': 7, 'Extrovertida': 9, 'Otimista': 8, 'Comunicativa': 10 },
-                    'Ousada': { 'Ousada': 10, 'Aventureira': 12, 'Espontânea': 8, 'Brincalhona': 7, 'Independente': 10 }
+                    'Aventureira': { 'Aventureira': 12, 'Brincalhona': 10, 'Espontânea': 15, 'Otimista': 11, 'Curiosa': 9, 'Calma': 2, 'Organizada': -2, 'Ousada': 10, 'Companheira': 10, 'Animada': 9, 'Flexível': 8 },
+                    'Brincalhona': { 'Brincalhona': 12, 'Aventureira': 10, 'Divertida': 15, 'Extrovertida': 12, 'Introvertida': 3, 'Misteriosa': 0, 'Otimista': 10, 'Bem-humorada': 15, 'Agradável': 12, 'Comunicativa': 11, 'Animada': 13 },
+                    'Empática': { 'Empática': 13, 'Generosa': 12, 'Leal': 11, 'Paciente': 10, 'Apoio': 15, 'Racional': 3, 'Confiável': 14, 'Acolhedora': 14, 'Conselheira': 12, 'Sensível': 13, 'Dedicada': 10, 'Cuidadosa': 11, 'Solidária': 14, 'Compreensiva': 15, 'Genuína': 11 },
+                    'Leal': { 'Leal': 15, 'Empática': 12, 'Honesta': 13, 'Apoio': 14, 'Protetora': 12, 'Confiável': 16, 'Companheira': 15, 'Dedicada': 14, 'Genuína': 13, 'Solidária': 12 },
+                    'Otimista': { 'Otimista': 12, 'Aventureira': 10, 'Espontânea': 9, 'Divertida': 11, 'Brincalhona': 10, 'Bem-humorada': 13, 'Animada': 12, 'Agradável': 10, 'Flexível': 9 },
+                    'Extrovertida': { 'Extrovertida': 12, 'Comunicativa': 14, 'Brincalhona': 11, 'Introvertida': 3, 'Otimista': 10, 'Divertida': 12, 'Agradável': 10, 'Animada': 13, 'Espontânea': 11 },
+                    'Introvertida': { 'Introvertida': 10, 'Observadora': 11, 'Paciente': 9, 'Extrovertida': 3, 'Brincalhona': 3, 'Sensível': 10, 'Conselheira': 8, 'Ponderada': 9, 'Compreensiva': 8 },
+                    'Espontânea': { 'Espontânea': 13, 'Aventureira': 11, 'Brincalhona': 10, 'Organizada': -4, 'Divertida': 12, 'Ousada': 8, 'Flexível': 10, 'Animada': 11 },
+                    'Curiosa': { 'Curiosa': 11, 'Intelectual': 10, 'Aventureira': 9, 'Observadora': 8, 'Focada': 7, 'Ponderada': 6 },
+                    'Generosa': { 'Generosa': 14, 'Empática': 13, 'Leal': 12, 'Apoio': 15, 'Acolhedora': 13, 'Companheira': 11, 'Solidária': 14, 'Dedicada': 12, 'Cuidadosa': 13 },
+                    'Comunicativa': { 'Comunicativa': 13, 'Extrovertida': 12, 'Divertida': 11, 'Bem-humorada': 10, 'Conselheira': 9, 'Agradável': 10, 'Animada': 11, 'Genuína': 8, 'Compreensiva': 9 },
+                    'Observadora': { 'Observadora': 11, 'Intelectual': 10, 'Introvertida': 9, 'Paciente': 8, 'Ponderada': 10, 'Focada': 9 },
+                    'Paciente': { 'Paciente': 11, 'Calma': 10, 'Empática': 9, 'Acolhedora': 8, 'Conselheira': 10, 'Confiável': 9, 'Cuidadosa': 11, 'Compreensiva': 12, 'Ponderada': 10 },
+                    'Divertida': { 'Divertida': 15, 'Brincalhona': 14, 'Otimista': 13, 'Extrovertida': 12, 'Bem-humorada': 15, 'Espontânea': 12, 'Companheira': 13, 'Animada': 14, 'Agradável': 13, 'Comunicativa': 12 },
+                    'Apoio': { 'Apoio': 16, 'Empática': 15, 'Generosa': 14, 'Leal': 13, 'Protetora': 14, 'Acolhedora': 15, 'Conselheira': 13, 'Confiável': 16, 'Companheira': 14, 'Dedicada': 14, 'Solidária': 15, 'Genuína': 13, 'Compreensiva': 14 },
+                    'Honesta': { 'Honesta': 14, 'Leal': 13, 'Empática': 12, 'Apoio': 11, 'Confiável': 15, 'Genuína': 13, 'Conselheira': 10 },
+                    'Confiável': { 'Confiável': 16, 'Leal': 15, 'Apoio': 16, 'Empática': 14, 'Honesta': 15, 'Companheira': 14, 'Paciente': 10, 'Dedicada': 13, 'Genuína': 14, 'Compreensiva': 12 },
+                    'Companheira': { 'Companheira': 15, 'Leal': 15, 'Divertida': 13, 'Apoio': 14, 'Generosa': 11, 'Acolhedora': 12, 'Confiável': 14, 'Animada': 12, 'Solidária': 13, 'Genuína': 11 },
+                    'Protetora': { 'Protetora': 12, 'Leal': 12, 'Empática': 13, 'Generosa': 11, 'Acolhedora': 14, 'Calma': 7, 'Apoio': 14, 'Confiável': 13, 'Dedicada': 13, 'Cuidadosa': 14, 'Solidária': 12 },
+                    'Acolhedora': { 'Acolhedora': 12, 'Empática': 14, 'Generosa': 12, 'Protetora': 14, 'Calma': 10, 'Paciente': 8, 'Conselheira': 11, 'Apoio': 15, 'Companheira': 12, 'Dedicada': 12, 'Cuidadosa': 13, 'Solidária': 14, 'Compreensiva': 13 },
+                    'Conselheira': { 'Conselheira': 12, 'Empática': 11, 'Paciente': 10, 'Apoio': 13, 'Acolhedora': 11, 'Honesta': 9, 'Confiável': 10, 'Comunicativa': 9, 'Compreensiva': 12, 'Ponderada': 11, 'Genuína': 10 },
+                    'Agradável': { 'Agradável': 8, 'Brincalhona': 7, 'Extrovertida': 9, 'Otimista': 8, 'Comunicativa': 10, 'Animada': 9, 'Flexível': 8 },
+                    'Ousada': { 'Ousada': 10, 'Aventureira': 12, 'Espontânea': 8, 'Brincalhona': 7, 'Independente': 10, 'Flexível': 9, 'Animada': 8 },
+                    'Genuína': { 'Genuína': 9, 'Leal': 11, 'Honesta': 10, 'Apoio': 9, 'Empática': 11, 'Confiável': 12, 'Solidária': 10, 'Companheira': 10, 'Dedicada': 9, 'Compreensiva': 11 },
+                    'Solidária': { 'Solidária': 10, 'Empática': 13, 'Generosa': 11, 'Apoio': 14, 'Acolhedora': 12, 'Cuidadosa': 11, 'Genuína': 9, 'Leal': 12, 'Compreensiva': 13 },
+                    'Animada': { 'Animada': 9, 'Divertida': 12, 'Extrovertida': 10, 'Otimista': 9, 'Brincalhona': 11, 'Comunicativa': 10, 'Agradável': 10, 'Espontânea': 11, 'Aventureira': 10 },
+                    'Compreensiva': { 'Compreensiva': 8, 'Empática': 12, 'Paciente': 11, 'Conselheira': 10, 'Acolhedora': 9, 'Ponderada': 10, 'Solidária': 11, 'Genuína': 11, 'Dedicada': 10, 'Cuidadosa': 12 },
+                    'Dedicada': { 'Dedicada': 8, 'Leal': 13, 'Empática': 10, 'Acolhedora': 10, 'Protetora': 11, 'Cuidadosa': 12, 'Genuína': 9, 'Solidária': 11, 'Companheira': 10, 'Compreensiva': 11 },
+                    'Cuidadosa': { 'Cuidadosa': 7, 'Empática': 12, 'Sensível': 11, 'Paciente': 10, 'Dedicada': 11, 'Acolhedora': 10, 'Ponderada': 9, 'Solidária': 10, 'Compreensiva': 12, 'Protetora': 11 },
+                    'Focada': { 'Focada': 5, 'Determinada': 9, 'Racional': 8, 'Organizada': 7, 'Intelectual': 8, 'Observadora': 7, 'Ponderada': 6 },
+                    'Flexível': { 'Flexível': 6, 'Espontânea': 9, 'Aventureira': 8, 'Criativa': 8, 'Otimista': 7, 'Independente': 6, 'Animada': 7 },
+                    'Ponderada': { 'Ponderada': 7, 'Racional': 10, 'Calma': 9, 'Observadora': 9, 'Paciente': 10, 'Conselheira': 11, 'Intelectual': 9, 'Introvertida': 8, 'Compreensiva': 10 }
                 };
+
 
                 for (const p1 of personalities1) {
                     for (const p2 of personalities2) {
@@ -1814,30 +1917,115 @@
         }
 
 
-        // --- Phrase Banks (Expanded with emojis for both Love and Friendship) ---
-        const phrases = {
-            love: [
-                { min: 95, text: ['💞 Almas gêmeas detectadas! Destinados a um amor épico e duradouro, uma conexão que transcende o comum.', '✨ Encontro cósmico! Cada detalhe entre vocês canta uma canção de amor. Incrível e mágico!', '💖 Casamento de novela – apenas jogue o buquê e prepare-se para o "felizes para sempre"!', '🌟 Sintonia perfeita! Uma união que todos admiram e desejam. Que sorte a de vocês!', '🌈 Amor que inspira! Uma harmonia divina, vocês são a prova viva do verdadeiro romance.', '♾️ Conexão de outro mundo! Vocês são a definição de par perfeito, uma dança apaixonada de corações.' ] },
-                { min: 80, text: ['🔥 Química poderosa — cuidem desse carinho, ele é a base de algo muito especial e intenso!', '⚡ Conexão intensa — a vibe é para algo sério, construam juntos um futuro brilhante e cheio de paixão.', '🥰 Fácil de se apaixonar — é mágico como vocês se complementam e se encantam mutuamente, pura magia!', '💫 Faíscas e emoções! Um relacionamento vibrante e cheio de descobertas e aventuras. Viva o amor!', '🌸 Muita afinidade, floresçam juntos! O futuro promete um jardim de alegrias e cumplicidade.', '💖 Combinação ardente, o coração de vocês bate em um ritmo só. Delicie-se com essa paixão.' ] },
-                { min: 65, text: ['💚 Muito compatíveis! Vale investir tempo juntos para ver essa chama crescer ainda mais e mais.', '🚀 Potencial grande — comuniquem-se abertamente e vejam essa relação florescer em algo grandioso.', '🌶️ Combinação quente — explorem esse sentimento e descubram novas paixões juntos. O amor está no ar!', '🌟 Boa energia! Há muito o que explorar e construir juntos. A jornada será linda e cheia de boas surpresas.', '💞 Um bom encontro! Aprofundem os laços e vejam a magia acontecer.'] },
-                { min: 50, text: ['🧡 Afinidade moderada — com um empurrãozinho e um pouco de esforço, pode virar algo realmente legal e duradouro.', '🌱 Tem boa base; tempo e diálogo sincero ajudarão a aprofundar essa conexão e a criar raízes fortes.', '⚖️ Meio termo — pode surpreender com intenção e dedicação, o futuro está em suas mãos. Arrisquem!', '🤝 Um bom começo! Com dedicação, pode se tornar algo grandioso e inesperado. Abrace as possibilidades.', '✨ Faíscas ocasionais, mas vale a pena investigar. Quem sabe o que pode surgir?', '🤔 Uma aposta, com grande potencial de crescimento.'] },
-                { min: 30, text: ['🤔 Compatibilidade baixa — talvez mais amizade que romance, mas tudo é possível no amor!', '🧩 Pode ser que a amizade seja o caminho, com faíscas ocasionais, quem sabe?', '🚧 Diferenças existentes; a curiosidade pode aproximar, mas esteja aberto a surpresas.', '🛤️ Caminhos diferentes. Explore a beleza das distinções entre vocês. Quem sabe onde vai dar?', '😅 Fofo, talvez só amizade — ainda assim vale a pena conhecer e valorizar a conexão.', '🤯 Às vezes opostos se atraem — surpreendam-se e descubram o inesperado!'] },
-                { min: 0, text: ['😅 Fofo, talvez só amizade — ainda assim vale a pena conhecer e valorizar a conexão.', '🤯 Às vezes opostos se atraem — surpreendam-se e descubram o inesperado!', '💡 Diferenças podem ser interessantes — descubram mais um sobre o outro com mente aberta.', '🎢 Cuidado com expectativas — aproveite o momento e o que a vida tem a oferecer.', '🎲 A vida é uma caixinha de surpresas! Quem sabe o que o futuro reserva? Divirtam-se!', '🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.'] }
-            ],
-            friendship: [
-                { min: 95, text: ['🎉 Amigos para sempre! Uma conexão de ouro, rara e verdadeira. Que sorte ter vocês!', '🤝 Sintonia perfeita de amizade! Vocês são a dupla imbatível, sempre juntos para o que der e vier.', '🌟 Laços inquebráveis! Essa amizade é um tesouro que vale a pena guardar com carinho e cuidado.', '😂 Companheirismo puro! Rir e chorar, vocês fazem tudo juntos e é incrível. A vida é mais leve com vocês.', '🌍 Amizade de alma! Uma conexão que atravessa qualquer desafio, fortalecendo a cada passo.', '🫂 União indestrutível! Vocês são o pilar um do outro, uma amizade para todas as horas.' ] },
-                { min: 80, text: ['✨ Grande potencial de amizade! Construam memórias incríveis e duradouras. O futuro é de vocês!', '🚀 Uma dupla dinâmica! Vocês se completam e se motivam, uma amizade para se orgulhar e celebrar.', '😊 Vibe muito boa! A amizade de vocês é contagiante e cheia de boas energias. Contagiem o mundo!', '🤩 Parceria para a vida! Há muito a explorar e crescer juntos. Que venham as aventuras!', '😄 Laços fortes e verdadeiros. Um ao lado do outro, sempre.', '🌟 Confiança mútua. Encontrem sempre apoio e alegria um no outro.'] },
-                { min: 65, text: ['👍 Boa conexão! Vale a pena investir mais tempo e criar laços mais fortes e significativos.', '🌱 Amizade em crescimento! Com dedicação, pode se tornar algo grandioso e inesquecível.', '💬 Comunicação fluida! Vocês se entendem bem, um ótimo sinal para a amizade. Continuem assim!', '🌟 Bom começo! Há potencial para uma amizade sólida e divertida. Aproveitem cada momento.', '🥳 Aventuras à vista! Preparados para muitas risadas e momentos especiais.'] },
-                { min: 50, text: ['😉 Afinidade legal! Com um pouco mais de esforço e abertura, pode ser uma amizade muito boa e rica.', '❓ Pode surpreender! Deem uma chance e vejam essa amizade florescer. O melhor ainda está por vir.', '🤝 Boas bases! Explore os interesses em comum e aprofunde o vínculo. A descoberta é linda.', '😊 Companhia agradável! Um bom ponto de partida para um relacionamento mais próximo e duradouro.', '😊 Apenas o começo de uma bela jornada de companheirismo.'] },
-                { min: 30, text: ['😅 Interessante... talvez o foco seja em outras amizades. Mas tudo pode mudar!', '🤔 Caminhos diferentes, mas podem aprender um com o outro. Quem sabe?', '🚧 Pontos distintos. Respeitem as diferenças e descubram novas perspectivas.', '🤷‍♀️ Amizade casual. Aproveite os momentos e as experiências que surgirem.', '🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.', '🙃 Diferenças podem ser desafiadoras. Busquem o que realmente ressoa.'] },
-                { min: 0, text: ['🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.', '🙃 Diferenças podem ser desafiadoras. Busquem o que realmente ressoa.', '🧐 Amizades diversas são importantes. Explore diferentes grupos.', '🤫 Nem sempre dá match, e está tudo bem! A vida é cheia de surpresas.', '😅 Interessante... talvez o foco seja em outras amizades. Mas tudo pode mudar!', '🤔 Caminhos diferentes, mas podem aprender um com o outro. Quem sabe?'] }
-            ]
+        // --- Phrase & Poem Banks (Expanded with emojis for both Love and Friendship) ---
+        const contentBank = {
+            love: {
+                phrases: [
+                    { min: 95, text: ['💞 Almas gêmeas detectadas! Destinados a um amor épico e duradouro, uma conexão que transcende o comum.', '✨ Encontro cósmico! Cada detalhe entre vocês canta uma canção de amor. Incrível e mágico!', '💖 Casamento de novela – apenas jogue o buquê e prepare-se para o "felizes para sempre"!', '🌟 Sintonia perfeita! Uma união que todos admiram e desejam. Que sorte a de vocês!', '🌈 Amor que inspira! Uma harmonia divina, vocês são a prova viva do verdadeiro romance.', '♾️ Conexão de outro mundo! Vocês são a definição de par perfeito, uma dança apaixonada de corações.' ] },
+                    { min: 80, text: ['🔥 Química poderosa — cuidem desse carinho, ele é a base de algo muito especial e intenso!', '⚡ Conexão intensa — a vibe é para algo sério, construam juntos um futuro brilhante e cheio de paixão.', '🥰 Fácil de se apaixonar — é mágico como vocês se complementam e se encantam mutuamente, pura magia!', '💫 Faíscas e emoções! Um relacionamento vibrante e cheio de descobertas e aventuras. Viva o amor!', '🌸 Muita afinidade, floresçam juntos! O futuro promete um jardim de alegrias e cumplicidade.', '💖 Combinação ardente, o coração de vocês bate em um ritmo só. Delicie-se com essa paixão.' ] },
+                    { min: 65, text: ['💚 Muito compatíveis! Vale investir tempo juntos para ver essa chama crescer ainda mais e mais.', '🚀 Potencial grande — comuniquem-se abertamente e vejam essa relação florescer em algo grandioso.', '🌶️ Combinação quente — explorem esse sentimento e descubram novas paixões juntos. O amor está no ar!', '🌟 Boa energia! Há muito o que explorar e construir juntos. A jornada será linda e cheia de boas surpresas.', '💞 Um bom encontro! Aprofundem os laços e vejam a magia acontecer.'] },
+                    { min: 50, text: ['🧡 Afinidade moderada — com um empurrãozinho e um pouco de esforço, pode virar algo realmente legal e duradouro.', '🌱 Tem boa base; tempo e diálogo sincero ajudarão a aprofundar essa conexão e a criar raízes fortes.', '⚖️ Meio termo — pode surpreender com intenção e dedicação, o futuro está em suas mãos. Arrisquem!', '🤝 Um bom começo! Com dedicação, pode se tornar algo grandioso e inesperado. Abrace as possibilidades.', '✨ Faíscas ocasionais, mas vale a pena investigar. Quem sabe o que pode surgir?', '🤔 Uma aposta, com grande potencial de crescimento.'] },
+                    { min: 30, text: ['🤔 Compatibilidade baixa — talvez mais amizade que romance, mas tudo é possível no amor!', '🧩 Pode ser que a amizade seja o caminho, com faíscas ocasionais, quem sabe?', '🚧 Diferenças existentes; a curiosidade pode aproximar, mas esteja aberto a surpresas.', '🛤️ Caminhos diferentes. Explore a beleza das distinções entre vocês. Quem sabe onde vai dar?', '😅 Fofo, talvez só amizade — ainda assim vale a pena conhecer e valorizar a conexão.', '🤯 Às vezes opostos se atraem — surpreendam-se e descubram o inesperado!'] },
+                    { min: 0, text: ['😅 Fofo, talvez só amizade — ainda assim vale a pena conhecer e valorizar a conexão.', '🤯 Às vezes opostos se atraem — surpreendam-se e descubram o inesperado!', '💡 Diferenças podem ser interessantes — descubram mais um sobre o outro com mente aberta.', '🎢 Cuidado com expectativas — aproveite o momento e o que a vida tem a oferecer.', '🎲 A vida é uma caixinha de surpresas! Quem sabe o que o futuro reserva? Divirtam-se!', '🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.'] }
+                ],
+                poems: [
+                    { min: 95, text: [
+                        'No brilho de dois olhares,\nUm destino a florescer.\nEm versos, o amor se faz,\nEterno, para sempre ser.\n💞',
+                        'Almas tecidas em canções,\nDança de corações a pulsar.\nHarmonia em mil emoções,\nUm para o outro, a sonhar.\n✨',
+                        'Companheiros da paixão,\nEm cada toque, um novo chão.\nUnidos, em celebração,\nVencem o tempo, sem desunião.\n💖',
+                        'Entrelaçados como estrelas,\nBrilham num céu de puro amor.\nHistória que o mundo revela,\nSem fim, sem dor, sem temor.\n🌟'
+                    ]},
+                    { min: 80, text: [
+                        'Fortes laços, um grande afeto,\nEm cada instante, o riso brota.\nCaminho juntos, sem teto,\nUma melodia, uma só nota.\n🔥',
+                        'Chama acesa, puro encanto,\nDuas almas a se encontrar.\nUm doce e terno canto,\nOnde o amor vai morar.\n⚡',
+                        'Companhia, doce e leve,\nEm cada passo, um novo rumo.\nSentimento que se eleve,\nPara sempre, em cada sumo.\n🥰',
+                        'Em olhares que se cruzam,\nHistórias de amor se tecem.\nSonhos que se adensam,\nPromessas que florescem.\n💫'
+                    ]},
+                    { min: 65, text: [
+                        'Um elo que se cria,\nNo dia a dia, a magia.\nCompanhia que irradia,\nUma bela e terna energia.\n💚',
+                        'Em cada riso, um abraço,\nNo coração, um forte laço.\nAvançam no tempo e espaço,\nNum caminho de bem-querer e graça.\n🚀',
+                        'Corações que se aproximam,\nEm segredos, se revelam.\nEntre beijos que se animam,\nNovas histórias se entrelaçam.\n🌶️',
+                        'Juntos, a trilhar a jornada,\nDesafios vencidos, um a um.\nQue a paixão seja alinhada,\nPara sempre, em comum.\n🌟'
+                    ]},
+                    { min: 50, text: [
+                        'No balanço do destino,\nUm futuro a desvendar.\nEntre o que é e o que é divino,\nUm belo amor a criar.\n🧡',
+                        'Plantando sementes agora,\nPara um jardim que irá surgir.\nCada toque, um novo aurora,\nPara o amor em vocês florir.\n🌱',
+                        'No meio do caminho, a certeza,\nQue o carinho é um dom.\nEm cada pequena delicadeza,\nUm novo amor que soa bom.\n⚖️',
+                        'Ainda há muito a sentir,\nE muito a se descobrir.\nDeixe o coração ir,\nE veja o amor florir.\n🤝'
+                    ]},
+                    { min: 30, text: [
+                        'Diferenças podem ser um elo,\nPara um amor que se renova.\nEm cada singular paralelo,\nUma nova e bela prova.\n ',
+                        'Talvez a amizade seja o norte,\nOu um amor a amadurecer.\nCuidem do sentimento forte,\nPara o que tiver de ser.\n🧩',
+                        'Entre caminhos distintos,\nO respeito se faz voz.\nEm laços, não tão instintos,\nQue o tempo dite o que é para nós.\n🚧',
+                        'Uma jornada, um desafio,\nOnde cada passo é um valor.\nAceite o que o coração tem fio,\nE encontre o seu grande amor.\n🛤️'
+                    ]},
+                    { min: 0, text: [
+                        'A vida é uma canção,\nCom notas que vêm e vão.\nEm cada nova paixão,\nUma doce e nova direção.\n😅',
+                        'No labirinto do querer,\nOnde o amor nos faz sonhar.\nDeixe o coração se aquecer,\nE a felicidade encontrar.\n🤯',
+                        'Nem sempre a química é exata,\nMas a beleza está em tentar.\nEm cada alma que te arrebata,\nUm novo porto a encontrar.\n💡',
+                        'O amor é um jogo de sorte,\nCom cartas que vêm e vão.\nEm cada virada, um suporte,\nPara a nossa emoção.\n🎢'
+                    ]}
+                ]
+            },
+            friendship: {
+                phrases: [
+                    { min: 95, text: ['🎉 Amigos para sempre! Uma conexão de ouro, rara e verdadeira. Que sorte ter vocês!', '🤝 Sintonia perfeita de amizade! Vocês são a dupla imbatível, sempre juntos para o que der e vier.', '🌟 Laços inquebráveis! Essa amizade é um tesouro que vale a pena guardar com carinho e cuidado.', '😂 Companheirismo puro! Rir e chorar, vocês fazem tudo juntos e é incrível. A vida é mais leve com vocês.', '🌍 Amizade de alma! Uma conexão que atravessa qualquer desafio, fortalecendo a cada passo.', '🫂 União indestrutível! Vocês são o pilar um do outro, uma amizade para todas as horas.' ] },
+                    { min: 80, text: ['✨ Grande potencial de amizade! Construam memórias incríveis e duradouras. O futuro é de vocês!', '🚀 Uma dupla dinâmica! Vocês se completam e se motivam, uma amizade para se orgulhar e celebrar.', '😊 Vibe muito boa! A amizade de vocês é contagiante e cheia de boas energias. Contagiem o mundo!', '🤩 Parceria para a vida! Há muito a explorar e crescer juntos. Que venham as aventuras!', '😄 Laços fortes e verdadeiros. Um ao lado do outro, sempre.', '🌟 Confiança mútua. Encontrem sempre apoio e alegria um no outro.'] },
+                    { min: 65, text: ['👍 Boa conexão! Vale a pena investir mais tempo e criar laços mais fortes e significativos.', '🌱 Amizade em crescimento! Com dedicação, pode se tornar algo grandioso e inesquecível.', '💬 Comunicação fluida! Vocês se entendem bem, um ótimo sinal para a amizade. Continuem assim!', '🌟 Bom começo! Há potencial para uma amizade sólida e divertida. Aproveitem cada momento.', '🥳 Aventuras à vista! Preparados para muitas risadas e momentos especiais.'] },
+                    { min: 50, text: ['😉 Afinidade legal! Com um pouco mais de esforço e abertura, pode ser uma amizade muito boa e rica.', '❓ Pode surpreender! Deem uma chance e vejam essa amizade florescer. O melhor ainda está por vir.', '🤝 Boas bases! Explore os interesses em comum e aprofunde o vínculo. A descoberta é linda.', '😊 Companhia agradável! Um bom ponto de partida para um relacionamento mais próximo e duradouro.', '😊 Apenas o começo de uma bela jornada de companheirismo.'] },
+                    { min: 30, text: ['😅 Interessante... talvez o foco seja em outras amizades. Mas tudo pode mudar!', '🤔 Caminhos diferentes, mas podem aprender um com o outro. Quem sabe?', '🚧 Pontos distintos. Respeitem as diferenças e descubram novas perspectivas.', '🤷‍♀️ Amizade casual. Aproveite os momentos e as experiências que surgirem.', '🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.', '🙃 Diferenças podem ser desafiadoras. Busquem o que realmente ressoa.'] },
+                    { min: 0, text: ['🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.', '🙃 Diferenças podem ser desafiadoras. Busquem o que realmente ressoa.', '🧐 Amizades diversas são importantes. Explore diferentes grupos.', '🤫 Nem sempre dá match, e está tudo bem! A vida é cheia de surpresas.', '😅 Interessante... talvez o foco seja em outras amizades. Mas tudo pode mudar!', '🤔 Caminhos diferentes, mas podem aprender um com o outro. Quem sabe?'] }
+                ],
+                poems: [
+                    { min: 95, text: [
+                        'No laço de duas almas,\nUma amizade a brilhar.\nEm risos, em doces calmas,\nPara sempre, a celebrar.\n🎉',
+                        'Juntos, em cada jornada,\nUm porto de paz e luz.\nAmizade abençoada,\nQue a vida nos conduz.\n🤝',
+                        'Companheiros da alegria,\nEm cada passo, um bom valor.\nQue a amizade nos guie,\nPara sempre, com muito amor.\n🌟',
+                        'Em olhares, um saber,\nEm silêncios, um entender.\nAmizade que nos faz crescer,\nE a vida, mais doce, viver.\n😂'
+                    ]},
+                    { min: 80, text: [
+                        'Elo forte que nos une,\nEm cada instante, a paixão.\nAmizade que nos pune,\nCom carinho e união.\n✨',
+                        'No caminho, a parceria,\nPara sempre, lado a lado.\nAmizade que nos ilumina,\nUm tesouro, para ser guardado.\n🚀',
+                        'Em cada riso, um dom,\nEm cada abraço, um calor.\nAmizade que soa bom,\nCompanhia, puro amor.\n😊',
+                        'Companheiros de verdades,\nEm cada encontro, um novo ar.\nAmizade que nos invade,\nE a vida nos faz sonhar.\n🤩'
+                    ]},
+                    { min: 65, text: [
+                        'No balanço da amizade,\nUm carinho a se plantar.\nEm cada boa vontade,\nUm porto para se abrigar.\n👍',
+                        'Sementes de bem-querer,\nUm futuro a florescer.\nAmizade para se viver,\nEm cada instante, a crescer.\n🌱',
+                        'Em conversas que se estendem,\nE o coração se faz voz.\nAmizade que nos surpreende,\nPara sempre, entre nós.\n💬',
+                        'No início de um grande laço,\nUm caminho a explorar.\nEm cada novo passo,\nUma amizade a se encontrar.\n🌟'
+                    ]},
+                    { min: 50, text: [
+                        'No vai e vem da vida,\nUma amizade a se fazer.\nEm cada alma colorida,\nUm novo dom a florescer.\n😉',
+                        'Entre o que é e o que não é,\nUm laço a se desvendar.\nAmizade com muita fé,\nPara a vida nos guiar.\n❓',
+                        'Em cada um, um valor,\nEm cada passo, um saber.\nAmizade que traz calor,\nPara sempre, a se viver.\n🤝',
+                        'Onde o riso se faz paz,\nE o coração se faz forte.\nAmizade que a vida traz,\nUm doce e terno suporte.\n😊'
+                    ]},
+                    { min: 30, text: [
+                        'Diferenças que ensinam,\nCaminhos que se cruzam.\nEm cada alma que te intima,\nNovas histórias se utilizam.\n😅',
+                        'Entre escolhas e vontades,\nUm laço a se testar.\nEm cada uma das amizades,\nUm novo porto a encontrar.\n🤔',
+                        'No labirinto da vida,\nUm caminho a se traçar.\nEm cada alma colorida,\nUm novo dom a encontrar.\n🚧',
+                        'Amizade, um vasto campo,\nCom flores de todo matiz.\nAceite o seu doce tempo,\nE seja sempre feliz.\n🤷‍♀️'
+                    ]},
+                    { min: 0, text: [
+                        'Amizade, um doce trajeto,\nCom curvas e retas sem fim.\nEm cada passo, um projeto,\nPara a vida, um lindo jardim.\n🫠',
+                        'No balanço das relações,\nOnde o coração se faz voz.\nEm cada uma das emoções,\nO que a vida tem para nós.\n🙃',
+                        'Amizade, um grande mar,\nCom ondas que vêm e vão.\nEm cada porto a se abrigar,\nUma nova e doce paixão.\n🧐',
+                        'No jogo da vida, um saber,\nQue a amizade é um dom.\nEm cada um, um querer,\nPara um futuro bom.\n🤫'
+                    ]}
+                ]
+            }
         };
 
-        function pickPhrase(pct, mode = 'love') {
-            const currentPhrases = phrases[mode] || phrases.love; // Default to love phrases
-            for (const bucket of currentPhrases)
-                if (pct >= bucket.min) return bucket.text[Math.floor(Math.random() * bucket.text.length)];
+
+        function pickContent(pct, mode = 'love', contentType = 'phrases') {
+            const contentSource = contentBank[mode] ? contentBank[mode][contentType] : contentBank.love.phrases; // Fallback
+
+            for (const bucket of contentSource) {
+                if (pct >= bucket.min) {
+                    return bucket.text[Math.floor(Math.random() * bucket.text.length)];
+                }
+            }
             return 'Resultado inesperado — tente novamente!';
         }
 
@@ -1877,6 +2065,7 @@
         function spawnHearts(container, percentage) {
             // Adjust quantity based on percentage, max 10 for on-screen
             const numEmojis = percentage > 90 ? 7 : (percentage > 80 ? 5 : 3);
+            container.innerHTML = ''; // Clear previous emojis
 
             for (let i = 0; i < numEmojis; i++) {
                 const heart = document.createElement('span');
@@ -1899,6 +2088,7 @@
             const friendEmojis = ['🤝', '😄', '🌟', '🫂', '🥳'];
             // Adjust quantity based on percentage, max 10 for on-screen
             const numEmojis = percentage > 90 ? 7 : (percentage > 80 ? 5 : 3);
+            container.innerHTML = ''; // Clear previous emojis
 
             for (let i = 0; i < numEmojis; i++) {
                 const emoji = document.createElement('span');
@@ -1927,9 +2117,10 @@
          * @param {string} [photo2Url=''] - URL of the second person's photo.
          * @param {string} [mode='love'] - 'love' or 'friendship' for styling
          * @param {string} [when=''] - Timestamp for when the result was generated.
+         * @param {string} [contentType='phrases'] - 'phrases' or 'poems'
          * @returns {Promise<Blob>} A promise that resolves with the image Blob.
          */
-        async function renderCardToCanvas(title, badge, pct, msg, photo1Url = '', photo2Url = '', mode = 'love', when = new Date()) {
+        async function renderCardToCanvas(title, badge, pct, msg, photo1Url = '', photo2Url = '', mode = 'love', when = new Date(), contentType = 'phrases') {
             return new Promise(async resolve => {
                 const w = 900, h = 1200;
                 const c = document.createElement('canvas');
@@ -1940,7 +2131,7 @@
                 const primaryColor = (mode === 'friendship') ? '#6CACE4' : '#ff4d8d';
                 const secondaryColor = (mode === 'friendship') ? '#4CAF50' : '#8b5cf6';
                 const textColor = '#f8f5ff';
-                const mutedTextColor = '#cdbfe8';
+                const mutedTextColor = (mode === 'friendship') ? 'var(--friend-muted)' : 'var(--muted)';
                 const cardBg1 = (mode === 'friendship') ? '#1A5276' : '#28003a';
                 const cardBg2 = (mode === 'friendship') ? '#0A2E36' : '#0f0412';
 
@@ -1984,12 +2175,15 @@
 
                 // Small decorative elements (emojis based on mode) - Placed strategically for minimal interference
                 ctx.font = '50px Poppins, serif';
+                ctx.textAlign = 'left';
                 ctx.fillStyle = `rgba(255, 255, 255, 0.3)`;
                 if (mode === 'love') {
                     ctx.fillText('💖', 80, 80);
+                    ctx.textAlign = 'right';
                     ctx.fillText('✨', w - 80, 80);
                 } else {
                     ctx.fillText('🤝', 80, 80);
+                    ctx.textAlign = 'right';
                     ctx.fillText('😄', w - 80, 80);
                 }
 
@@ -2121,8 +2315,8 @@
                 }
 
                 // Message block
-                ctx.font = '30px Poppins';
-                wrapText(ctx, msg, w / 2, 1020, w - 200, 40);
+                ctx.font = (contentType === 'poems') ? '28px Poppins' : '30px Poppins'; // Adjust font for poems
+                wrapText(ctx, msg, w / 2, 1020, w - 200, (contentType === 'poems') ? 35 : 40); // Adjust line height for poems
 
                 // Footer with timestamp
                 ctx.font = '20px Poppins';
@@ -2152,17 +2346,24 @@
                     let test = '';
                     let curY = y;
                     for (let n = 0; n < words.length; n++) {
+                        // Handle newlines explicitly for poems
+                        if (words[n] === '\n') {
+                            ctx.fillText(line.trim(), x, curY);
+                            line = '';
+                            curY += lineHeight;
+                            continue;
+                        }
                         test = line + words[n] + ' ';
                         const metrics = ctx.measureText(test);
                         if (metrics.width > maxWidth && n > 0) {
-                            ctx.fillText(line, x, curY);
+                            ctx.fillText(line.trim(), x, curY);
                             line = words[n] + ' ';
                             curY += lineHeight;
                         } else {
                             line = test;
                         }
                     }
-                    ctx.fillText(line, x, curY);
+                    ctx.fillText(line.trim(), x, curY);
                 }
             });
         }
@@ -2208,8 +2409,9 @@
             const genderKey2 = item.gender2 || '';
             const photo1Hash = item.photo1Url ? btoa(item.photo1Url.substring(0, Math.min(50, item.photo1Url.length))) : ''; // Simple hash of start of data URL
             const photo2Hash = item.photo2Url ? btoa(item.photo2Url.substring(0, Math.min(50, item.photo2Url.length))) : '';
+            const contentTypeKey = item.contentType || 'phrases';
 
-            return `${item.mode}-${normalizedNames}-${genderKey1}-${genderKey2}-${personalitiesKey1}-${personalitiesKey2}-${photo1Hash}-${photo2Hash}`;
+            return `${item.mode}-${normalizedNames}-${genderKey1}-${genderKey2}-${personalitiesKey1}-${personalitiesKey2}-${photo1Hash}-${photo2Hash}-${contentTypeKey}`;
         }
 
 
@@ -2264,7 +2466,7 @@
          */
         function appendHistoryItem(listElement, item, idx) {
             const el = document.createElement('div');
-            el.classList.add('flex', 'justify-between', 'items-center', 'gap-2', 'p-2', 'border', 'rounded-xl', 'history-item', 'transition-all', 'duration-200');
+            el.classList.add('flex', 'flex-col', 'md:flex-row', 'justify-between', 'items-center', 'gap-2', 'p-3', 'border', 'rounded-xl', 'history-item', 'transition-all', 'duration-200', 'cursor-pointer');
 
             if (item.mode === 'friendship') {
                 el.classList.add('friendship-mode');
@@ -2272,13 +2474,16 @@
 
             const modeText = item.mode === 'simple' ? 'Amor Simples' : (item.mode === 'advanced' ? 'Amor Avançado' : 'Friend Tester');
             const colorStyle = `color:${item.mode === 'friendship' ? 'var(--friend-accent)' : '#ff6aa0'}`;
+            const contentTypeText = item.contentType === 'poems' ? 'Poema' : 'Frase';
 
             el.innerHTML = `
-                <div class="flex-1">
-                    <div class="font-bold text-base">${item.a} + ${item.b} <span class="font-semibold" style="${colorStyle}">${item.pct}%</span></div>
-                    <div class="small">${modeText} — ${new Date(item.when).toLocaleString()}</div>
+                <div class="flex-1 text-center md:text-left" data-action="view" data-idx='${idx}'>
+                    <div class="font-bold text-lg">${item.a} + ${item.b} <span class="font-semibold" style="${colorStyle}">${item.pct}%</span></div>
+                    <div class="small">${modeText} • ${contentTypeText} — ${new Date(item.when).toLocaleString()}</div>
+                    ${item.pers1 && item.pers1.length > 0 ? `<div class="small mt-1">Pers. 1: ${item.pers1.join(', ')}</div>` : ''}
+                    ${item.pers2 && item.pers2.length > 0 ? `<div class="small">Pers. 2: ${item.pers2.join(', ')}</div>` : ''}
                 </div>
-                <div class="flex gap-2">
+                <div class="flex gap-2 mt-2 md:mt-0">
                     <button class='btn ghost text-sm p-2' data-idx='${idx}' data-action="download">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
                             <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.295a.75.75 0 0 0-1.06 1.06l4.5 4.5a.75.75 0 0 0 1.06 0l4.5-4.5a.75.75 0 0 0-1.06-1.06l-2.905 2.905V2.75Z" />
@@ -2300,14 +2505,27 @@
             listElement.appendChild(el);
         }
 
-        // Event delegation for history buttons (download/delete)
+        // Event delegation for history buttons (download/delete/view)
         qs('#historyList').addEventListener('click', async (e) => {
             const btn = e.target.closest('button');
+            const viewArea = e.target.closest('[data-action="view"]');
+            const history = getHistory();
+
+            if (viewArea) {
+                const idx = parseInt(viewArea.dataset.idx);
+                const item = history[idx];
+                if (item) {
+                    // Reconstruct and show result modal
+                    const title = item.mode === 'simple' ? 'Resultado do Amor Simples' : (item.mode === 'advanced' ? 'Resultado do Amor Avançado' : 'Resultado do Friend Tester');
+                    showResultModal(title, badgeText(item.a, item.b), item.pct, item.msg, item.photo1Url || '', item.photo2Url || '', item.mode, item.gender1 || '', item.gender2 || '', item.pers1 || [], item.pers2 || [], item.contentType || 'phrases');
+                }
+                return; // Stop further processing for view action
+            }
+
             if (!btn) return;
 
             const idx = parseInt(btn.dataset.idx);
             const action = btn.dataset.action;
-            const history = getHistory();
             const item = history[idx];
 
             if (action === 'download' && item) {
@@ -2315,14 +2533,15 @@
                 btn.disabled = true;
                 try {
                     const blob = await renderCardToCanvas(
-                        item.mode === 'simple' ? 'Amor Simples' : (item.mode === 'advanced' ? 'Amor Avançado' : 'Friend Tester'),
+                        item.mode === 'simple' ? 'Resultado do Amor Simples' : (item.mode === 'advanced' ? 'Resultado do Amor Avançado' : 'Resultado do Friend Tester'),
                         badgeText(item.a, item.b),
                         item.pct,
                         item.msg,
                         item.photo1Url || '',
                         item.photo2Url || '',
                         item.mode,
-                        item.when
+                        item.when,
+                        item.contentType || 'phrases'
                     );
                     saveBlob(blob, `lovetester_resultado_${normalize(item.a)}_${normalize(item.b)}.png`);
                 } catch (error) {
@@ -2408,16 +2627,17 @@
          * @param {string} [gender2=''] - Gender of the second person.
          * @param {Array<string>} [pers1=[]] - Personalities of the first person.
          * @param {Array<string>} [pers2=[]] - Personalities of the second person.
+         * @param {string} [contentType='phrases'] - 'phrases' or 'poems'
          */
-        function showResultModal(title, namesBadge, percentage, message, photo1Url = '', photo2Url = '', mode = 'love', gender1 = '', gender2 = '', pers1 = [], pers2 = []) {
-            currentResultData = { title, namesBadge, percentage, message, photo1Url, photo2Url, mode, gender1, gender2, pers1, pers2, when: new Date() };
+        function showResultModal(title, namesBadge, percentage, message, photo1Url = '', photo2Url = '', mode = 'love', gender1 = '', gender2 = '', pers1 = [], pers2 = [], contentType = 'phrases') {
+            currentResultData = { title, namesBadge, percentage, message, photo1Url, photo2Url, mode, gender1, gender2, pers1, pers2, when: new Date(), contentType };
 
             resultModalTitle.textContent = title;
             resultModalBadge.textContent = namesBadge;
             resultModalMsg.textContent = message;
             resultModalPercent.textContent = '--';
 
-            qs('#resultDisplayModal .hearts-container').innerHTML = '';
+            qs('#resultDisplayModal .hearts-container').innerHTML = ''; // Clear existing emojis
 
             if (mode === 'friendship') {
                 resultDisplayModal.querySelector('.modal-content').classList.add('friendship-mode');
@@ -2464,7 +2684,8 @@
                     currentResultData.photo1Url,
                     currentResultData.photo2Url,
                     currentResultData.mode,
-                    currentResultData.when
+                    currentResultData.when,
+                    currentResultData.contentType
                 );
                 saveBlob(blob, `lovetester_resultado_${normalize(currentResultData.namesBadge.split(' + ')[0])}_${normalize(currentResultData.namesBadge.split(' + ')[1])}.png`);
             } catch (error) {
@@ -2491,7 +2712,8 @@
                     currentResultData.photo1Url,
                     currentResultData.photo2Url,
                     currentResultData.mode,
-                    currentResultData.when
+                    currentResultData.when,
+                    currentResultData.contentType
                 );
                 const filename = `lovetester_resultado_${normalize(currentResultData.namesBadge.split(' + ')[0])}_${normalize(currentResultData.namesBadge.split(' + ')[1])}.png`;
                 const file = new File([blob], filename, { type: 'image/png' });
@@ -2549,9 +2771,9 @@
             try {
                 currentAppMode = 'love';
                 const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2);
-                const message = pickPhrase(percent, currentAppMode);
+                const message = pickContent(percent, currentAppMode, currentContentType);
 
-                showResultModal('Resultado do Amor Simples', badgeText(name1, name2), percent, message, '', '', 'love', gender1, gender2);
+                showResultModal('Resultado do Amor Simples', badgeText(name1, name2), percent, message, '', '', 'love', gender1, gender2, [], [], currentContentType);
 
                 saveToHistory({
                     a: name1,
@@ -2561,7 +2783,8 @@
                     mode: 'simple',
                     gender1: gender1,
                     gender2: gender2,
-                    when: new Date().toISOString()
+                    when: new Date().toISOString(),
+                    contentType: currentContentType
                 });
             } catch (error) {
                 console.error("Erro ao calcular amor simples:", error);
@@ -2646,9 +2869,9 @@
             try {
                 currentAppMode = 'love';
                 const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
-                const message = pickPhrase(percent, currentAppMode);
+                const message = pickContent(percent, currentAppMode, currentContentType);
 
-                showResultModal('Resultado do Amor Avançado', badgeText(name1, name2), percent, message, photo1Url_love.value, photo2Url_love.value, 'love', gender1, gender2, currentSelectedPers1, currentSelectedPers2);
+                showResultModal('Resultado do Amor Avançado', badgeText(name1, name2), percent, message, photo1Url_love.value, photo2Url_love.value, 'love', gender1, gender2, currentSelectedPers1, currentSelectedPers2, currentContentType);
 
                 saveToHistory({
                     a: name1,
@@ -2662,7 +2885,8 @@
                     pers2: currentSelectedPers2,
                     photo1Url: photo1Url_love.value,
                     photo2Url: photo2Url_love.value,
-                    when: new Date().toISOString()
+                    when: new Date().toISOString(),
+                    contentType: currentContentType
                 });
             } catch (error) {
                 console.error("Erro ao calcular amor avançado:", error);
@@ -2752,9 +2976,9 @@
             try {
                 currentAppMode = 'friendship';
                 const percent = calculateFriendshipPercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
-                const message = pickPhrase(percent, currentAppMode);
+                const message = pickContent(percent, currentAppMode, currentContentType);
 
-                showResultModal('Resultado do Friend Tester', badgeText(name1, name2), percent, message, photo1Url_friendship.value, photo2Url_friendship.value, 'friendship', gender1, gender2, currentSelectedPers1, currentSelectedPers2);
+                showResultModal('Resultado do Friend Tester', badgeText(name1, name2), percent, message, photo1Url_friendship.value, photo2Url_friendship.value, 'friendship', gender1, gender2, currentSelectedPers1, currentSelectedPers2, currentContentType);
 
                 saveToHistory({
                     a: name1,
@@ -2768,7 +2992,8 @@
                     pers2: currentSelectedPers2,
                     photo1Url: photo1Url_friendship.value,
                     photo2Url: photo2Url_friendship.value,
-                    when: new Date().toISOString()
+                    when: new Date().toISOString(),
+                    contentType: currentContentType
                 });
             } catch (error) {
                 console.error("Erro ao calcular amizade avançada:", error);
