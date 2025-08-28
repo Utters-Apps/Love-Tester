@@ -5,12 +5,13 @@
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
     <title>Love Tester • Seu Amor, Nosso Cálculo</title>
     <meta name="description" content="Love Tester — calcule a compatibilidade entre dois nomes (Simples ou Avançado), adicione fotos e personalidades, salve como imagem e compartilhe com um toque profissional." />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%23ff4d8d'/%3E%3Ctext x='50' y='58' font-size='48' text-anchor='middle' font-family='Poppins,Arial' fill='white'%3E%F0%9F%92%96%3C/text%3E%3C/svg%3E">
+    <!-- PWA Icon from user provided URL, updated as fallback image. For production, convert to Data URL. -->
+    <link rel="icon" href="https://pbs.twimg.com/media/GzZdmXDW0AAWq1J?format=png&name=small">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <!-- Tailwind CSS CDN for modern styling and responsiveness -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/json;base64,eyJpY29ucyI6W3sic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3BuZyIsInNyYyI6Imh0dHBzOi8vcGxhY2Vob2xkLmNvLzE5MngxOTIvZmY0ZDg5L2ZmZj90ZXh0PTUxfFAlMjUzRDQ4JnJzJTNEMSU3QyUzRXN2ZyUyMCU3QyUzRGFyYyUyMCUzRSUzQyUyRmNsaXJjbGUlMjAlM0UlM0N0ZXh0JTIwJTNFIiUyQyJwdXJwb3NlcyI6InN0bGF5ZWJscGF0eSIsImxhc2tlZCI6InRlc2RhdGFzIn0seyJzaXplcyI6IjUxMnU1MTIiLCJ0eXBlIjoiY3VzdG9tL2luc3RhbGwiLCJzcmMiOiJodHRwczovL3BsYWNlaG9sZC5jby81MTJ1NTEyL2ZmNGQ4OS9mZmY/dGV4dD01MXxQJTI1M0Q0OCZycyUzRDElN0N4c2x2ZyUyMCU3QyUzRGFyYyUyMCUzRSUzQyUyRmNsaXJjbGUlMjAlM0UlM0N0ZXh0JTIwJTNFIiUyQ3B1cnBvc2VzIjoibXN0YSIsImxhc2tlZCI6InRlc3RkYXRhIn1dLCJkaXNwbGF5IjoiY2xpcHByZWZpeCIsInN0YXJ0X3VybCI6Ii4iLCJuYW1lIjoiTG92ZSBUZXN0ZXIiLCJzaG9ydF9uYW1lIjoiTG92ZSBUZXN0ZXIiLCJkZXNjcmlwdGlvbiI6IkNhbGN1bGUgYSBjb21wYXRpYmlsaWRhZGUgZW50cmUgbm9tZXMgZSBwZXJzb25hbGlkYWRlcyIsInRoZW1lX2NvbG9yIjoiI2ZmNGQ4ZCIsImJhY2tncm91bmRfY29sb3IiOiIjMGYwNDEyIn0=">
+    <!-- PWA Manifest - Updated with provided icon. For production, convert to Data URL with multiple sizes. -->
+    <link rel="manifest" href="data:application/json;base64,eyJpY29ucyI6W3sic2l6ZXMiOiIxOTJ4MTkyIiwidHlwZSI6ImltYWdlL3BuZyIsInNyYyI6Imh0dHBzOi8vcGJzLnR3aW1nLmNvbS9tZWRpYS9HekZkbXhEVzBBQVdxeTFKP2Zvcm1hdD1wbmcmdmFzZT0xOTJ4MTkyIiwicHVycG9zZXMiOiJhbnlfdXNlIn0seyJzaXplcyI6IjUxMnU1MTIiLCJ0eXBlIjoiaW1hZ2UvcG5nIiwic3JjIjoiaHR0cHM6Ly9wYnMudHdpbWc comorbidities/GzZdmXDW0AAWq1J?format=png&name=512x512IiwicHVycG9zZXMiOiJhbnlfdXNlIn1dLCJkaXNwbGF5Ijoic3RhbmRhbG9uZSIsImNsaXByZWZpeCI6ImxvdmUtdGVzdGVyIiwic3RhcnRfdXJsIjoiLiIsIm5hbWUiOiJMb3ZlIFRlc3RlciIsInNob3J0X25hbWUiOiJMb3ZlIFRlc3RlciIsImRlc2NyaXB0aW9uIjoiQ2FsY3VsZSBhIGNvbXBhYmF0aWJpbGlkYWRlIGVudHJlIG5vbWVzIGUgcGVyc29uYWxpZGFkZXMiLCJ0aGVtZV9jb2xvciI6IiNmZjRkOGQiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiIzBmMDQxMiJ9">
 
     <style>
         /* Custom CSS variables and base styles */
@@ -64,34 +65,42 @@
         .friendship-mode .device {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0.01));
             border: 1px solid rgba(255, 255, 255, .06);
+            transition: background 0.5s ease-in-out, border 0.5s ease-in-out;
         }
         .friendship-mode .appbar {
             background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
             border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            transition: background 0.5s ease-in-out, border-bottom 0.5s ease-in-out;
         }
         .friendship-mode .logo .ico {
             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
             box-shadow: 0 8px 20px rgba(108, 172, 228, .18);
+            transition: background 0.5s ease-in-out, box-shadow 0.5s ease-in-out;
         }
         .friendship-mode .btn {
             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
             box-shadow: 0 10px 30px rgba(108, 172, 228, .14);
+            transition: all 0.2s ease-in-out;
         }
         .friendship-mode .btn.secondary {
             background: linear-gradient(135deg, #4299e1, #5cb85c);
             box-shadow: 0 10px 30px rgba(66, 153, 225, .14);
+            transition: all 0.2s ease-in-out;
         }
         .friendship-mode input[type=text]:focus,
         .friendship-mode select:focus {
             border-color: var(--friend-accent);
+            transition: border-color 0.2s ease;
         }
         .friendship-mode .chip.active {
             border-color: var(--friend-accent);
             background: linear-gradient(135deg, var(--friend-accent), var(--friend-accent2));
             box-shadow: 0 10px 24px rgba(108, 172, 228, .15);
+            transition: all 0.2s ease-in-out;
         }
         .friendship-mode .percent {
             color: var(--friend-accent);
+            transition: color 0.5s ease-in-out;
         }
         .friendship-mode .history-item .font-bold span {
             color: var(--friend-accent);
@@ -101,6 +110,7 @@
         }
         .friendship-mode .modal-content {
             background: var(--friend-card);
+            transition: background 0.5s ease-in-out;
         }
 
 
@@ -1010,31 +1020,25 @@
 
 
     <script>
-        // Register Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js')
-                    .then(registration => {
-                        console.log('SW registered: ', registration);
-                    }).catch(registrationError => {
-                        console.log('SW registration failed: ', registrationError);
-                    });
-            });
-        }
-
-        // Inline Service Worker (minimal for caching)
+        // Inline Service Worker for PWA caching
+        // This script will be registered to handle offline capabilities and caching.
         const serviceWorkerScript = `
+            const CACHE_NAME = 'love-tester-cache-v3'; // Increment cache version for updates
+            const urlsToCache = [
+                '/',
+                '/index.html',
+                'https://cdn.tailwindcss.com',
+                'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap',
+                'https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8PhlEeNAuVFQkNE.woff2', // Poppins Regular
+                'https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8PhlEeNAuVBjkkNE.woff2',  // Poppins Bold
+                'https://pbs.twimg.com/media/GzZdmXDW0AAWq1J?format=png&name=small' // PWA Icon (small version for caching)
+            ];
+
             self.addEventListener('install', (event) => {
                 event.waitUntil(
-                    caches.open('love-tester-cache-v1').then((cache) => {
-                        return cache.addAll([
-                            '/',
-                            '/index.html',
-                            'https://cdn.tailwindcss.com',
-                            'https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap',
-                            'https://fonts.gstatic.com/s/poppins/v20/pxiByp8kv8PhlEeNAuVFQkNE.woff2'
-                            // Add other critical assets here
-                        ]);
+                    caches.open(CACHE_NAME).then((cache) => {
+                        console.log('Service Worker: Cache opened.');
+                        return cache.addAll(urlsToCache);
                     })
                 );
             });
@@ -1042,7 +1046,46 @@
             self.addEventListener('fetch', (event) => {
                 event.respondWith(
                     caches.match(event.request).then((response) => {
-                        return response || fetch(event.request);
+                        // Cache hit - return response
+                        if (response) {
+                            return response;
+                        }
+                        // No cache hit - fetch from network
+                        return fetch(event.request).then(
+                            function(response) {
+                                // Check if we received a valid response
+                                if(!response || response.status !== 200 || response.type !== 'basic') {
+                                    return response;
+                                }
+
+                                // IMPORTANT: Clone the response. A response is a stream
+                                // and can only be consumed once. We must clone it so that
+                                // we can send one to the browser and one to the cache.
+                                var responseToCache = response.clone();
+
+                                caches.open(CACHE_NAME)
+                                    .then(function(cache) {
+                                        cache.put(event.request, responseToCache);
+                                    });
+
+                                return response;
+                            }
+                        );
+                    })
+                );
+            });
+
+            self.addEventListener('activate', (event) => {
+                event.waitUntil(
+                    caches.keys().then((cacheNames) => {
+                        return Promise.all(
+                            cacheNames.filter((cacheName) => {
+                                // Delete old caches
+                                return cacheName.startsWith('love-tester-cache-') && cacheName !== CACHE_NAME;
+                            }).map((cacheName) => {
+                                return caches.delete(cacheName);
+                            })
+                        );
                     })
                 );
             });
@@ -1054,9 +1097,9 @@
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register(serviceWorkerUrl)
                     .then(registration => {
-                        console.log('SW registered: ', registration);
+                        console.log('Service Worker registered successfully: ', registration);
                     }).catch(registrationError => {
-                        console.log('SW registration failed: ', registrationError);
+                        console.error('Service Worker registration failed: ', registrationError);
                     });
             });
         }
@@ -1244,12 +1287,16 @@
         // Initial screen on load and fullscreen prompt
         document.addEventListener('DOMContentLoaded', () => {
             show('home');
-            showModal('Bem-vindo(a) ao Love Tester!',
-                'Gostaria de ativar o modo de tela cheia para uma experiência mais imersiva?',
-                [
-                    { text: 'Sim', onClick: toggleFullscreen },
-                    { text: 'Não', isGhost: true }
-                ]);
+            const hasSeenWelcome = localStorage.getItem('hasSeenWelcome');
+
+            if (!hasSeenWelcome) {
+                showModal('Bem-vindo(a) ao Love Tester!',
+                    'Gostaria de ativar o modo de tela cheia para uma experiência mais imersiva?',
+                    [
+                        { text: 'Sim', onClick: () => { toggleFullscreen(); localStorage.setItem('hasSeenWelcome', 'true'); } },
+                        { text: 'Não', onClick: () => { localStorage.setItem('hasSeenWelcome', 'true'); }, isGhost: true }
+                    ]);
+            }
         });
 
         // Navigation event listeners
@@ -1343,15 +1390,50 @@
 
         // --- Personality Chips Logic ---
         const allPersonalities = [
-            { val: 'Romântica', label: 'Romântica', type: 'love', weight: 6 }, { val: 'Aventureira', label: 'Aventureira', type: 'both', weight: 4 }, { val: 'Intelectual', label: 'Intelectual', type: 'both', weight: 3 },
-            { val: 'Brincalhona', label: 'Brincalhona', type: 'both', weight: 5 }, { val: 'Calma', label: 'Calma', type: 'both', weight: 2 }, { val: 'Empática', label: 'Empática', type: 'both', weight: 7 },
-            { val: 'Leal', label: 'Leal', type: 'both', weight: 8 }, { val: 'Criativa', label: 'Criativa', type: 'love', weight: 3 }, { val: 'Racional', label: 'Racional', type: 'both', weight: 2 },
-            { val: 'Otimista', label: 'Otimista', type: 'both', weight: 5 }, { val: 'Determinada', label: 'Determinada', type: 'love', weight: 5 }, { val: 'Misteriosa', label: 'Misteriosa', type: 'love', weight: 3 },
-            { val: 'Extrovertida', label: 'Extrovertida', type: 'both', weight: 6 }, { val: 'Introvertida', label: 'Introvertida', type: 'both', weight: 2 }, { val: 'Espontânea', label: 'Espontânea', type: 'both', weight: 5 },
-            { val: 'Organizada', label: 'Organizada', type: 'both', weight: 1 }, { val: 'Curiosa', label: 'Curiosa', type: 'both', weight: 4 }, { val: 'Generosa', label: 'Generosa', type: 'both', weight: 7 },
-            { val: 'Prática', label: 'Prática', type: 'both', weight: 2 }, { val: 'Independente', label: 'Independente', type: 'both', weight: 3 }, { val: 'Comunicativa', label: 'Comunicativa', type: 'both', weight: 6 },
-            { val: 'Observadora', label: 'Observadora', type: 'both', weight: 3 }, { val: 'Paciente', label: 'Paciente', type: 'both', weight: 4 }, { val: 'Sonhadora', label: 'Sonhadora', type: 'love', weight: 5 },
-            { val: 'Divertida', label: 'Divertida', type: 'friendship', weight: 7 }, { val: 'Apoio', label: 'Apoio', type: 'friendship', weight: 8 }, { val: 'Honesta', label: 'Honesta', type: 'friendship', weight: 7 }
+            // Love focused
+            { val: 'Romântica', label: 'Romântica', type: 'love', weight: 8 },
+            { val: 'Sonhadora', label: 'Sonhadora', type: 'love', weight: 7 },
+            { val: 'Intuitiva', label: 'Intuitiva', type: 'love', weight: 6 },
+            { val: 'Apaixonada', label: 'Apaixonada', type: 'love', weight: 9 },
+            { val: 'Misteriosa', label: 'Misteriosa', type: 'love', weight: 5 },
+            { val: 'Sensível', label: 'Sensível', type: 'love', weight: 7 },
+            { val: 'Cativante', label: 'Cativante', type: 'love', weight: 6 },
+
+            // Friendship focused
+            { val: 'Divertida', label: 'Divertida', type: 'friendship', weight: 9 },
+            { val: 'Apoio', label: 'Apoio', type: 'friendship', weight: 10 },
+            { val: 'Honesta', label: 'Honesta', type: 'friendship', weight: 8 },
+            { val: 'Bem-humorada', label: 'Bem-humorada', type: 'friendship', weight: 9 },
+            { val: 'Confiável', label: 'Confiável', type: 'friendship', weight: 10 },
+            { val: 'Companheira', label: 'Companheira', type: 'friendship', weight: 9 },
+            { val: 'Leal', label: 'Leal', type: 'both', weight: 8 }, // Also good for love
+
+            // Both love and friendship
+            { val: 'Aventureira', label: 'Aventureira', type: 'both', weight: 6 },
+            { val: 'Intelectual', label: 'Intelectual', type: 'both', weight: 5 },
+            { val: 'Brincalhona', label: 'Brincalhona', type: 'both', weight: 7 },
+            { val: 'Calma', label: 'Calma', type: 'both', weight: 4 },
+            { val: 'Empática', label: 'Empática', type: 'both', weight: 8 },
+            { val: 'Criativa', label: 'Criativa', type: 'both', weight: 5 },
+            { val: 'Racional', label: 'Racional', type: 'both', weight: 4 },
+            { val: 'Otimista', label: 'Otimista', type: 'both', weight: 7 },
+            { val: 'Determinada', label: 'Determinada', type: 'both', weight: 6 },
+            { val: 'Extrovertida', label: 'Extrovertida', type: 'both', weight: 7 },
+            { val: 'Introvertida', label: 'Introvertida', type: 'both', weight: 3 },
+            { val: 'Espontânea', label: 'Espontânea', type: 'both', weight: 7 },
+            { val: 'Organizada', label: 'Organizada', type: 'both', weight: 2 },
+            { val: 'Curiosa', label: 'Curiosa', type: 'both', weight: 6 },
+            { val: 'Generosa', label: 'Generosa', type: 'both', weight: 8 },
+            { val: 'Prática', label: 'Prática', type: 'both', weight: 4 },
+            { val: 'Independente', label: 'Independente', type: 'both', weight: 5 },
+            { val: 'Comunicativa', label: 'Comunicativa', type: 'both', weight: 7 },
+            { val: 'Observadora', label: 'Observadora', type: 'both', weight: 5 },
+            { val: 'Paciente', label: 'Paciente', type: 'both', weight: 6 },
+            { val: 'Protetora', label: 'Protetora', type: 'both', weight: 8 },
+            { val: 'Acolhedora', label: 'Acolhedora', type: 'both', weight: 9 },
+            { val: 'Conselheira', label: 'Conselheira', type: 'both', weight: 7 },
+            { val: 'Agradável', label: 'Agradável', type: 'both', weight: 6 },
+            { val: 'Ousada', label: 'Ousada', type: 'both', weight: 5 }
         ];
 
         let currentSelectedPers1 = [];
@@ -1591,41 +1673,48 @@
             if (personalities1.length > 0 && personalities2.length > 0) {
                 let personalityLoveScore = 0;
                 const loveCompMatrix = {
-                    'Romântica': { 'Romântica': 15, 'Aventureira': 7, 'Empática': 12, 'Sonhadora': 18, 'Criativa': 8, 'Racional': -5, 'Prática': -5 },
-                    'Aventureira': { 'Aventureira': 10, 'Romântica': 7, 'Espontânea': 14, 'Otimista': 9, 'Calma': -3, 'Organizada': -4 },
-                    'Intelectual': { 'Intelectual': 12, 'Racional': 10, 'Curiosa': 8, 'Brincalhona': 2 },
-                    'Brincalhona': { 'Brincalhona': 10, 'Aventureira': 8, 'Espontânea': 7, 'Calma': 5, 'Intelectual': 2, 'Misteriosa': -2 },
-                    'Calma': { 'Calma': 9, 'Empática': 8, 'Paciente': 6, 'Brincalhona': 5, 'Aventureira': -3 },
-                    'Empática': { 'Empática': 13, 'Romântica': 12, 'Leal': 10, 'Generosa': 11, 'Calma': 8, 'Racional': -4 },
-                    'Leal': { 'Leal': 15, 'Empática': 10, 'Determinada': 8 },
-                    'Criativa': { 'Criativa': 10, 'Sonhadora': 14, 'Espontânea': 9, 'Prática': -7 },
-                    'Racional': { 'Racional': 12, 'Intelectual': 10, 'Prática': 7, 'Romântica': -7, 'Sonhadora': -6 },
-                    'Otimista': { 'Otimista': 12, 'Aventureira': 9, 'Espontânea': 8 },
-                    'Determinada': { 'Determinada': 11, 'Leal': 9, 'Prática': 6 },
-                    'Misteriosa': { 'Misteriosa': 10, 'Introvertida': 9, 'Extrovertida': -5, 'Brincalhona': -2 },
-                    'Extrovertida': { 'Extrovertida': 10, 'Comunicativa': 12, 'Aventureira': 9, 'Introvertida': -5, 'Misteriosa': -5 },
-                    'Introvertida': { 'Introvertida': 9, 'Observadora': 10, 'Misteriosa': 8, 'Extrovertida': -5, 'Comunicativa': -4 },
-                    'Espontânea': { 'Espontânea': 12, 'Aventureira': 10, 'Criativa': 9, 'Organizada': -6 },
-                    'Organizada': { 'Organizada': 8, 'Prática': 7, 'Calma': 6, 'Espontânea': -6 },
-                    'Curiosa': { 'Curiosa': 9, 'Intelectual': 8, 'Aventureira': 7 },
-                    'Generosa': { 'Generosa': 13, 'Empática': 12, 'Leal': 10 },
-                    'Prática': { 'Prática': 9, 'Racional': 8, 'Organizada': 7, 'Criativa': -7, 'Romântica': -5 },
-                    'Independente': { 'Independente': 9, 'Aventureira': 8 },
-                    'Comunicativa': { 'Comunicativa': 11, 'Extrovertida': 10, 'Introvertida': -4 },
-                    'Observadora': { 'Observadora': 8, 'Intelectual': 9, 'Introvertida': 10 },
-                    'Paciente': { 'Paciente': 9, 'Calma': 8, 'Leal': 7 },
-                    'Sonhadora': { 'Sonhadora': 14, 'Romântica': 10, 'Criativa': 9, 'Racional': -6 }
+                    'Romântica': { 'Romântica': 15, 'Aventureira': 7, 'Empática': 12, 'Sonhadora': 18, 'Criativa': 8, 'Racional': -5, 'Prática': -5, 'Intuitiva': 10, 'Apaixonada': 20, 'Sensível': 12, 'Cativante': 10, 'Ousada': 5 },
+                    'Aventureira': { 'Aventureira': 10, 'Romântica': 7, 'Espontânea': 14, 'Otimista': 9, 'Calma': -3, 'Organizada': -4, 'Ousada': 12, 'Brincalhona': 8 },
+                    'Intelectual': { 'Intelectual': 12, 'Racional': 10, 'Curiosa': 8, 'Brincalhona': 2, 'Observadora': 9 },
+                    'Brincalhona': { 'Brincalhona': 10, 'Aventureira': 8, 'Espontânea': 7, 'Calma': 5, 'Intelectual': 2, 'Misteriosa': -2, 'Otimista': 8 },
+                    'Calma': { 'Calma': 9, 'Empática': 8, 'Paciente': 6, 'Brincalhona': 5, 'Aventureira': -3, 'Sensível': 10 },
+                    'Empática': { 'Empática': 13, 'Romântica': 12, 'Leal': 10, 'Generosa': 11, 'Calma': 8, 'Racional': -4, 'Intuitiva': 9, 'Sensível': 15, 'Acolhedora': 14, 'Conselheira': 11 },
+                    'Leal': { 'Leal': 15, 'Empática': 10, 'Determinada': 8, 'Protetora': 12, 'Confiável': 15 },
+                    'Criativa': { 'Criativa': 10, 'Sonhadora': 14, 'Espontânea': 9, 'Prática': -7, 'Intuitiva': 11, 'Romântica': 8 },
+                    'Racional': { 'Racional': 12, 'Intelectual': 10, 'Prática': 7, 'Romântica': -7, 'Sonhadora': -6, 'Organizada': 8 },
+                    'Otimista': { 'Otimista': 12, 'Aventureira': 9, 'Espontânea': 8, 'Brincalhona': 8 },
+                    'Determinada': { 'Determinada': 11, 'Leal': 9, 'Prática': 6, 'Focada': 10 },
+                    'Misteriosa': { 'Misteriosa': 10, 'Introvertida': 9, 'Extrovertida': -5, 'Brincalhona': -2, 'Intuitiva': 7, 'Cativante': 10, 'Apaixonada': 6 },
+                    'Extrovertida': { 'Extrovertida': 10, 'Comunicativa': 12, 'Aventureira': 9, 'Introvertida': -5, 'Misteriosa': -5, 'Brincalhona': 10, 'Cativante': 8 },
+                    'Introvertida': { 'Introvertida': 9, 'Observadora': 10, 'Misteriosa': 8, 'Extrovertida': -5, 'Comunicativa': -4, 'Intuitiva': 8, 'Sensível': 9 },
+                    'Espontânea': { 'Espontânea': 12, 'Aventureira': 10, 'Criativa': 9, 'Organizada': -6, 'Romântica': 7 },
+                    'Organizada': { 'Organizada': 8, 'Prática': 7, 'Calma': 6, 'Espontânea': -6, 'Racional': 8 },
+                    'Curiosa': { 'Curiosa': 9, 'Intelectual': 8, 'Aventureira': 7, 'Espontânea': 6 },
+                    'Generosa': { 'Generosa': 13, 'Empática': 12, 'Leal': 10, 'Protetora': 11, 'Acolhedora': 12 },
+                    'Prática': { 'Prática': 9, 'Racional': 8, 'Organizada': 7, 'Criativa': -7, 'Romântica': -5, 'Determinada': 6 },
+                    'Independente': { 'Independente': 9, 'Aventureira': 8, 'Determinada': 7, 'Ousada': 10 },
+                    'Comunicativa': { 'Comunicativa': 11, 'Extrovertida': 10, 'Introvertida': -4, 'Brincalhona': 9, 'Conselheira': 8, 'Cativante': 7 },
+                    'Observadora': { 'Observadora': 8, 'Intelectual': 9, 'Introvertida': 10, 'Sensível': 8 },
+                    'Paciente': { 'Paciente': 9, 'Calma': 8, 'Leal': 7, 'Empática': 10, 'Conselheira': 9 },
+                    'Sonhadora': { 'Sonhadora': 14, 'Romântica': 10, 'Criativa': 9, 'Racional': -6, 'Intuitiva': 12, 'Apaixonada': 15 },
+                    'Intuitiva': { 'Intuitiva': 10, 'Romântica': 10, 'Criativa': 11, 'Empática': 9, 'Sonhadora': 12, 'Misteriosa': 8 },
+                    'Apaixonada': { 'Apaixonada': 20, 'Romântica': 15, 'Sonhadora': 15, 'Cativante': 12, 'Ousada': 10 },
+                    'Sensível': { 'Sensível': 12, 'Empática': 15, 'Calma': 10, 'Introvertida': 9, 'Romântica': 10 },
+                    'Cativante': { 'Cativante': 10, 'Romântica': 10, 'Extrovertida': 8, 'Misteriosa': 9, 'Apaixonada': 12 },
+                    'Protetora': { 'Protetora': 12, 'Leal': 12, 'Empática': 13, 'Generosa': 11, 'Acolhedora': 14 },
+                    'Acolhedora': { 'Acolhedora': 12, 'Empática': 14, 'Generosa': 12, 'Protetora': 14, 'Calma': 10, 'Paciente': 8, 'Conselheira': 11 },
+                    'Conselheira': { 'Conselheira': 12, 'Empática': 11, 'Paciente': 10, 'Apoio': 13, 'Acolhedora': 11, 'Honesta': 9 },
+                    'Agradável': { 'Agradável': 8, 'Brincalhona': 7, 'Extrovertida': 9, 'Otimista': 8 },
+                    'Ousada': { 'Ousada': 10, 'Aventureira': 12, 'Independente': 10, 'Apaixonada': 10 }
                 };
-
 
                 for (const p1 of personalities1) {
                     for (const p2 of personalities2) {
                         personalityLoveScore += (loveCompMatrix[p1] && loveCompMatrix[p1][p2]) ? loveCompMatrix[p1][p2] : 0;
-                        // For reciprocal score, use p2 as key for p1's compatibility
                         personalityLoveScore += (loveCompMatrix[p2] && loveCompMatrix[p2][p1]) ? loveCompMatrix[p2][p1] : 0;
                     }
                 }
-                score += Math.max(-30, Math.min(30, personalityLoveScore / 4)); // Increased range for personality impact
+                score += Math.max(-35, Math.min(35, personalityLoveScore / 4)); // Increased range for personality impact
             }
 
             // Gender Influence
@@ -1659,22 +1748,29 @@
             if (personalities1.length > 0 && personalities2.length > 0) {
                 let personalityFriendshipScore = 0;
                 const friendCompMatrix = {
-                    'Aventureira': { 'Aventureira': 12, 'Brincalhona': 10, 'Espontânea': 15, 'Otimista': 11, 'Curiosa': 9, 'Calma': 2, 'Organizada': -2 },
-                    'Brincalhona': { 'Brincalhona': 12, 'Aventureira': 10, 'Divertida': 15, 'Extrovertida': 12, 'Introvertida': 3, 'Misteriosa': 0 },
-                    'Empática': { 'Empática': 13, 'Generosa': 12, 'Leal': 11, 'Paciente': 10, 'Apoio': 15, 'Racional': 3 },
-                    'Leal': { 'Leal': 15, 'Empática': 12, 'Honesta': 13, 'Apoio': 14 },
-                    'Otimista': { 'Otimista': 12, 'Aventureira': 10, 'Espontânea': 9, 'Divertida': 11 },
-                    'Extrovertida': { 'Extrovertida': 12, 'Comunicativa': 14, 'Brincalhona': 11, 'Introvertida': 3 },
-                    'Introvertida': { 'Introvertida': 10, 'Observadora': 11, 'Paciente': 9, 'Extrovertida': 3, 'Brincalhona': 3 },
-                    'Espontânea': { 'Espontânea': 13, 'Aventureira': 11, 'Brincalhona': 10, 'Organizada': -4 },
-                    'Curiosa': { 'Curiosa': 11, 'Intelectual': 10, 'Aventureira': 9 },
-                    'Generosa': { 'Generosa': 14, 'Empática': 13, 'Leal': 12, 'Apoio': 15 },
-                    'Comunicativa': { 'Comunicativa': 13, 'Extrovertida': 12, 'Divertida': 11 },
-                    'Observadora': { 'Observadora': 11, 'Intelectual': 10, 'Introvertida': 9 },
-                    'Paciente': { 'Paciente': 11, 'Calma': 10, 'Empática': 9 },
-                    'Divertida': { 'Divertida': 15, 'Brincalhona': 14, 'Otimista': 13, 'Extrovertida': 12 },
-                    'Apoio': { 'Apoio': 16, 'Empática': 15, 'Generosa': 14, 'Leal': 13 },
-                    'Honesta': { 'Honesta': 14, 'Leal': 13, 'Empática': 12 }
+                    'Aventureira': { 'Aventureira': 12, 'Brincalhona': 10, 'Espontânea': 15, 'Otimista': 11, 'Curiosa': 9, 'Calma': 2, 'Organizada': -2, 'Ousada': 10, 'Companheira': 10 },
+                    'Brincalhona': { 'Brincalhona': 12, 'Aventureira': 10, 'Divertida': 15, 'Extrovertida': 12, 'Introvertida': 3, 'Misteriosa': 0, 'Otimista': 10, 'Bem-humorada': 15, 'Agradável': 12 },
+                    'Empática': { 'Empática': 13, 'Generosa': 12, 'Leal': 11, 'Paciente': 10, 'Apoio': 15, 'Racional': 3, 'Confiável': 14, 'Acolhedora': 14, 'Conselheira': 12, 'Sensível': 13 },
+                    'Leal': { 'Leal': 15, 'Empática': 12, 'Honesta': 13, 'Apoio': 14, 'Protetora': 12, 'Confiável': 16, 'Companheira': 15 },
+                    'Otimista': { 'Otimista': 12, 'Aventureira': 10, 'Espontânea': 9, 'Divertida': 11, 'Brincalhona': 10, 'Bem-humorada': 13 },
+                    'Extrovertida': { 'Extrovertida': 12, 'Comunicativa': 14, 'Brincalhona': 11, 'Introvertida': 3, 'Otimista': 10, 'Divertida': 12, 'Agradável': 10 },
+                    'Introvertida': { 'Introvertida': 10, 'Observadora': 11, 'Paciente': 9, 'Extrovertida': 3, 'Brincalhona': 3, 'Sensível': 10, 'Conselheira': 8 },
+                    'Espontânea': { 'Espontânea': 13, 'Aventureira': 11, 'Brincalhona': 10, 'Organizada': -4, 'Divertida': 12, 'Ousada': 8 },
+                    'Curiosa': { 'Curiosa': 11, 'Intelectual': 10, 'Aventureira': 9, 'Observadora': 8 },
+                    'Generosa': { 'Generosa': 14, 'Empática': 13, 'Leal': 12, 'Apoio': 15, 'Acolhedora': 13, 'Companheira': 11 },
+                    'Comunicativa': { 'Comunicativa': 13, 'Extrovertida': 12, 'Divertida': 11, 'Bem-humorada': 10, 'Conselheira': 9, 'Agradável': 10 },
+                    'Observadora': { 'Observadora': 11, 'Intelectual': 10, 'Introvertida': 9, 'Paciente': 8 },
+                    'Paciente': { 'Paciente': 11, 'Calma': 10, 'Empática': 9, 'Acolhedora': 8, 'Conselheira': 10, 'Confiável': 9 },
+                    'Divertida': { 'Divertida': 15, 'Brincalhona': 14, 'Otimista': 13, 'Extrovertida': 12, 'Bem-humorada': 15, 'Espontânea': 12, 'Companheira': 13 },
+                    'Apoio': { 'Apoio': 16, 'Empática': 15, 'Generosa': 14, 'Leal': 13, 'Protetora': 14, 'Acolhedora': 15, 'Conselheira': 13, 'Confiável': 16, 'Companheira': 14 },
+                    'Honesta': { 'Honesta': 14, 'Leal': 13, 'Empática': 12, 'Apoio': 11, 'Confiável': 15 },
+                    'Confiável': { 'Confiável': 16, 'Leal': 15, 'Apoio': 16, 'Empática': 14, 'Honesta': 15, 'Companheira': 14, 'Paciente': 10 },
+                    'Companheira': { 'Companheira': 15, 'Leal': 15, 'Divertida': 13, 'Apoio': 14, 'Generosa': 11, 'Acolhedora': 12, 'Confiável': 14 },
+                    'Protetora': { 'Protetora': 12, 'Leal': 12, 'Empática': 13, 'Generosa': 11, 'Acolhedora': 14, 'Calma': 7, 'Apoio': 14, 'Confiável': 13 },
+                    'Acolhedora': { 'Acolhedora': 12, 'Empática': 14, 'Generosa': 12, 'Protetora': 14, 'Calma': 10, 'Paciente': 8, 'Conselheira': 11, 'Apoio': 15, 'Companheira': 12 },
+                    'Conselheira': { 'Conselheira': 12, 'Empática': 11, 'Paciente': 10, 'Apoio': 13, 'Acolhedora': 11, 'Honesta': 9, 'Confiável': 10, 'Comunicativa': 9 },
+                    'Agradável': { 'Agradável': 8, 'Brincalhona': 7, 'Extrovertida': 9, 'Otimista': 8, 'Comunicativa': 10 },
+                    'Ousada': { 'Ousada': 10, 'Aventureira': 12, 'Espontânea': 8, 'Brincalhona': 7, 'Independente': 10 }
                 };
 
                 for (const p1 of personalities1) {
@@ -1683,7 +1779,7 @@
                         personalityFriendshipScore += (friendCompMatrix[p2] && friendCompMatrix[p2][p1]) ? friendCompMatrix[p2][p1] : 0;
                     }
                 }
-                score += Math.max(-25, Math.min(25, personalityFriendshipScore / 3)); // Increased range for friendship personality impact
+                score += Math.max(-30, Math.min(30, personalityFriendshipScore / 3)); // Adjusted range for friendship personality impact
             }
 
             // Gender Influence for Friendship (less impactful)
@@ -1721,20 +1817,20 @@
         // --- Phrase Banks (Expanded with emojis for both Love and Friendship) ---
         const phrases = {
             love: [
-                { min: 95, text: ['💞 Almas gêmeas detectadas! Destinados a um amor épico e duradouro.', '✨ Encontro cósmico! Uma conexão rara e mágica que transcende o comum.', '💖 Casamento de novela — apenas jogue o buquê e prepare-se para o "felizes para sempre"!', '🌟 Sintonia perfeita! Cada detalhe entre vocês canta uma canção de amor. Incrível!', '🌈 Amor que inspira! Uma união que todos admiram e desejam. Que sorte!', '♾️ Conexão de outro mundo! Vocês são a definição de par perfeito.' ] },
-                { min: 80, text: ['🔥 Química poderosa — cuidem desse carinho, ele é a base de algo muito especial!', '⚡ Conexão intensa — a vibe é para algo sério, construam juntos um futuro brilhante.', '🥰 Fácil de se apaixonar — é mágico como vocês se complementam e se encantam mutuamente.', '💫 Faíscas e emoções! Um relacionamento vibrante e cheio de descobertas. Viva o amor!', '🌸 Muita afinidade, floresçam juntos! O futuro promete.' ] },
-                { min: 65, text: ['💚 Muito compatíveis! Vale investir tempo juntos para ver essa chama crescer ainda mais.', '🚀 Potencial grande — comuniquem-se abertamente e vejam essa relação florescer.', '🌶️ Combinação quente — explorem esse sentimento e descubram novas paixões juntos.', '🌟 Boa energia! Há muito o que explorar e construir juntos. A jornada será linda.' ] },
-                { min: 50, text: ['🧡 Afinidade moderada — com um empurrãozinho e um pouco de esforço, pode virar algo realmente legal.', '🌱 Tem boa base; tempo e diálogo sincero ajudarão a aprofundar essa conexão.', '⚖️ Meio termo — pode surpreender com intenção e dedicação, o futuro está em suas mãos.', '🤝 Um bom começo! Com dedicação, pode se tornar algo grandioso e inesperado.' ] },
-                { min: 30, text: ['🤔 Compatibilidade baixa — talvez mais amizade que romance, mas tudo é possível no amor!', '🧩 Pode ser que a amizade seja o caminho, com faíscas ocasionais, quem sabe?', '🚧 Diferenças existentes; a curiosidade pode aproximar, mas esteja aberto a surpresas.', '🛤️ Caminhos diferentes. Explore a beleza das distinções entre vocês. Quem sabe onde vai dar?' ] },
-                { min: 0, text: ['😅 Fofo, talvez só amizade — ainda assim vale a pena conhecer e valorizar a conexão.', '🤯 Às vezes opostos se atraem — surpreendam-se e descubram o inesperado!', '💡 Diferenças podem ser interessantes — descubram mais um sobre o outro com mente aberta.', '🎢 Cuidado com expectativas — aproveite o momento e o que a vida tem a oferecer.', '🎲 A vida é uma caixinha de surpresas! Quem sabe o que o futuro reserva? Divirtam-se!'] }
+                { min: 95, text: ['💞 Almas gêmeas detectadas! Destinados a um amor épico e duradouro, uma conexão que transcende o comum.', '✨ Encontro cósmico! Cada detalhe entre vocês canta uma canção de amor. Incrível e mágico!', '💖 Casamento de novela – apenas jogue o buquê e prepare-se para o "felizes para sempre"!', '🌟 Sintonia perfeita! Uma união que todos admiram e desejam. Que sorte a de vocês!', '🌈 Amor que inspira! Uma harmonia divina, vocês são a prova viva do verdadeiro romance.', '♾️ Conexão de outro mundo! Vocês são a definição de par perfeito, uma dança apaixonada de corações.' ] },
+                { min: 80, text: ['🔥 Química poderosa — cuidem desse carinho, ele é a base de algo muito especial e intenso!', '⚡ Conexão intensa — a vibe é para algo sério, construam juntos um futuro brilhante e cheio de paixão.', '🥰 Fácil de se apaixonar — é mágico como vocês se complementam e se encantam mutuamente, pura magia!', '💫 Faíscas e emoções! Um relacionamento vibrante e cheio de descobertas e aventuras. Viva o amor!', '🌸 Muita afinidade, floresçam juntos! O futuro promete um jardim de alegrias e cumplicidade.', '💖 Combinação ardente, o coração de vocês bate em um ritmo só. Delicie-se com essa paixão.' ] },
+                { min: 65, text: ['💚 Muito compatíveis! Vale investir tempo juntos para ver essa chama crescer ainda mais e mais.', '🚀 Potencial grande — comuniquem-se abertamente e vejam essa relação florescer em algo grandioso.', '🌶️ Combinação quente — explorem esse sentimento e descubram novas paixões juntos. O amor está no ar!', '🌟 Boa energia! Há muito o que explorar e construir juntos. A jornada será linda e cheia de boas surpresas.', '💞 Um bom encontro! Aprofundem os laços e vejam a magia acontecer.'] },
+                { min: 50, text: ['🧡 Afinidade moderada — com um empurrãozinho e um pouco de esforço, pode virar algo realmente legal e duradouro.', '🌱 Tem boa base; tempo e diálogo sincero ajudarão a aprofundar essa conexão e a criar raízes fortes.', '⚖️ Meio termo — pode surpreender com intenção e dedicação, o futuro está em suas mãos. Arrisquem!', '🤝 Um bom começo! Com dedicação, pode se tornar algo grandioso e inesperado. Abrace as possibilidades.', '✨ Faíscas ocasionais, mas vale a pena investigar. Quem sabe o que pode surgir?', '🤔 Uma aposta, com grande potencial de crescimento.'] },
+                { min: 30, text: ['🤔 Compatibilidade baixa — talvez mais amizade que romance, mas tudo é possível no amor!', '🧩 Pode ser que a amizade seja o caminho, com faíscas ocasionais, quem sabe?', '🚧 Diferenças existentes; a curiosidade pode aproximar, mas esteja aberto a surpresas.', '🛤️ Caminhos diferentes. Explore a beleza das distinções entre vocês. Quem sabe onde vai dar?', '😅 Fofo, talvez só amizade — ainda assim vale a pena conhecer e valorizar a conexão.', '🤯 Às vezes opostos se atraem — surpreendam-se e descubram o inesperado!'] },
+                { min: 0, text: ['😅 Fofo, talvez só amizade — ainda assim vale a pena conhecer e valorizar a conexão.', '🤯 Às vezes opostos se atraem — surpreendam-se e descubram o inesperado!', '💡 Diferenças podem ser interessantes — descubram mais um sobre o outro com mente aberta.', '🎢 Cuidado com expectativas — aproveite o momento e o que a vida tem a oferecer.', '🎲 A vida é uma caixinha de surpresas! Quem sabe o que o futuro reserva? Divirtam-se!', '🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.'] }
             ],
             friendship: [
-                { min: 95, text: ['🎉 Amigos para sempre! Uma conexão de ouro, rara e verdadeira. Que sorte!', '🤝 Sintonia perfeita de amizade! Vocês são a dupla imbatível, sempre juntos.', '🌟 Laços inquebráveis! Essa amizade é um tesouro que vale a pena guardar.', '😂 Companheirismo puro! Rir e chorar, vocês fazem tudo juntos e é incrível.', '🌍 Amizade de alma! Uma conexão que atravessa qualquer desafio.'] },
-                { min: 80, text: ['✨ Grande potencial de amizade! Construam memórias incríveis e duradouras.', '🚀 Uma dupla dinâmica! Vocês se completam e se motivam, uma amizade para se orgulhar.', '😊 Vibe muito boa! A amizade de vocês é contagiante e cheia de boas energias.', '🤩 Parceria para a vida! Há muito a explorar e crescer juntos.'] },
-                { min: 65, text: ['👍 Boa conexão! Vale a pena investir mais tempo e criar laços mais fortes.', '🌱 Amizade em crescimento! Com dedicação, pode se tornar algo grandioso.', '💬 Comunicação fluida! Vocês se entendem bem, um ótimo sinal para a amizade.', '🌟 Bom começo! Há potencial para uma amizade sólida e divertida.'] },
-                { min: 50, text: ['😉 Afinidade legal! Com um pouco mais de esforço e abertura, pode ser uma amizade muito boa.', '❓ Pode surpreender! Deem uma chance e vejam essa amizade florescer.', '🤝 Boas bases! Explore os interesses em comum e aprofunde o vínculo.', '😊 Companhia agradável! Um bom ponto de partida para um relacionamento mais próximo.'] },
-                { min: 30, text: ['😅 Interessante... talvez o foco seja em outras amizades. Mas tudo pode mudar!', '🤔 Caminhos diferentes, mas podem aprender um com o outro. Quem sabe?', '🚧 Pontos distintos. Respeitem as diferenças e descubram novas perspectivas.', '🤷‍♀️ Amizade casual. Aproveite os momentos e as experiências que surgirem.'] },
-                { min: 0, text: ['🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.', '🙃 Diferenças podem ser desafiadoras. Busquem o que realmente ressoa.', '🧐 Amizades diversas são importantes. Explore diferentes grupos.', '🤫 Nem sempre dá match, e está tudo bem! A vida é cheia de surpresas.'] }
+                { min: 95, text: ['🎉 Amigos para sempre! Uma conexão de ouro, rara e verdadeira. Que sorte ter vocês!', '🤝 Sintonia perfeita de amizade! Vocês são a dupla imbatível, sempre juntos para o que der e vier.', '🌟 Laços inquebráveis! Essa amizade é um tesouro que vale a pena guardar com carinho e cuidado.', '😂 Companheirismo puro! Rir e chorar, vocês fazem tudo juntos e é incrível. A vida é mais leve com vocês.', '🌍 Amizade de alma! Uma conexão que atravessa qualquer desafio, fortalecendo a cada passo.', '🫂 União indestrutível! Vocês são o pilar um do outro, uma amizade para todas as horas.' ] },
+                { min: 80, text: ['✨ Grande potencial de amizade! Construam memórias incríveis e duradouras. O futuro é de vocês!', '🚀 Uma dupla dinâmica! Vocês se completam e se motivam, uma amizade para se orgulhar e celebrar.', '😊 Vibe muito boa! A amizade de vocês é contagiante e cheia de boas energias. Contagiem o mundo!', '🤩 Parceria para a vida! Há muito a explorar e crescer juntos. Que venham as aventuras!', '😄 Laços fortes e verdadeiros. Um ao lado do outro, sempre.', '🌟 Confiança mútua. Encontrem sempre apoio e alegria um no outro.'] },
+                { min: 65, text: ['👍 Boa conexão! Vale a pena investir mais tempo e criar laços mais fortes e significativos.', '🌱 Amizade em crescimento! Com dedicação, pode se tornar algo grandioso e inesquecível.', '💬 Comunicação fluida! Vocês se entendem bem, um ótimo sinal para a amizade. Continuem assim!', '🌟 Bom começo! Há potencial para uma amizade sólida e divertida. Aproveitem cada momento.', '🥳 Aventuras à vista! Preparados para muitas risadas e momentos especiais.'] },
+                { min: 50, text: ['😉 Afinidade legal! Com um pouco mais de esforço e abertura, pode ser uma amizade muito boa e rica.', '❓ Pode surpreender! Deem uma chance e vejam essa amizade florescer. O melhor ainda está por vir.', '🤝 Boas bases! Explore os interesses em comum e aprofunde o vínculo. A descoberta é linda.', '😊 Companhia agradável! Um bom ponto de partida para um relacionamento mais próximo e duradouro.', '😊 Apenas o começo de uma bela jornada de companheirismo.'] },
+                { min: 30, text: ['😅 Interessante... talvez o foco seja em outras amizades. Mas tudo pode mudar!', '🤔 Caminhos diferentes, mas podem aprender um com o outro. Quem sabe?', '🚧 Pontos distintos. Respeitem as diferenças e descubram novas perspectivas.', '🤷‍♀️ Amizade casual. Aproveite os momentos e as experiências que surgirem.', '🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.', '🙃 Diferenças podem ser desafiadoras. Busquem o que realmente ressoa.'] },
+                { min: 0, text: ['🫠 É uma jornada... Encontrem as pessoas certas para cada tipo de conexão.', '🙃 Diferenças podem ser desafiadoras. Busquem o que realmente ressoa.', '🧐 Amizades diversas são importantes. Explore diferentes grupos.', '🤫 Nem sempre dá match, e está tudo bem! A vida é cheia de surpresas.', '😅 Interessante... talvez o foco seja em outras amizades. Mas tudo pode mudar!', '🤔 Caminhos diferentes, mas podem aprender um com o outro. Quem sabe?'] }
             ]
         };
 
@@ -1800,7 +1896,7 @@
 
         // --- On-screen Friendship Emojis Animation ---
         function spawnFriendsEmojis(container, percentage) {
-            const friendEmojis = [' ', '😄', '🌟', '🫂', '🥳'];
+            const friendEmojis = ['🤝', '😄', '🌟', '🫂', '🥳'];
             // Adjust quantity based on percentage, max 10 for on-screen
             const numEmojis = percentage > 90 ? 7 : (percentage > 80 ? 5 : 3);
 
@@ -1885,9 +1981,6 @@
                     ctx.arc(x, y, size/2, 0, Math.PI * 2);
                     ctx.fill();
                 }
-
-                // Header card background - A more integrated look
-                // Removed separate header card for a cleaner, unified canvas output
 
                 // Small decorative elements (emojis based on mode) - Placed strategically for minimal interference
                 ctx.font = '50px Poppins, serif';
@@ -2458,7 +2551,7 @@
                 const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2);
                 const message = pickPhrase(percent, currentAppMode);
 
-                showResultModal('Resultado do Amor Simples', badgeText(name1, name2), percent, message, '', '', 'love');
+                showResultModal('Resultado do Amor Simples', badgeText(name1, name2), percent, message, '', '', 'love', gender1, gender2);
 
                 saveToHistory({
                     a: name1,
@@ -2555,7 +2648,7 @@
                 const percent = calculateSmarterLovePercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
                 const message = pickPhrase(percent, currentAppMode);
 
-                showResultModal('Resultado do Amor Avançado', badgeText(name1, name2), percent, message, photo1Url_love.value, photo2Url_love.value, 'love');
+                showResultModal('Resultado do Amor Avançado', badgeText(name1, name2), percent, message, photo1Url_love.value, photo2Url_love.value, 'love', gender1, gender2, currentSelectedPers1, currentSelectedPers2);
 
                 saveToHistory({
                     a: name1,
@@ -2661,7 +2754,7 @@
                 const percent = calculateFriendshipPercent(name1, name2, gender1, gender2, currentSelectedPers1, currentSelectedPers2);
                 const message = pickPhrase(percent, currentAppMode);
 
-                showResultModal('Resultado do Friend Tester', badgeText(name1, name2), percent, message, photo1Url_friendship.value, photo2Url_friendship.value, 'friendship');
+                showResultModal('Resultado do Friend Tester', badgeText(name1, name2), percent, message, photo1Url_friendship.value, photo2Url_friendship.value, 'friendship', gender1, gender2, currentSelectedPers1, currentSelectedPers2);
 
                 saveToHistory({
                     a: name1,
