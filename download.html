@@ -31,6 +31,14 @@
         }
     </script>
     <style>
+        /* Variáveis CSS para cores do Tailwind que podem ser usadas em JS/CSS direto */
+        :root {
+            --play-green-color: #00875A;
+        }
+        .dark:root {
+            --play-green-color: #00875A; /* Mantém a cor verde consistente no modo escuro */
+        }
+
         /* Estilos globais e fontes */
         body {
             font-family: 'Inter', sans-serif;
@@ -108,6 +116,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            transition: opacity 0.3s ease-in-out; /* Fade for progress bar */
         }
         #downloadProgress .progress-bar-container {
             width: 150px;
@@ -136,7 +145,7 @@
             align-items: center;
             flex-shrink: 0;
             /* Usar custom property para atualizar o gradiente dinamicamente */
-            --progress-degree: 0deg;
+            --progress-degree: 0deg; /* Inicializa a custom property */
         }
 
         .app-icon-wrapper::after {
@@ -147,19 +156,19 @@
             right: 0;
             bottom: 0;
             border-radius: 50%;
-            background: conic-gradient(from 0deg, theme('colors.play-green') var(--progress-degree), transparent var(--progress-degree));
+            /* Usa a custom property para o conic-gradient */
+            background-image: conic-gradient(from 0deg, var(--play-green-color) var(--progress-degree), transparent var(--progress-degree));
             /* Ajuste o valor de calc(50% - Xpx) para controlar a espessura do anel. Menor valor, mais fino */
             mask: radial-gradient(farthest-side, transparent calc(50% - 3px), #000 0);
             -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - 3px), #000 0);
             z-index: 0;
-            transition: background 0.1s linear; /* Transição para o preenchimento */
+            transition: background-image 0.05s linear; /* Transição para o preenchimento */
         }
-
 
         .app-icon-wrapper img {
             width: 80px; /* Um pouco menor para o anel aparecer */
             height: 80px;
-            border-radius: 8px; /* Bordas menos arredondadas: 8px */
+            border-radius: 12px; /* Bordas mais arredondadas: 12px para um look Play Store */
             z-index: 1; /* Para que a imagem fique acima do gradiente */
             object-fit: cover; /* Garante que a imagem preencha a área sem distorcer */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para o ícone */
@@ -176,10 +185,19 @@
             overflow: hidden;
             z-index: 20;
             min-width: 150px;
+            opacity: 0; /* Inicia invisível para a animação de fade */
+            transform: translateY(-10px); /* Começa ligeiramente acima */
+            transition: opacity 0.2s ease-out, transform 0.2s ease-out; /* Animação suave */
+            pointer-events: none; /* Desabilita cliques quando invisível */
         }
         .dark .dropdown-menu {
-            background-color: theme('colors.dark-surface'); /* Corrigido para modo escuro */
+            background-color: theme('colors.dark-surface');
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        .dropdown-menu.visible { /* Nova classe para tornar visível com transição */
+            opacity: 1;
+            transform: translateY(0);
+            pointer-events: auto; /* Habilita cliques quando visível */
         }
         .dropdown-item {
             padding: 0.75rem 1rem;
@@ -187,37 +205,95 @@
             display: flex;
             align-items: center;
             font-size: 0.9rem;
-            color: theme('colors.gray-700');
+            color: theme('colors.gray-700'); /* Cor padrão para light mode */
+            transition: background-color 0.15s ease-in-out;
         }
         .dark .dropdown-item {
-            color: theme('colors.dark-text-primary'); /* Corrigido para modo escuro */
+            color: theme('colors.dark-text-primary'); /* Cor do texto no dark mode */
         }
         .dropdown-item:hover {
             background-color: theme('colors.gray-100');
         }
         .dark .dropdown-item:hover {
-            background-color: theme('colors.gray-800'); /* Corrigido para modo escuro */
+            background-color: theme('colors.gray-800'); /* Cor de fundo no hover para dark mode */
+        }
+
+        /* Estilos para a seção "Sobre este aplicativo" com expansão/recolhimento */
+        .description-content {
+            max-height: 80px; /* Altura máxima para mostrar uma prévia */
+            overflow: hidden;
+            transition: max-height 0.3s ease-out; /* Transição suave para expansão */
+        }
+        .description-content.expanded {
+            max-height: 500px; /* Altura maior quando expandido (ajuste conforme necessário) */
+        }
+        .description-toggle-button {
+            transition: transform 0.3s ease-out;
+        }
+        .description-toggle-button.rotated {
+            transform: rotate(90deg);
+        }
+
+        /* Estilos para o modal de aviso */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-in-out;
+            max-width: 90%;
+            width: 300px;
+        }
+        .modal-overlay.visible .modal-content {
+            transform: translateY(0);
+        }
+        .dark .modal-content {
+            background-color: theme('colors.dark-surface');
+            color: theme('colors.dark-text-primary');
         }
     </style>
 
     <!-- PWA configs -->
+    <!-- Manifest e ícones são importantes para a experiência PWA. 
+         Certifique-se de ter um manifest.json válido e os ícones correspondentes. -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#ff4081">
-    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
-    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+    <meta name="theme-color" content="#00875A"> <!-- Cor do tema Play Store -->
+    <link rel="icon" type="image/png" sizes="192x192" href="https://placehold.co/192x192/00875A/FFFFFF?text=❤️">
+    <link rel="icon" type="image/png" sizes="512x512" href="https://placehold.co/512x512/00875A/FFFFFF?text=❤️">
 </head>
 <body class="bg-play-light-gray dark:bg-dark-background text-gray-800 dark:text-dark-text-primary">
     <!-- Barra superior do aplicativo (similar à Play Store) -->
     <header class="bg-white dark:bg-dark-surface shadow-sm py-4 px-4 flex items-center justify-between sticky top-0 z-10">
         <div class="flex items-center space-x-4">
             <!-- Ícone de seta para voltar -->
-            <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
+            <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
             </button>
             <!-- Ícone de pesquisa -->
-            <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
+            <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
@@ -225,15 +301,23 @@
         </div>
         <!-- Menu de três pontos (opções) -->
         <div class="relative">
-            <button id="menuButton" class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
+            <button id="menuButton" class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v.01M12 12v.01M12 18v.01" />
                 </svg>
             </button>
             <div id="dropdownMenu" class="dropdown-menu hidden">
                 <button id="shareButton" class="dropdown-item">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632L15.316 6.684m0 6.632a3 3 0 110-6.632m0 6.632v6.632c0 .546-.388 1.002-.916 1.114L8.684 21.053A2.03 2.03 0 017 19.342V4.658c0-.546.388-1.002.916-1.114l5.718 1.429c.528.132.916.602.916 1.114v6.632z" />
+                    <!-- Novo ícone de compartilhamento (flecha para cima em um quadrado) -->
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <path d="M7 9l5 -5l5 5"></path>
+                        <path d="M12 14v-10"></path>
+                        <path d="M10 18h4v-3h-4z"></path>
+                        <path d="M12 21v-7"></path>
+                        <path d="M15 11l-3 -3l-3 3"></path>
+                        <path d="M18 13v6a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2v-6"></path>
+                        <path d="M12 17v-3"></path>
                     </svg>
                     Compartilhar app
                 </button>
@@ -274,7 +358,6 @@
             </div>
             <div class="border-l border-gray-200 dark:border-dark-border h-10 mx-2"></div>
             <div class="flex flex-col items-center">
-                <!--  -->
                 <img src="https://play-lh.googleusercontent.com/Nfi5KTLwmF1ezWyn1PH7A-U9GNr4kEE84Ki9YOA_wGtEFwFOTl1WUsgSmW-006_7pCUQwOTCoIv9DQua=w48-h16-rw" onerror="this.onerror=null;this.src='https://placehold.co/48x16/cccccc/000000?text=12+';" alt="Classificação 12 anos" class="h-4 w-auto">
                 <p class="text-play-text-gray dark:text-dark-text-secondary text-xs sm:text-sm mt-1">Classificação 12 anos</p>
             </div>
@@ -296,15 +379,27 @@
         <section class="mb-6 border-b border-gray-200 dark:border-dark-border pb-4">
             <div class="flex justify-between items-center mb-2">
                 <h2 class="text-xl sm:text-2xl font-bold">Sobre este aplicativo</h2>
-                <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
+                <button id="toggleDescription" class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors description-toggle-button">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
             </div>
-            <p class="text-gray-700 dark:text-dark-text-secondary leading-relaxed">
-                Descubra a compatibilidade do amor com o Love Tester! Insira dois nomes e descubra a porcentagem de amor entre vocês. É perfeito para amigos, casais ou apenas para se divertir. Compartilhe os resultados com seus amigos e veja quem é o par perfeito!
-            </p>
+            <div id="descriptionContent" class="description-content">
+                <p class="text-gray-700 dark:text-dark-text-secondary leading-relaxed">
+                    Descubra a compatibilidade do amor com o Love Tester! Insira dois nomes e descubra a porcentagem de amor entre vocês. É perfeito para amigos, casais ou apenas para se divertir. Compartilhe os resultados com seus amigos e veja quem é o par perfeito!
+                    <br><br>
+                    Este aplicativo é uma ferramenta divertida para testar a compatibilidade entre duas pessoas. Digite seu nome e o nome da pessoa amada para obter uma pontuação de amor. Perfeito para brincar em festas ou com amigos!
+                    <br><br>
+                    Recursos:
+                    <ul>
+                        <li>Cálculo de compatibilidade instantâneo</li>
+                        <li>Interface simples e divertida</li>
+                        <li>Compartilhe seus resultados facilmente</li>
+                    </ul>
+                    Baixe agora e descubra seu destino amoroso!
+                </p>
+            </div>
             <div class="flex flex-wrap gap-2 mt-4">
                 <span class="bg-play-light-gray dark:bg-gray-700 dark:text-dark-text-primary text-play-text-gray text-xs px-3 py-1 rounded-full border border-gray-200 dark:border-dark-border">Entretenimento</span>
                 <span class="bg-play-light-gray dark:bg-gray-700 dark:text-dark-text-primary text-play-text-gray text-xs px-3 py-1 rounded-full border border-gray-200 dark:border-dark-border">Casual</span>
@@ -316,7 +411,7 @@
         <section class="mb-6">
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-xl sm:text-2xl font-bold">Classificações e avaliações</h2>
-                <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
+                <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
@@ -371,10 +466,18 @@
     </main>
 
     <!-- Barra de progresso de download -->
-    <div id="downloadProgress" class="hidden">
+    <div id="downloadProgress" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-1000 bg-blue-600 text-white py-3 px-5 rounded-full shadow-lg font-semibold flex items-center gap-3 transition-opacity duration-300 opacity-0 pointer-events-none">
         Baixando... <span id="downloadPercentage">0%</span>
         <div class="progress-bar-container">
             <div id="progressBar" class="progress-bar"></div>
+        </div>
+    </div>
+
+    <!-- Modal de Aviso Personalizado -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modalMessage" class="mb-4"></p>
+            <button id="modalCloseButton" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors">OK</button>
         </div>
     </div>
 
@@ -388,6 +491,23 @@
             }
         }
 
+        // Função para mostrar o modal personalizado
+        function showCustomModal(message) {
+            const customModal = document.getElementById('customModal');
+            const modalMessage = document.getElementById('modalMessage');
+            modalMessage.textContent = message;
+            customModal.classList.add('visible');
+            // Fechar modal ao clicar fora ou no botão OK
+            customModal.addEventListener('click', (event) => {
+                if (event.target === customModal) {
+                    customModal.classList.remove('visible');
+                }
+            });
+            document.getElementById('modalCloseButton').addEventListener('click', () => {
+                customModal.classList.remove('visible');
+            }, { once: true }); // Executa uma vez
+        }
+
         // Verifica a preferência do sistema ao carregar a página
         const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         applyTheme(systemTheme);
@@ -398,14 +518,16 @@
             applyTheme(newTheme);
         });
 
-        // Redirecionamento para iOS
-        function redirectToIOSPage() {
-            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-                window.location.href = "https://utters-apps.github.io/Love-Tester/downloadios.html";
-            }
-        }
-        redirectToIOSPage(); // Chama a função de redirecionamento no carregamento da página
+        // Redirecionamento para iOS (comentado para exibir o conteúdo principal)
+        // function redirectToIOSPage() {
+        //     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+        //     if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        //         if (window.location.href !== "https://utters-apps.github.io/Love-Tester/downloadios.html") {
+        //             window.location.href = "https://utters-apps.github.io/Love-Tester/downloadios.html";
+        //         }
+        //     }
+        // }
+        // redirectToIOSPage(); // Chama a função de redirecionamento no carregamento da página
 
         // Service Worker
         if ("serviceWorker" in navigator) {
@@ -423,6 +545,9 @@
         const menuButton = document.getElementById("menuButton");
         const dropdownMenu = document.getElementById("dropdownMenu");
         const shareButton = document.getElementById("shareButton");
+        const descriptionContent = document.getElementById("descriptionContent");
+        const toggleDescriptionButton = document.getElementById("toggleDescription");
+
 
         // Função para simular o download
         function simulateDownload() {
@@ -430,12 +555,13 @@
             installAppButton.classList.remove('bg-play-green', 'text-white');
             installAppButton.classList.add('bg-white', 'text-play-green', 'border', 'border-play-green');
 
-            appIconWrapper.classList.add('downloading'); // Adiciona classe para animação do ícone
-            downloadProgressDiv.style.display = 'flex'; // Mostra a barra de download
+            downloadProgressDiv.classList.remove('opacity-0', 'pointer-events-none'); // Mostra a barra de download com fade-in
+            downloadProgressDiv.classList.add('opacity-100', 'pointer-events-auto');
+            downloadProgressDiv.style.display = 'flex'; // Garante que esteja visível para a transição
 
             let progress = 0;
-            const duration = 35000; // 35 segundos
-            const intervalTime = 100; // 100ms por etapa
+            const duration = 5000; // 5 segundos para download (mais realista)
+            const intervalTime = 50; // 50ms por etapa
             const steps = duration / intervalTime;
             const increment = 100 / steps;
 
@@ -446,17 +572,19 @@
                 downloadPercentageSpan.textContent = `${Math.round(progress)}%`;
                 progressBar.style.width = `${progress}%`;
                 
-                // Atualiza a custom property CSS para o conic-gradient
-                appIconWrapper.style.setProperty('--progress-degree', `${progress * 3.6}deg`); // Multiplica por 3.6 para ir de 0 a 360 graus
-
+                // Atualiza a custom property CSS para o conic-gradient no pseudo-elemento ::after
+                appIconWrapper.style.setProperty('--progress-degree', `${progress * 3.6}deg`); 
 
                 if (progress >= 100) {
                     clearInterval(interval);
-                    downloadProgressDiv.style.display = 'none'; // Esconde a barra de download
+                    downloadProgressDiv.classList.remove('opacity-100', 'pointer-events-auto'); // Esconde a barra de download com fade-out
+                    downloadProgressDiv.classList.add('opacity-0', 'pointer-events-none');
+                    // Aguarda a transição antes de ocultar completamente
+                    setTimeout(() => downloadProgressDiv.style.display = 'none', 300);
+                    
                     installAppButton.textContent = 'Abrir'; // Muda o texto para "Abrir"
                     installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
                     installAppButton.classList.add('bg-play-green', 'text-white');
-                    appIconWrapper.classList.remove('downloading'); // Remove classe da animação do ícone
                     appIconWrapper.style.setProperty('--progress-degree', '0deg'); // Reseta o progresso visual do círculo
                 }
             }, intervalTime);
@@ -472,32 +600,10 @@
 
             installAppButton.onclick = () => {
                 if (installAppButton.textContent === 'Abrir') {
-                    // Tenta abrir o PWA usando diferentes métodos
-                    console.log("Tentando abrir o aplicativo...");
-
-                    // 1. Tentar URL scheme customizado
-                    window.location.href = 'lovetester://';
-
-                    // 2. Fallback para URL do PWA (raiz) após um pequeno atraso
-                    const fallbackToPwaUrl = setTimeout(() => {
-                        console.log("URL scheme falhou ou tempo esgotado. Tentando abrir PWA na raiz.");
-                        window.location.href = '/';
-                    }, 1000); // 1 segundo para tentar o URL scheme
-
-                    // 3. Fallback final para a página do GitHub (se o PWA na raiz falhar)
-                    const fallbackToGithubPage = setTimeout(() => {
-                        console.log("PWA na raiz falhou ou tempo esgotado. Tentando abrir página do GitHub.");
-                        window.location.href = 'https://utters-apps.github.io/Love-Tester';
-                    }, 2000); // 1 segundo após o fallback do PWA (total 2 segundos)
-
-                    // Se a página for descarregada (indicando que um dos links funcionou), limpar os timeouts
-                    window.addEventListener('beforeunload', () => {
-                        clearTimeout(fallbackToPwaUrl);
-                        clearTimeout(fallbackToGithubPage);
-                    });
-
+                    console.log("Clicou em Abrir. Simulação de abertura do aplicativo.");
+                    showCustomModal("O Love Tester foi aberto!"); // Simula a abertura do app
                 } else if (deferredPrompt) {
-                    // Não redireciona, apenas tenta o prompt de instalação
+                    // Tenta mostrar o prompt de instalação do PWA
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then((choice) => {
                         if (choice.outcome === "accepted") {
@@ -505,37 +611,31 @@
                             simulateDownload(); // Inicia a simulação de download
                         } else {
                             console.log("Instalação do aplicativo cancelada.");
-                            // Retorna o botão ao estado "Instalar" se o usuário cancelar
                             installAppButton.textContent = 'Instalar';
                             installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
                             installAppButton.classList.add('bg-play-green', 'text-white');
-                            installAppButton.style.display = 'block';
                         }
                         deferredPrompt = null;
                     });
                 } else {
-                    console.log("Nenhum prompt de instalação disponível e app não em modo standalone. Mantendo na página.");
-                    // Não redireciona, apenas mantém na página.
-                    installAppButton.textContent = 'Instalar';
-                    installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
-                    installAppButton.classList.add('bg-play-green', 'text-white');
-                    installAppButton.style.display = 'block';
+                    console.log("Nenhum prompt de instalação disponível. O navegador pode não suportar ou o PWA já está instalado.");
+                    showCustomModal("Não foi possível instalar. O navegador pode não suportar ou o app já está instalado.");
                 }
             };
         });
 
         // Verifica o estado do PWA ao carregar a página
         window.addEventListener('load', () => {
-            // Adiciona a classe 'loaded' para iniciar a animação de fade-in
-            document.body.classList.add('loaded');
+            document.body.classList.add('loaded'); // Inicia a animação de fade-in
 
-            // Garante que a barra de download esteja escondida no carregamento
-            downloadProgressDiv.style.display = 'none';
-
-            // Pequeno delay para garantir que beforeinstallprompt teve chance de disparar
+            downloadProgressDiv.classList.remove('opacity-100', 'pointer-events-auto'); // Garante que a barra de download esteja escondida
+            downloadProgressDiv.classList.add('opacity-0', 'pointer-events-none');
+            
             setTimeout(() => {
+                // Emulando a verificação de instalação do PWA
+                // Se houver um service worker ativo (um forte indicativo de PWA), mostramos "Abrir".
+                // Caso contrário, "Instalar" ou esperamos o beforeinstallprompt.
                 if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                    // Se há um service worker ativo, o PWA já está instalado
                     installAppButton.textContent = 'Abrir';
                     installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
                     installAppButton.classList.add('bg-play-green', 'text-white');
@@ -547,57 +647,81 @@
                     installAppButton.classList.add('bg-play-green', 'text-white');
                     installAppButton.style.display = 'block';
                 }
-                // Se deferredPrompt estiver definido, o beforeinstallprompt já cuidou do botão
-            }, 500);
+            }, 500); // Pequeno atraso para a animação inicial do corpo
         });
 
 
-        // Caso o app seja instalado após a página carregar
+        // Caso o app seja instalado após a página carregar (evento PWA real)
         window.addEventListener('appinstalled', () => {
             installAppButton.textContent = 'Abrir';
+            installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
+            installAppButton.classList.add('bg-play-green', 'text-white');
             installAppButton.style.display = 'block';
-            downloadProgressDiv.style.display = 'none'; // Garante que a barra de download seja escondida
+            downloadProgressDiv.classList.remove('opacity-100', 'pointer-events-auto'); // Garante que a barra de download seja escondida
+            downloadProgressDiv.classList.add('opacity-0', 'pointer-events-none');
             console.log('Love Tester PWA instalado!');
         });
 
-        // Lógica para o menu de 3 pontos
+        // Lógica para o menu de 3 pontos com animação de fade
         menuButton.addEventListener('click', (event) => {
-            dropdownMenu.classList.toggle('hidden');
-            event.stopPropagation(); // Evita que o clique se propague para o document
+            if (dropdownMenu.classList.contains('hidden')) {
+                dropdownMenu.classList.remove('hidden');
+                // Pequeno delay para a transição funcionar
+                setTimeout(() => {
+                    dropdownMenu.classList.add('visible');
+                }, 10); 
+            } else {
+                dropdownMenu.classList.remove('visible');
+                // Espera a transição terminar para adicionar 'hidden'
+                setTimeout(() => {
+                    dropdownMenu.classList.add('hidden');
+                }, 200); // Deve ser igual à duração da transição CSS
+            }
+            event.stopPropagation();
         });
 
         // Esconde o menu se clicar em qualquer lugar fora dele
         document.addEventListener('click', (event) => {
             if (!menuButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                dropdownMenu.classList.add('hidden');
+                if (dropdownMenu.classList.contains('visible')) {
+                    dropdownMenu.classList.remove('visible');
+                    setTimeout(() => {
+                        dropdownMenu.classList.add('hidden');
+                    }, 200);
+                }
             }
         });
 
-        // Lógica para o botão de compartilhar
-        shareButton.addEventListener('click', () => {
-            dropdownMenu.classList.add('hidden'); // Esconde o menu ao clicar em compartilhar
+        // Lógica para o botão de compartilhar (Web Share API)
+        shareButton.addEventListener('click', async () => {
             if (navigator.share) {
-                // Tenta usar a API de compartilhamento nativa
-                navigator.share({
-                    title: document.title,
-                    url: window.location.href
-                }).then(() => {
-                    console.log('Link compartilhado com sucesso!');
-                }).catch((error) => {
+                try {
+                    await navigator.share({
+                        title: 'Love Tester',
+                        text: 'Descubra a compatibilidade do amor com o Love Tester!',
+                        url: window.location.href, // Compartilha a URL atual
+                    });
+                    console.log('Conteúdo compartilhado com sucesso!');
+                } catch (error) {
                     console.error('Erro ao compartilhar:', error);
-                });
+                }
             } else {
-                // Fallback para navegadores que não suportam navigator.share (copia para área de transferência)
-                const dummy = document.createElement('textarea');
-                document.body.appendChild(dummy);
-                dummy.value = window.location.href;
-                dummy.select();
-                document.execCommand('copy');
-                document.body.removeChild(dummy);
-                console.log('Link copiado para a área de transferência!');
-                // Aqui você pode adicionar uma pequena notificação para o usuário
+                console.log('API Web Share não suportada neste navegador.');
+                showCustomModal('A API de compartilhamento não é suportada neste navegador. Você pode copiar a URL manualmente.');
             }
+            // Fechar o dropdown após o clique
+            dropdownMenu.classList.remove('visible');
+            setTimeout(() => {
+                dropdownMenu.classList.add('hidden');
+            }, 200);
         });
+
+        // Lógica para expandir/recolher a seção "Sobre este aplicativo"
+        toggleDescriptionButton.addEventListener('click', () => {
+            const isExpanded = descriptionContent.classList.toggle('expanded');
+            toggleDescriptionButton.classList.toggle('rotated', isExpanded);
+        });
+
     </script>
 </body>
 </html>
