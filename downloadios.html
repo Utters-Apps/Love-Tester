@@ -6,16 +6,18 @@
     <title>Love Tester</title>
     <!-- Configurações PWA -->
     <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff4081">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Love Tester">
     <link rel="apple-touch-icon" href="https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium"> <!-- Ícone para iOS HomeScreen -->
-    <meta name="theme-color" content="#f2f2f7">
 
     <style>
         /* Variáveis CSS para cores */
         :root {
-            --age-rating-bg-color: #FFD700; /* Dourado para o selo de idade no modo claro */
+            --age-rating-bg-color: #FFEB3B; /* Amarelo mais claro para o selo de idade no modo claro */
             --age-rating-text-color: #000; /* Preto para o texto do selo de idade no modo claro */
             --body-bg-color: #f2f2f7; /* Cor de fundo padrão do body no modo claro */
             --body-text-color: #1c1c1e; /* Cor do texto padrão do body no modo claro */
@@ -33,12 +35,14 @@
             --modal-text-color: #1c1c1e;
             --modal-button-bg-color: #007aff;
             --modal-button-hover-bg-color: #005bb5;
+            --modal-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Sombra mais acentuada para modais */
+            --install-step-number-color: #007aff; /* Cor dos números dos passos no modal */
         }
 
         @media (prefers-color-scheme: dark) {
             :root {
-                --age-rating-bg-color: #B8860B; /* Amarelo mais escuro para o selo de idade no modo escuro */
-                --age-rating-text-color: #fff; /* Branco para o texto do selo de idade no modo escuro */
+                --age-rating-bg-color: #CFCB23; /* Amarelo ajustado para o modo escuro */
+                --age-rating-text-color: #000; /* Preto para o texto do selo de idade no modo escuro */
                 --body-bg-color: #000; /* Cor de fundo padrão do body no modo escuro */
                 --body-text-color: #fff; /* Cor do texto padrão do body no modo escuro */
                 --secondary-text-color: #8e8e93; /* Cor de texto secundária no modo escuro */
@@ -55,6 +59,8 @@
                 --modal-text-color: #fff;
                 --modal-button-bg-color: #0a84ff;
                 --modal-button-hover-bg-color: #30aaff;
+                --modal-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Sombra mais acentuada para modais no modo escuro */
+                --install-step-number-color: #0a84ff; /* Cor dos números dos passos no modal */
             }
             /* Ajuste da scrollbar para modo escuro */
             ::-webkit-scrollbar-thumb {
@@ -93,6 +99,7 @@
             padding: 20px;
             padding-bottom: 15px;
             animation: fadeIn 0.8s ease-out;
+            position: relative; /* Para posicionar o ícone de ação */
         }
         .app-icon {
             width: 120px;
@@ -134,6 +141,7 @@
         .get-button {
             background: var(--get-button-bg-color);
             color: #fff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
             font-weight: 600;
             padding: 9px 24px;
             border-radius: 25px;
@@ -181,6 +189,24 @@
         @keyframes spin {
             from { transform: translate(-50%, -50%) rotate(0deg); }
             to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Ícone de Ação (Compartilhar/Instalar) */
+        #actionIcon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 10px; /* Espaço entre o botão "Obter" e o ícone */
+            position: absolute;
+            right: 20px; /* Posiciona à direita do header */
+            /* Ajustado para alinhar com o centro do botão OBTER */
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        #actionIcon img {
+            width: 35px; /* Tamanho do ícone */
+            height: 35px;
         }
 
         /* Divisor */
@@ -310,12 +336,6 @@
         .rating-section {
             padding: 20px;
         }
-        .rating-section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
         .rating-section-header h2 {
             font-size: 22px;
             font-weight: 700;
@@ -404,8 +424,8 @@
         .modal-content {
             background-color: var(--modal-bg-color);
             padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            border-radius: 12px; /* Mais arredondado, como na App Store */
+            box-shadow: var(--modal-shadow);
             text-align: center;
             transform: translateY(-20px);
             transition: transform 0.3s ease-in-out;
@@ -419,15 +439,77 @@
         .modal-close-button {
             background-color: var(--modal-button-bg-color);
             color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Mesma fonte do Obter */
+            font-weight: 600; /* Mesma espessura do Obter */
+            padding: 10px 20px; /* Mais espaçoso */
+            border-radius: 25px; /* Mais arredondado */
             border: none;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 20px; /* Mais espaço */
             transition: background-color 0.2s;
         }
         .modal-close-button:hover {
             background-color: var(--modal-button-hover-bg-color);
+        }
+
+        /* Estilos para o Modal de Instruções de Instalação */
+        .install-instructions-modal .modal-content {
+            width: 340px; /* Um pouco mais largo para as instruções */
+            max-width: 90%;
+            padding: 30px 24px;
+            text-align: left; /* Alinha o texto à esquerda dentro do modal */
+        }
+        .install-instructions-modal h3 {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--modal-text-color);
+            text-align: center; /* Centraliza o título */
+        }
+        .install-step {
+            display: flex;
+            align-items: center; /* Centraliza verticalmente o conteúdo do passo */
+            margin-bottom: 20px; /* Mais espaçamento entre os passos */
+            position: relative;
+        }
+        .install-step .step-number {
+            font-size: 28px; /* Número maior */
+            font-weight: 700;
+            color: var(--install-step-number-color); /* Cor azul da App Store */
+            margin-right: 15px;
+            flex-shrink: 0;
+            line-height: 1; /* Para alinhar bem com o texto */
+        }
+        .install-step .step-text {
+            font-size: 16px; /* Texto um pouco maior */
+            line-height: 1.5;
+            color: var(--modal-text-color);
+            flex-grow: 1;
+        }
+        .install-step .step-icon {
+            width: 45px; /* Tamanho do ícone azul - ligeiramente maior */
+            height: 45px; /* Tamanho do ícone azul - ligeiramente maior */
+            margin-left: 10px;
+            flex-shrink: 0;
+            /* Remover vertical-align, confiar no align-items: center */
+        }
+        .install-step .step-gif {
+            width: 100px; /* Largura do GIF um pouco maior */
+            height: auto;
+            border-radius: 10px; /* Mais arredondado */
+            margin-left: 15px; /* Mais espaço */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        /* Estilo para o botão de fechar dentro do modal de instruções */
+        .install-instructions-modal .modal-close-button {
+            width: auto; /* Ajusta a largura ao conteúdo */
+            padding: 10px 25px; /* Mais padding */
+            display: block; /* Ocupa a própria linha */
+            margin-left: auto; /* Centraliza */
+            margin-right: auto; /* Centraliza */
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"; /* Mesma fonte do Obter */
+            font-weight: 600; /* Mesma espessura do Obter */
         }
     </style>
 
@@ -456,6 +538,10 @@
                 <div class="progress-circle" id="progressCircle"></div>
             </div>
         </div>
+        <!-- Novo Ícone de Ação (Compartilhar/Instalar) -->
+        <button id="actionIcon" aria-label="Compartilhar Love Tester">
+            <img src="https://pbs.twimg.com/media/GzeHNiwXMAALH1Q?format=png&name=360x360" alt="Ícone de Compartilhar iOS">
+        </button>
     </div>
 
     <div class="divider"></div>
@@ -551,7 +637,7 @@
 
     <!-- INFORMAÇÕES DETALHADAS -->
     <div class="info">
-        <h2 class="section-title">Informações</h2>
+        <h2 class="section-title">Informações</div>
         <div class="info-row"><span>Desenvolvido por</span><span>Utters Apps</span></div>
         <div class="info-row"><span>Categoria</span><span>Romance</span></div>
         <div class="info-row"><span>Compatibilidade</span><span>iOS 12.0 ou posterior</span></div>
@@ -574,7 +660,35 @@
         </div>
     </div>
 
+    <!-- Modal de Instruções de Instalação PWA para iOS -->
+    <div id="installInstructionsModal" class="modal-overlay install-instructions-modal">
+        <div class="modal-content">
+            <h3>Como Instalar o Love Tester</h3>
+            <div class="install-step">
+                <span class="step-number">1</span>
+                <span class="step-text">Toque no ícone <img src="https://pbs.twimg.com/media/GzeHNiwXMAALH1Q?format=png&name=360x360" alt="Ícone de Compartilhar" class="step-icon"> Compartilhar na barra de navegação inferior do Safari.</span>
+            </div>
+            <div class="install-step">
+                <span class="step-number">2</span>
+                <span class="step-text">No menu, toque em "Adicionar à Tela de Início".</span>
+                <img src="https://igstatic.azureedge.net/public/a2h/ios/PT-menu.gif" alt="GIF mostrando o menu de compartilhamento do iOS" class="step-gif">
+            </div>
+            <div class="install-step">
+                <span class="step-number">3</span>
+                <span class="step-text">Toque em "Adicionar" no canto superior direito da tela de confirmação.</span>
+                <img src="https://placehold.co/80x80/007aff/FFFFFF?text=Adicionar" alt="Botão Adicionar" class="step-icon">
+            </div>
+            <button id="closeInstallInstructions" class="modal-close-button">Entendi</button>
+        </div>
+    </div>
+
     <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js")
+                .then(() => console.log("Service Worker registered"))
+                .catch(err => console.error("SW registration failed:", err));
+        }
+
         const getBtn = document.getElementById("getBtn");
         const progressCircle = document.getElementById("progressCircle");
         const descriptionContent = document.getElementById("descriptionContent");
@@ -582,6 +696,9 @@
         const customModal = document.getElementById('customModal');
         const modalMessage = document.getElementById('modalMessage');
         const modalCloseButton = document.getElementById('modalCloseButton');
+        const installInstructionsModal = document.getElementById('installInstructionsModal');
+        const closeInstallInstructionsButton = document.getElementById('closeInstallInstructions');
+        const actionIcon = document.getElementById('actionIcon'); // Novo ícone de ação
 
         let isInstalling = false;
         const downloadDuration = 5000; // 5 segundos para a simulação de download
@@ -611,7 +728,7 @@
             applyTheme(newTheme);
         });
 
-        // Função para mostrar o modal personalizado
+        // Função para mostrar o modal de aviso personalizado
         function showCustomModal(message) {
             modalMessage.textContent = message;
             customModal.classList.add('visible');
@@ -625,11 +742,17 @@
             };
         }
 
-        // Service Worker Registration
-        if ("serviceWorker" in navigator) {
-            navigator.serviceWorker.register("service-worker.js")
-                .then(() => console.log("Service Worker registrado com sucesso."))
-                .catch(error => console.error("Falha no registro do Service Worker:", error));
+        // Função para mostrar o modal de instruções de instalação
+        function showInstallInstructionsModal() {
+            installInstructionsModal.classList.add('visible');
+            closeInstallInstructionsButton.onclick = () => {
+                installInstructionsModal.classList.remove('visible');
+            };
+            installInstructionsModal.onclick = (event) => {
+                if (event.target === installInstructionsModal) {
+                    installInstructionsModal.classList.remove('visible');
+                }
+            };
         }
 
         // PWA `beforeinstallprompt` event for 'Add to Home Screen'
@@ -675,19 +798,48 @@
                         simulateDownload(); // Inicia a simulação de download
                     } else {
                         console.log('Usuário recusou a instalação do PWA.');
-                        getBtn.classList.remove("hidden");
-                        progressCircle.classList.remove("visible");
+                        getBtn.classList.remove("hidden"); // Mostra o botão novamente se recusado
+                        progressCircle.classList.remove("visible"); // Esconde o spinner
                         isInstalling = false;
+                        showCustomModal("Instalação cancelada. Você pode tentar novamente."); // Feedback ao usuário
                     }
-                    deferredPrompt = null;
+                    deferredPrompt = null; // Reseta deferredPrompt após o uso
+                }).catch(error => {
+                    console.error("Erro ao processar escolha do usuário:", error);
+                    getBtn.classList.remove("hidden");
+                    progressCircle.classList.remove("visible");
+                    isInstalling = false;
+                    showCustomModal("Ocorreu um erro durante a instalação.");
                 });
             } else {
-                // Fallback para navegadores que não disparam beforeinstallprompt ou onde o PWA já está instalado
-                // ou não é possível instalar.
-                console.log("Nenhum prompt de instalação disponível. Iniciando simulação de download.");
-                simulateDownload();
+                // Fallback: se beforeinstallprompt não disparou ou PWA já está instalado/não suportado.
+                console.log("Nenhum prompt de instalação disponível. Exibindo instruções para instalação manual.");
+                showInstallInstructionsModal(); // Mostra o modal de instruções de instalação
+                getBtn.classList.remove("hidden");
+                progressCircle.classList.remove("visible");
+                isInstalling = false;
             }
         });
+
+        // Adiciona o listener para o novo ícone de ação (Compartilhar)
+        actionIcon.addEventListener('click', async () => {
+            if (navigator.share) {
+                try {
+                    await navigator.share({
+                        title: 'Love Tester',
+                        text: 'Descubra a compatibilidade do amor com o Love Tester!',
+                        url: window.location.href // URL da página atual
+                    });
+                    console.log('Conteúdo compartilhado com sucesso!');
+                } catch (error) {
+                    console.error('Erro ao compartilhar:', error);
+                    showCustomModal('Não foi possível compartilhar. Erro: ' + error.message);
+                }
+            } else {
+                showCustomModal('A função de compartilhamento nativo não é suportada neste navegador. Você pode copiar o link da página manualmente.');
+            }
+        });
+
 
         // Function to simulate download (for browsers without beforeinstallprompt or for a more custom flow)
         function simulateDownload() {
@@ -738,7 +890,9 @@
                     '/index.html',
                     'https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium',
                     'https://pbs.twimg.com/media/Gzc2_v3WoAAlcRY?format=png&name=900x900',
-                    'https://pbs.twimg.com/media/Gzc3Gn1XwAAv9ix?format=png&name=small'
+                    'https://pbs.twimg.com/media/Gzc3Gn1XwAAv9ix?format=png&name=small',
+                    'https://pbs.twimg.com/media/GzeHNiwXMAALH1Q?format=png&name=360x360',
+                    'https://igstatic.azureedge.net/public/a2h/ios/PT-menu.gif'
                 ]);
             })
         );
