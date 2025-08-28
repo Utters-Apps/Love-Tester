@@ -9,6 +9,7 @@
     <!-- Configuração do Tailwind para usar a fonte Inter e cores personalizadas -->
     <script>
         tailwind.config = {
+            darkMode: 'media', // Habilita o modo escuro baseado na preferência do sistema
             theme: {
                 extend: {
                     fontFamily: {
@@ -18,6 +19,12 @@
                         'play-green': '#00875A', // Cor verde do botão de instalação da Play Store
                         'play-light-gray': '#F5F5F5', // Cor de fundo para seções
                         'play-text-gray': '#5F6368', // Cor de texto secundária
+                        // Cores para o modo escuro
+                        'dark-background': '#121212',
+                        'dark-surface': '#1E1E1E',
+                        'dark-text-primary': '#E0E0E0',
+                        'dark-text-secondary': '#A0A0A0',
+                        'dark-border': '#333333',
                     }
                 }
             }
@@ -29,8 +36,41 @@
             font-family: 'Inter', sans-serif;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
-            background-color: #ffffff; /* Fundo branco para a página */
+            background-color: #ffffff; /* Fundo claro padrão */
         }
+        /* Estilos para o modo escuro */
+        .dark body {
+            background-color: theme('colors.dark-background');
+            color: theme('colors.dark-text-primary');
+        }
+        .dark .bg-white {
+            background-color: theme('colors.dark-surface');
+        }
+        .dark .text-gray-800 {
+            color: theme('colors.dark-text-primary');
+        }
+        .dark .text-play-text-gray {
+            color: theme('colors.dark-text-secondary');
+        }
+        .dark .shadow-sm {
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+        }
+        .dark .shadow-md {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+        }
+        .dark .border-gray-200 {
+            border-color: theme('colors.dark-border');
+        }
+        .dark .bg-gray-200 {
+            background-color: theme('colors.dark-border');
+        }
+        .dark .text-gray-600 {
+            color: theme('colors.dark-text-secondary');
+        }
+        .dark .bg-play-light-gray {
+            background-color: theme('colors.dark-surface'); /* Ajuste para bg claro em modo escuro */
+        }
+
         /* Esconder a barra de rolagem para o carrossel de imagens */
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
@@ -39,10 +79,100 @@
             -ms-overflow-style: none;  /* IE and Edge */
             scrollbar-width: none;  /* Firefox */
         }
-        /* Estilo para o botão de instalação PWA */
+
+        /* Esconder o botão de instalação por padrão para controle via JS */
         #installAppButton {
-            /* O botão de instalação agora é o botão principal, então não precisa ser fixo e oculto por padrão no CSS */
-            /* Sua visibilidade será controlada pelo JavaScript */
+            display: none;
+        }
+
+        /* Estilo para a barra de download */
+        #downloadProgress {
+            display: none; /* Escondido por padrão, só aparece com JS */
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+            background-color: #2563EB; /* Azul vibrante */
+            color: white;
+            padding: 12px 20px;
+            border-radius: 9999px; /* Full rounded */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        #downloadProgress .progress-bar-container {
+            width: 150px;
+            height: 6px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 9999px;
+            overflow: hidden;
+        }
+        #downloadProgress .progress-bar {
+            height: 100%;
+            width: 0%;
+            background-color: white;
+            border-radius: 9999px;
+            transition: width 0.3s ease-in-out;
+        }
+
+        /* Estilo para o círculo de download em torno do ícone do app */
+        .app-icon-wrapper {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%; /* Faz o wrapper ser circular */
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            background: none; /* Inicia sem o gradiente */
+        }
+
+        .app-icon-wrapper img {
+            width: 80px; /* Um pouco menor para o anel aparecer */
+            height: 80px;
+            border-radius: 16px; /* Mantém o arredondamento do ícone interno */
+            z-index: 1; /* Para que a imagem fique acima do gradiente */
+            object-fit: cover; /* Garante que a imagem preencha a área sem distorcer */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para o ícone */
+        }
+
+        /* Estilos para o menu de 3 pontos */
+        .dropdown-menu {
+            position: absolute;
+            right: 1rem;
+            top: 4.5rem; /* Ajuste para ficar abaixo da barra superior */
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            z-index: 20;
+            min-width: 150px;
+        }
+        .dark .dropdown-menu {
+            background-color: theme('colors.dark-surface');
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+        }
+        .dropdown-item {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+            color: theme('colors.gray-700');
+        }
+        .dark .dropdown-item {
+            color: theme('colors.dark-text-primary');
+        }
+        .dropdown-item:hover {
+            background-color: theme('colors.gray-100');
+        }
+        .dark .dropdown-item:hover {
+            background-color: theme('colors.gray-800');
         }
     </style>
 
@@ -52,110 +182,117 @@
     <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
     <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 </head>
-<body class="bg-play-light-gray">
+<body class="bg-play-light-gray dark:bg-dark-background text-gray-800 dark:text-dark-text-primary">
     <!-- Barra superior do aplicativo (similar à Play Store) -->
-    <header class="bg-white shadow-sm py-4 px-4 flex items-center justify-between sticky top-0 z-10">
+    <header class="bg-white dark:bg-dark-surface shadow-sm py-4 px-4 flex items-center justify-between sticky top-0 z-10">
         <div class="flex items-center space-x-4">
             <!-- Ícone de seta para voltar -->
-            <button class="text-play-text-gray hover:text-gray-900 focus:outline-none">
+            <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
             </button>
             <!-- Ícone de pesquisa -->
-            <button class="text-play-text-gray hover:text-gray-900 focus:outline-none">
+            <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
             </button>
         </div>
         <!-- Menu de três pontos (opções) -->
-        <button class="text-play-text-gray hover:text-gray-900 focus:outline-none">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v.01M12 12v.01M12 18v.01" />
-            </svg>
-        </button>
+        <div class="relative">
+            <button id="menuButton" class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v.01M12 12v.01M12 18v.01" />
+                </svg>
+            </button>
+            <div id="dropdownMenu" class="dropdown-menu hidden">
+                <button id="shareButton" class="dropdown-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6.632L15.316 6.684m0 6.632a3 3 0 110-6.632m0 6.632v6.632c0 .546-.388 1.002-.916 1.114L8.684 21.053A2.03 2.03 0 017 19.342V4.658c0-.546.388-1.002.916-1.114l5.718 1.429c.528.132.916.602.916 1.114v6.632z" />
+                    </svg>
+                    Compartilhar app
+                </button>
+            </div>
+        </div>
     </header>
 
     <!-- Conteúdo principal da página do aplicativo -->
-    <main class="container mx-auto px-4 py-6 max-w-2xl bg-white rounded-lg shadow-md mt-4">
+    <main class="container mx-auto px-4 py-6 max-w-2xl bg-white dark:bg-dark-surface rounded-lg shadow-md mt-4">
 
         <!-- Seção de detalhes do aplicativo: Ícone, Nome, Desenvolvedor -->
         <section class="flex items-start mb-6">
-            <!-- Ícone do Love Tester com a URL fornecida -->
-            <img src="https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium" onerror="this.onerror=null;this.src='https://placehold.co/100x100/FFB6C1/FF0000?text=❤️';" alt="Ícone do Love Tester" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl mr-4 shadow-md">
+            <!-- Ícone do Love Tester com o wrapper para a animação de download -->
+            <div id="appIconWrapper" class="app-icon-wrapper mr-4">
+                <img src="https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium" onerror="this.onerror=null;this.src='https://placehold.co/80x80/FFB6C1/FF0000?text=❤️';" alt="Ícone do Love Tester" class="rounded-2xl shadow-md">
+            </div>
             <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Love Tester</h1>
-                <p class="text-play-text-gray text-sm sm:text-base">Utter's apps</p>
+                <h1 class="text-2xl sm:text-3xl font-bold">Love Tester</h1>
+                <p class="text-play-text-gray dark:text-dark-text-secondary text-sm sm:text-base">Utter's apps</p>
             </div>
         </section>
 
         <!-- Seção de estatísticas e selos (Avaliações, Tamanho, Classificação) -->
-        <section class="flex justify-around items-center text-center mb-6 border-b border-t border-gray-200 py-4">
+        <section class="flex justify-around items-center text-center mb-6 border-b border-t border-gray-200 dark:border-dark-border py-4">
             <div class="flex flex-col items-center">
-                <div class="flex items-center text-gray-800 text-base sm:text-lg font-semibold">
+                <div class="flex items-center text-base sm:text-lg font-semibold">
                     4.2
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-700 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-700 dark:text-gray-400 ml-1" viewBox="0 0 20 20" fill="currentColor">
                         <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.538 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.783.57-1.838-.197-1.538-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.92 8.727c-.783-.57-.381-1.81.588-1.81h3.462a1 1 0 00.95-.69l1.07-3.292z" />
                     </svg>
                 </div>
-                <p class="text-play-text-gray text-xs sm:text-sm mt-1">15 avaliações</p>
+                <p class="text-play-text-gray dark:text-dark-text-secondary text-xs sm:text-sm mt-1">15 avaliações</p>
             </div>
-            <div class="border-l border-gray-200 h-10 mx-2"></div>
+            <div class="border-l border-gray-200 dark:border-dark-border h-10 mx-2"></div>
             <div class="flex flex-col items-center">
-                <p class="text-gray-800 text-base sm:text-lg font-semibold">15 MB</p>
-                <p class="text-play-text-gray text-xs sm:text-sm mt-1">Tamanho</p>
+                <p class="text-base sm:text-lg font-semibold">15 MB</p>
+                <p class="text-play-text-gray dark:text-dark-text-secondary text-xs sm:text-sm mt-1">Tamanho</p>
             </div>
-            <div class="border-l border-gray-200 h-10 mx-2"></div>
+            <div class="border-l border-gray-200 dark:border-dark-border h-10 mx-2"></div>
             <div class="flex flex-col items-center">
                 <!--  -->
                 <img src="https://play-lh.googleusercontent.com/Nfi5KTLwmF1ezWyn1PH7A-U9GNr4kEE84Ki9YOA_wGtEFwFOTl1WUsgSmW-006_7pCUQwOTCoIv9DQua=w48-h16-rw" onerror="this.onerror=null;this.src='https://placehold.co/48x16/cccccc/000000?text=12+';" alt="Classificação 12 anos" class="h-4 w-auto">
-                <p class="text-play-text-gray text-xs sm:text-sm mt-1">Classificação 12 anos</p> <!-- Texto alterado aqui -->
+                <p class="text-play-text-gray dark:text-dark-text-secondary text-xs sm:text-sm mt-1">Classificação 12 anos</p>
             </div>
         </section>
 
-        <!-- Botão de Instalação (agora com id para PWA) -->
+        <!-- Botão de Instalação/Abrir -->
         <button id="installAppButton" class="w-full bg-play-green text-white font-semibold py-3 rounded-full text-lg sm:text-xl mb-6 hover:bg-green-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-play-green focus:ring-opacity-50">
             Instalar
         </button>
 
-        <!-- Galeria de Imagens (apenas screenshots) -->
+        <!-- Galeria de Imagens (apenas 2 screenshots) -->
         <section class="mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide flex space-x-4 pb-2">
-            <!-- Novos Screenshots 1 e 2 -->
+            <!-- Screenshots 1 e 2 -->
             <img src="https://pbs.twimg.com/media/Gzc2_v3WoAAlcRY?format=png&name=900x900" onerror="this.onerror=null;this.src='https://placehold.co/600x1000/FFD1DC/FF0000?text=Love+Tester+Screen+1';" alt="Screenshot Love Tester 1" class="inline-block w-4/5 sm:w-2/3 md:w-1/2 flex-shrink-0 rounded-lg shadow-md">
             <img src="https://pbs.twimg.com/media/Gzc3Gn1XwAAv9ix?format=png&name=small" onerror="this.onerror=null;this.src='https://placehold.co/600x1000/C0E0FF/0000FF?text=Love+Tester+Screen+2';" alt="Screenshot Love Tester 2" class="inline-block w-4/5 sm:w-2/3 md:w-1/2 flex-shrink-0 rounded-lg shadow-md">
-            <!-- Screenshots anteriores e placeholders -->
-            <img src="http://googleusercontent.com/file_content/0" alt="Screenshot do app 3" class="inline-block w-4/5 sm:w-2/3 md:w-1/2 flex-shrink-0 rounded-lg shadow-md">
-            <img src="http://googleusercontent.com/file_content/1" alt="Screenshot do app 4" class="inline-block w-4/5 sm:w-2/3 md:w-1/2 flex-shrink-0 rounded-lg shadow-md">
-            <img src="http://googleusercontent.com/file_content/2" alt="Screenshot do app 5" class="inline-block w-4/5 sm:w-2/3 md:w-1/2 flex-shrink-0 rounded-lg shadow-md">
-            <img src="https://placehold.co/600x1000/E6E6FA/800080?text=Love+Tester+Screen+3" alt="Screenshot Love Tester 6" class="inline-block w-4/5 sm:w-2/3 md:w-1/2 flex-shrink-0 rounded-lg shadow-md">
         </section>
 
         <!-- Seção "Sobre este aplicativo" -->
-        <section class="mb-6 border-b border-gray-200 pb-4">
+        <section class="mb-6 border-b border-gray-200 dark:border-dark-border pb-4">
             <div class="flex justify-between items-center mb-2">
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Sobre este aplicativo</h2>
-                <button class="text-play-text-gray hover:text-gray-900 focus:outline-none">
+                <h2 class="text-xl sm:text-2xl font-bold">Sobre este aplicativo</h2>
+                <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
                 </button>
             </div>
-            <p class="text-gray-700 leading-relaxed">
+            <p class="text-gray-700 dark:text-dark-text-secondary leading-relaxed">
                 Descubra a compatibilidade do amor com o Love Tester! Insira dois nomes e descubra a porcentagem de amor entre vocês. É perfeito para amigos, casais ou apenas para se divertir. Compartilhe os resultados com seus amigos e veja quem é o par perfeito!
             </p>
             <div class="flex flex-wrap gap-2 mt-4">
-                <span class="bg-play-light-gray text-play-text-gray text-xs px-3 py-1 rounded-full border border-gray-200">Entretenimento</span>
-                <span class="bg-play-light-gray text-play-text-gray text-xs px-3 py-1 rounded-full border border-gray-200">Casual</span>
-                <span class="bg-play-light-gray text-play-text-gray text-xs px-3 py-1 rounded-full border border-gray-200">Diversão</span>
+                <span class="bg-play-light-gray dark:bg-gray-700 dark:text-dark-text-primary text-play-text-gray text-xs px-3 py-1 rounded-full border border-gray-200 dark:border-dark-border">Entretenimento</span>
+                <span class="bg-play-light-gray dark:bg-gray-700 dark:text-dark-text-primary text-play-text-gray text-xs px-3 py-1 rounded-full border border-gray-200 dark:border-dark-border">Casual</span>
+                <span class="bg-play-light-gray dark:bg-gray-700 dark:text-dark-text-primary text-play-text-gray text-xs px-3 py-1 rounded-full border border-gray-200 dark:border-dark-border">Diversão</span>
             </div>
         </section>
 
         <!-- Seção de Classificações e avaliações -->
         <section class="mb-6">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="text-xl sm:text-2xl font-bold text-gray-800">Classificações e avaliações</h2> <!-- Revertido aqui -->
-                <button class="text-play-text-gray hover:text-gray-900 focus:outline-none">
+                <h2 class="text-xl sm:text-2xl font-bold">Classificações e avaliações</h2>
+                <button class="text-play-text-gray dark:text-dark-text-secondary hover:text-gray-900 focus:outline-none">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                     </svg>
@@ -163,47 +300,89 @@
             </div>
 
             <div class="flex items-center mb-4">
-                <p class="text-5xl font-bold text-gray-800 mr-4">4.2</p>
+                <p class="text-5xl font-bold mr-4">4.2</p>
                 <div class="flex-1">
                     <!-- Barras de progresso das avaliações -->
                     <div class="flex items-center mb-1">
-                        <span class="text-sm text-gray-600 mr-2">5</span>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <span class="text-sm text-gray-600 dark:text-dark-text-secondary mr-2">5</span>
+                        <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
                             <div class="bg-play-green h-2 rounded-full" style="width: 70%;"></div>
                         </div>
                     </div>
                     <div class="flex items-center mb-1">
-                        <span class="text-sm text-gray-600 mr-2">4</span>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <span class="text-sm text-gray-600 dark:text-dark-text-secondary mr-2">4</span>
+                        <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
                             <div class="bg-play-green h-2 rounded-full" style="width: 15%;"></div>
                         </div>
                     </div>
                     <div class="flex items-center mb-1">
-                        <span class="text-sm text-gray-600 mr-2">3</span>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <span class="text-sm text-gray-600 dark:text-dark-text-secondary mr-2">3</span>
+                        <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
                             <div class="bg-play-green h-2 rounded-full" style="width: 8%;"></div>
                         </div>
                     </div>
                     <div class="flex items-center mb-1">
-                        <span class="text-sm text-gray-600 mr-2">2</span>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <span class="text-sm text-gray-600 dark:text-dark-text-secondary mr-2">2</span>
+                        <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
                             <div class="bg-play-green h-2 rounded-full" style="width: 4%;"></div>
                         </div>
                     </div>
                     <div class="flex items-center">
-                        <span class="text-sm text-gray-600 mr-2">1</span>
-                        <div class="w-full bg-gray-200 rounded-full h-2">
+                        <span class="text-sm text-gray-600 dark:text-dark-text-secondary mr-2">1</span>
+                        <div class="w-full bg-gray-200 dark:bg-dark-border rounded-full h-2">
                             <div class="bg-play-green h-2 rounded-full" style="width: 3%;"></div>
                         </div>
                     </div>
                 </div>
             </div>
-            <p class="text-sm text-play-text-gray mt-2">Baseado em 15 avaliações</p>
+            <p class="text-sm text-play-text-gray dark:text-dark-text-secondary mt-2">Baseado em 15 avaliações</p>
+        </section>
+
+        <!-- Disclaimer de afiliação -->
+        <section class="mt-8 text-center text-xs text-gray-500 dark:text-dark-text-secondary">
+            <p>Este site não possui afiliação, endosso ou patrocínio do Google ou da Google Play Store.</p>
+            <p>Todos os nomes de produtos, logotipos e marcas são propriedade de seus respectivos proprietários.</p>
         </section>
 
     </main>
 
+    <!-- Barra de progresso de download -->
+    <div id="downloadProgress" class="hidden">
+        Baixando... <span id="downloadPercentage">0%</span>
+        <div class="progress-bar-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+    </div>
+
     <script>
+        // Função para aplicar o tema (claro/escuro)
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        // Verifica a preferência do sistema ao carregar a página
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        applyTheme(systemTheme);
+
+        // Ouve por mudanças na preferência do sistema
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+            const newTheme = event.matches ? 'dark' : 'light';
+            applyTheme(newTheme);
+        });
+
+        // Redirecionamento para iOS
+        function redirectToIOSPage() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                window.location.href = "https://utters-apps.github.io/Love-Tester/downloadios.html";
+            }
+        }
+        redirectToIOSPage(); // Chama a função de redirecionamento no carregamento da página
+
         // Service Worker
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("service-worker.js")
@@ -211,48 +390,155 @@
                 .catch(error => console.error("SW registration failed:", error));
         }
 
-        // Install prompt
         let deferredPrompt;
-        // Referenciando o botão principal "Instalar"
         const installAppButton = document.getElementById("installAppButton");
+        const appIconWrapper = document.getElementById("appIconWrapper");
+        const downloadProgressDiv = document.getElementById("downloadProgress");
+        const downloadPercentageSpan = document.getElementById("downloadPercentage");
+        const progressBar = document.getElementById("progressBar");
+        const menuButton = document.getElementById("menuButton");
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        const shareButton = document.getElementById("shareButton");
+
+        // Função para simular o download
+        function simulateDownload() {
+            installAppButton.textContent = 'Baixando';
+            installAppButton.classList.remove('bg-play-green', 'text-white');
+            installAppButton.classList.add('bg-white', 'text-play-green', 'border', 'border-play-green');
+
+            appIconWrapper.classList.add('downloading'); // Adiciona classe para animação do ícone
+            downloadProgressDiv.style.display = 'flex'; // Mostra a barra de download
+
+            let progress = 0;
+            const duration = 20000; // 20 segundos
+            const intervalTime = 100; // 100ms por etapa
+            const steps = duration / intervalTime; // 200 etapas
+            const increment = 100 / steps; // Incremento de 0.5% por etapa
+
+            const interval = setInterval(() => {
+                progress += increment;
+                if (progress > 100) progress = 100;
+
+                downloadPercentageSpan.textContent = `${Math.round(progress)}%`;
+                progressBar.style.width = `${progress}%`;
+                
+                // Atualiza o conic-gradient para simular o preenchimento do círculo
+                appIconWrapper.style.background = `conic-gradient(${tailwind.config.theme.extend.colors['play-green']} ${progress}%, rgba(0, 135, 90, 0) ${progress}%)`;
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    downloadProgressDiv.style.display = 'none'; // Esconde a barra de download
+                    installAppButton.textContent = 'Abrir'; // Muda o texto para "Abrir"
+                    installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
+                    installAppButton.classList.add('bg-play-green', 'text-white');
+                    appIconWrapper.classList.remove('downloading'); // Remove classe da animação do ícone
+                    appIconWrapper.style.background = 'none'; // Remove o gradiente cônico
+                }
+            }, intervalTime);
+        }
 
         window.addEventListener("beforeinstallprompt", (e) => {
-            // Previne o prompt padrão do navegador
             e.preventDefault();
-            // Armazena o evento para acioná-lo mais tarde
             deferredPrompt = e;
-            // Opcional: Você pode querer mudar o texto do botão ou estilo aqui para indicar que está pronto para instalar
-            // installAppButton.textContent = "Instalar Love Tester";
-            installAppButton.style.display = "block"; // Garante que o botão esteja visível
+            installAppButton.textContent = 'Instalar';
+            installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
+            installAppButton.classList.add('bg-play-green', 'text-white');
+            installAppButton.style.display = 'block'; // Mostra o botão "Instalar"
 
-            installAppButton.addEventListener("click", () => {
-                // Oculta o botão de instalação após o clique
-                installAppButton.style.display = "none";
-                // Mostra o prompt de instalação
-                deferredPrompt.prompt();
-                // Espera pela escolha do usuário
-                deferredPrompt.userChoice.then((choice) => {
-                    if (choice.outcome === "accepted") {
-                        console.log("Aplicativo instalado com sucesso!");
-                    } else {
-                        console.log("Instalação do aplicativo cancelada.");
-                    }
-                    deferredPrompt = null;
-                });
-            }, { once: true }); // Adiciona o listener uma única vez
+            installAppButton.onclick = () => {
+                if (deferredPrompt) {
+                    deferredPrompt.prompt();
+                    deferredPrompt.userChoice.then((choice) => {
+                        if (choice.outcome === "accepted") {
+                            console.log("Aplicativo instalado com sucesso!");
+                            simulateDownload(); // Inicia a simulação de download
+                        } else {
+                            console.log("Instalação do aplicativo cancelada.");
+                            // Retorna o botão ao estado "Instalar" se o usuário cancelar
+                            installAppButton.textContent = 'Instalar';
+                            installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
+                            installAppButton.classList.add('bg-play-green', 'text-white');
+                            installAppButton.style.display = 'block';
+                        }
+                        deferredPrompt = null;
+                    });
+                } else {
+                    console.log("Tentativa de instalação sem prompt. Abrindo o aplicativo se já estiver instalado.");
+                    // Redireciona para a home do PWA ou para a Play Store, dependendo da lógica do seu app
+                    // window.location.href = '/sua-home-pwa/';
+                }
+            };
         });
 
-        // Opcional: Esconder o botão se o app já estiver instalado
+        // Verifica o estado do PWA ao carregar a página
+        window.addEventListener('load', () => {
+            // Garante que a barra de download esteja escondida no carregamento
+            downloadProgressDiv.style.display = 'none';
+
+            setTimeout(() => {
+                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                    // Se há um service worker ativo, o PWA já está instalado
+                    installAppButton.textContent = 'Abrir';
+                    installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
+                    installAppButton.classList.add('bg-play-green', 'text-white');
+                    installAppButton.style.display = 'block';
+                } else if (!deferredPrompt) {
+                    // Se não houve 'beforeinstallprompt' e nenhum service worker, mostra "Instalar" como fallback
+                    // (Isso pode acontecer se o navegador não suporta PWA ou já foi recusado/instalado e antesinstallprompt não dispara)
+                    installAppButton.textContent = 'Instalar';
+                    installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
+                    installAppButton.classList.add('bg-play-green', 'text-white');
+                    installAppButton.style.display = 'block';
+                }
+                // Se deferredPrompt estiver definido, o beforeinstallprompt já cuidou do botão
+            }, 500); // Pequeno delay para garantir que beforeinstallprompt teve chance de disparar
+        });
+
+
+        // Caso o app seja instalado após a página carregar
         window.addEventListener('appinstalled', () => {
-            installAppButton.style.display = 'none';
+            installAppButton.textContent = 'Abrir';
+            installAppButton.style.display = 'block';
+            downloadProgressDiv.style.display = 'none'; // Garante que a barra de download seja escondida
             console.log('Love Tester PWA instalado!');
         });
 
-        // Esconder o botão "Instalar" se o PWA não puder ser instalado (ex: já instalado, não suportado)
-        // Isso complementa o "display: none" no CSS inicial, garantindo que o botão só apareça se houver um prompt.
-        if (!("serviceWorker" in navigator)) {
-            installAppButton.style.display = "none";
-        }
+        // Lógica para o menu de 3 pontos
+        menuButton.addEventListener('click', (event) => {
+            dropdownMenu.classList.toggle('hidden');
+            event.stopPropagation(); // Evita que o clique se propague para o document
+        });
+
+        // Esconde o menu se clicar em qualquer lugar fora dele
+        document.addEventListener('click', (event) => {
+            if (!menuButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        });
+
+        // Lógica para o botão de compartilhar
+        shareButton.addEventListener('click', () => {
+            dropdownMenu.classList.add('hidden'); // Esconde o menu ao clicar em compartilhar
+            if (navigator.share) {
+                navigator.share({
+                    title: document.title,
+                    url: window.location.href
+                }).then(() => {
+                    console.log('Link compartilhado com sucesso!');
+                }).catch((error) => {
+                    console.error('Erro ao compartilhar:', error);
+                });
+            } else {
+                // Fallback para navegadores que não suportam navigator.share
+                const dummy = document.createElement('textarea');
+                document.body.appendChild(dummy);
+                dummy.value = window.location.href;
+                dummy.select();
+                document.execCommand('copy');
+                document.body.removeChild(dummy);
+                console.log('Link copiado para a área de transferência!');
+            }
+        });
     </script>
 </body>
 </html>
