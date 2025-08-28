@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Tester</title>
+    <!-- Configurações PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Love Tester">
+    <link rel="apple-touch-icon" href="https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium"> <!-- Ícone para iOS HomeScreen -->
+    <meta name="theme-color" content="#f2f2f7">
+
+    <style>
+        /* Variáveis CSS para cores */
+        :root {
+            --age-rating-bg-color: #FFD700; /* Dourado para o selo de idade no modo claro */
+            --age-rating-text-color: #000; /* Preto para o texto do selo de idade no modo claro */
+            --body-bg-color: #f2f2f7; /* Cor de fundo padrão do body no modo claro */
+            --body-text-color: #1c1c1e; /* Cor do texto padrão do body no modo claro */
+            --secondary-text-color: #8e8e93; /* Cor de texto secundária no modo claro */
+            --description-text-color: #6a6a6a; /* Cor de texto da descrição no modo claro */
+            --divider-border-color: rgba(180,180,180,0.2); /* Cor do divisor no modo claro */
+            --get-button-bg-color: #007aff; /* Cor do botão OBTER no modo claro */
+            --get-button-hover-bg-color: #005bb5; /* Cor do botão OBTER ao passar o mouse no modo claro */
+            --progress-circle-border-color: #007aff; /* Cor do círculo de progresso no modo claro */
+            --rating-container-bg-color: #fff; /* Cor de fundo do container de avaliações no modo claro */
+            --rating-container-shadow: 0 1px 5px rgba(0,0,0,0.08); /* Sombra do container de avaliações no modo claro */
+            --stars-filled-color: #ffcc00; /* Cor das estrelas preenchidas no modo claro */
+            --stars-empty-color: #d1d1d6; /* Cor das estrelas vazias no modo claro */
+            --modal-bg-color: #fff;
+            --modal-text-color: #1c1c1e;
+            --modal-button-bg-color: #007aff;
+            --modal-button-hover-bg-color: #005bb5;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --age-rating-bg-color: #B8860B; /* Amarelo mais escuro para o selo de idade no modo escuro */
+                --age-rating-text-color: #fff; /* Branco para o texto do selo de idade no modo escuro */
+                --body-bg-color: #000; /* Cor de fundo padrão do body no modo escuro */
+                --body-text-color: #fff; /* Cor do texto padrão do body no modo escuro */
+                --secondary-text-color: #8e8e93; /* Cor de texto secundária no modo escuro */
+                --description-text-color: #d1d1d6; /* Cor de texto da descrição no modo escuro */
+                --divider-border-color: rgba(255,255,255,0.18); /* Cor do divisor no modo escuro */
+                --get-button-bg-color: #0a84ff; /* Cor do botão OBTER no modo escuro */
+                --get-button-hover-bg-color: #30aaff; /* Cor do botão OBTER ao passar o mouse no modo escuro */
+                --progress-circle-border-color: #0a84ff; /* Cor do círculo de progresso no modo escuro */
+                --rating-container-bg-color: transparent; /* Fundo transparente no modo escuro */
+                --rating-container-shadow: 0 1px 5px rgba(255,255,255,0.1); /* Sombra ajustada */
+                --stars-filled-color: #ffd60a; /* Cor das estrelas preenchidas no modo escuro */
+                --stars-empty-color: #3a3a3c; /* Cor das estrelas vazias no modo escuro */
+                --modal-bg-color: #1c1c1e;
+                --modal-text-color: #fff;
+                --modal-button-bg-color: #0a84ff;
+                --modal-button-hover-bg-color: #30aaff;
+            }
+            /* Ajuste da scrollbar para modo escuro */
+            ::-webkit-scrollbar-thumb {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+        }
+
+        /* Estilos base para simular a App Store */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0;
+            padding: 0;
+            background-color: var(--body-bg-color);
+            color: var(--body-text-color);
+            transition: background 0.3s, color 0.3s;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Cores de texto primárias */
+        h1, h2, .app-name, .tag-value, .info-row span:last-child, .rating-value {
+            color: var(--body-text-color);
+        }
+        /* Cores de texto secundárias */
+        .app-category, .tag-title, .whats-new small, .info-row span:first-child, .review-count, .hidden-note {
+            color: var(--secondary-text-color);
+        }
+        /* Descrição e textos longos */
+        .description, .whats-new p, .whats-new li {
+            color: var(--description-text-color);
+        }
+
+        /* Cabeçalho do Aplicativo */
+        .app-header {
+            display: flex;
+            align-items: flex-start;
+            padding: 20px;
+            padding-bottom: 15px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        .app-icon {
+            width: 120px;
+            height: 120px;
+            border-radius: 25px;
+            margin-right: 20px;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+        }
+        .app-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .app-name {
+            font-size: 26px;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 4px;
+        }
+        .app-category {
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        /* Botão OBTER e Círculo de Progresso */
+        .get-button-wrapper {
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            width: fit-content;
+            min-width: 90px;
+            height: 40px;
+            justify-content: center;
+            position: relative;
+        }
+        .get-button {
+            background: var(--get-button-bg-color);
+            color: #fff;
+            font-weight: 600;
+            padding: 9px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            transition: background 0.2s ease-in-out, transform 0.1s ease-in-out, opacity 0.3s;
+            -webkit-appearance: none;
+            white-space: nowrap;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .get-button:hover { background: var(--get-button-hover-bg-color); transform: translateY(-1px); }
+        .get-button:active { transform: translateY(0); }
+        .get-button.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .progress-circle {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid var(--progress-circle-border-color);
+            border-top-color: transparent;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .progress-circle.visible {
+            opacity: 1;
+        }
+        /* Keyframes para a animação de giro do círculo, mantendo a posição central */
+        @keyframes spin {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Divisor */
+        .divider {
+            border-top: 1px solid var(--divider-border-color);
+            margin: 20px 20px 0 20px;
+        }
+
+        /* Tags (Classificação, Categoria, etc.) */
+        .tags {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px 0;
+            text-align: center;
+            font-size: 13px;
+            padding-top: 20px;
+            padding-bottom: 20px;
+        }
+        .tag-box {
+            flex: 1;
+            border-right: 1px solid var(--divider-border-color);
+            padding: 0 5px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 70px;
+        }
+        .tag-box:last-child { border-right: none; }
+        .tag-value .age-rating {
+            background-color: var(--age-rating-bg-color);
+            color: var(--age-rating-text-color);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Screenshots */
+        .screenshots-section {
+            padding: 0 20px;
+            margin-top: 20px;
+        }
+        .screenshots-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .screenshots-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 12px;
+            padding-bottom: 10px;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* For Firefox */
+        }
+        .screenshots-container::-webkit-scrollbar {
+            display: none; /* For Chrome, Safari, Opera */
+        }
+        .screenshots-container img {
+            width: 260px;
+            height: 500px;
+            max-width: 70vw;
+            height: auto;
+            border-radius: 18px;
+            object-fit: cover;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            scroll-snap-align: start;
+        }
+
+        /* Seções (Sobre, O que há de novo) */
+        .section {
+            padding: 20px;
+            padding-top: 15px;
+            padding-bottom: 15px;
+        }
+        .section h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        /* Descrição Expandível */
+        .description-content {
+            max-height: 90px;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            margin-bottom: 10px;
+        }
+        .description-content.expanded {
+            max-height: 500px;
+        }
+        .toggle-description-button {
+            background: none;
+            border: none;
+            color: var(--get-button-bg-color);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0;
+            font-size: 15px;
+        }
+
+        /* O que há de novo */
+        .whats-new small {
+            font-size: 13px;
+            display: block;
+            margin-top: 5px;
+        }
+        .whats-new p {
+            margin-top: 12px;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+        .whats-new ul {
+            list-style: disc;
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+        .whats-new li {
+            margin-bottom: 5px;
+        }
+
+        /* Container de Avaliações */
+        .rating-section {
+            padding: 20px;
+        }
+        .rating-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .rating-section-header h2 {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 0;
+        }
+        .rating-container {
+            background: var(--rating-container-bg-color);
+            border-radius: 14px;
+            padding: 18px;
+            animation: fadeIn 1s ease-out;
+            box-shadow: var(--rating-container-shadow);
+            display: flex;
+            justify-content: space-between; /* Empurra os grupos para os lados */
+            align-items: flex-end; /* Alinha a parte inferior dos grupos */
+            gap: 15px; /* Espaçamento entre os grupos */
+        }
+        .rating-summary {
+            display: flex;
+            flex-direction: column; /* Coloca 4.0 e 15 avaliações um abaixo do outro */
+            align-items: flex-start;
+        }
+        .rating-value {
+            font-size: 34px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 5px; /* Espaço entre 4.0 e 15 avaliações */
+        }
+        .stars {
+            font-size: 20px;
+            letter-spacing: 1px;
+            white-space: nowrap; /* Garante que as estrelas não quebrem a linha */
+        }
+        .stars .filled { color: var(--stars-filled-color); }
+        .stars .empty { color: var(--stars-empty-color); }
+        .review-count {
+            font-size: 13px;
+        }
+
+        /* Informações */
+        .info {
+            padding: 20px;
+            font-size: 15px;
+        }
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--divider-border-color);
+        }
+        .info-row:last-child { border-bottom: none; }
+
+        /* Rodapé */
+        .hidden-note {
+            font-size: 11px;
+            text-align: center;
+            margin: 25px 20px;
+            line-height: 1.4;
+        }
+
+        /* Animações */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        /* Estilos para o modal de aviso */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1001;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .modal-content {
+            background-color: var(--modal-bg-color);
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease-in-out;
+            max-width: 90%;
+            width: 300px;
+            color: var(--modal-text-color);
+        }
+        .modal-overlay.visible .modal-content {
+            transform: translateY(0);
+        }
+        .modal-close-button {
+            background-color: var(--modal-button-bg-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: background-color 0.2s;
+        }
+        .modal-close-button:hover {
+            background-color: var(--modal-button-hover-bg-color);
+        }
+    </style>
+
+    <!-- Script de Redirecionamento (adicionado aqui) -->
+    <script>
+        (function() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            // Verifica se é Android e não iOS
+            if (/android/i.test(userAgent) && !(/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream)) {
+                window.location.href = "https://utters-apps.github.io/Love-Tester/download.html";
+            }
+        })();
+    </script>
+</head>
+<body>
+
+    <!-- CABEÇALHO -->
+    <div class="app-header">
+        <!-- Ícone do aplicativo atualizado -->
+        <img src="https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium" onerror="this.onerror=null;this.src='https://placehold.co/120x120/5856D6/FFFFFF?text=LOVE';" alt="Ícone do Love Tester" class="app-icon">
+        <div class="app-info">
+            <div class="app-name">Love Tester</div>
+            <div class="app-category">Romance</div>
+            <div class="get-button-wrapper">
+                <button class="get-button" id="getBtn" aria-label="Obter Love Tester">OBTER</button>
+                <div class="progress-circle" id="progressCircle"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- INFORMAÇÕES RÁPIDAS (TAGS) -->
+    <div class="tags">
+        <div class="tag-box">
+            <div class="tag-title">Idade</div>
+            <div class="tag-value"><span class="age-rating">12+</span></div>
+        </div>
+        <div class="tag-box">
+            <div class="tag-title">Categoria</div>
+            <div class="tag-value">Romance</div>
+        </div>
+        <div class="tag-box">
+            <div class="tag-title">Desenvolvedor</div>
+            <div class="tag-value">Utters Apps</div>
+        </div>
+        <div class="tag-box">
+            <div class="tag-title">Idiomas</div>
+            <div class="tag-value">PT</div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- IMAGENS DO APLICATIVO -->
+    <div class="screenshots-section">
+        <h2 class="screenshots-title">Prévia</h2>
+        <div class="screenshots-container">
+            <!-- Imagens de prévia atualizadas -->
+            <img src="https://pbs.twimg.com/media/Gzc2_v3WoAAlcRY?format=png&name=900x900" onerror="this.onerror=null;this.src='https://placehold.co/260x500/A2D2FF/000000?text=Teste+de+Amor';" alt="Captura de tela 1 do aplicativo - Teste de Amor">
+            <img src="https://pbs.twimg.com/media/Gzc3Gn1XwAAv9ix?format=png&name=small" onerror="this.onerror=null;this.src='https://placehold.co/260x500/BDE0FE/000000?text=Resultados+de+Amor';" alt="Captura de tela 2 do aplicativo - Resultados de Amor">
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- SOBRE O APLICATIVO -->
+    <div class="section">
+        <h2 class="section-title">Sobre</h2>
+        <div class="description-content" id="descriptionContent">
+            <p class="description">
+                E aí, quer saber qual a conexão especial entre você e seus amigos ou aquela pessoa super legal? Com o <b>Love Tester</b>, é só digitar dois nomes e descobrir a porcentagem de amor ou amizade! É a ferramenta perfeita para brincar, dar risada e ver quem combina mais. Seja para o seu melhor amigo(a), sua paquera ou a turma toda, a diversão é garantida. Baixe agora e comece a testar as conexões mais incríveis!
+                <br><br>
+                Este aplicativo é uma ferramenta divertida para testar a compatibilidade entre duas pessoas. Digite seu nome e o nome da pessoa amada para obter uma pontuação de amor. Perfeito para brincar em festas ou com amigos!
+                <br><br>
+                Recursos:
+                <ul>
+                    <li>Cálculo de compatibilidade instantâneo</li>
+                    <li>Interface simples e divertida</li>
+                    <li>Compartilhe seus resultados facilmente</li>
+                </ul>
+                Baixe agora e descubra seu destino amoroso!
+            </p>
+        </div>
+        <button class="toggle-description-button" id="toggleDescription">Ver mais</button>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- O QUE HÁ DE NOVO -->
+    <div class="section whats-new">
+        <h2 class="section-title">O que há de novo</h2>
+        <small>Versão 1.0 - 28 de agosto de 2025</small>
+        <p>
+            Lançamento do aplicativo <b>Love Tester</b>!<br>
+            • Descubra a porcentagem de amor ou amizade entre dois nomes.<br>
+            • Compatível com iPhone e iPad.<br>
+            • Resultados rápidos e cheios de surpresas!<br>
+            • Interface simples, divertida e fácil de usar.<br>
+            • Totalmente em Português!
+        </p>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- AVALIAÇÕES E CLASSIFICAÇÕES -->
+    <div class="rating-section">
+        <h2 class="section-title">Classificações e Avaliações</h2>
+        <div class="rating-container">
+            <div class="rating-summary">
+                <div class="rating-value">4.0</div>
+                <div class="review-count">15 avaliações</div>
+            </div>
+            <div class="stars">
+                <span class="filled">★★★★</span><span class="empty">★</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- INFORMAÇÕES DETALHADAS -->
+    <div class="info">
+        <h2 class="section-title">Informações</h2>
+        <div class="info-row"><span>Desenvolvido por</span><span>Utters Apps</span></div>
+        <div class="info-row"><span>Categoria</span><span>Romance</span></div>
+        <div class="info-row"><span>Compatibilidade</span><span>iOS 12.0 ou posterior</span></div>
+        <div class="info-row"><span>Idiomas</span><span>Português</span></div>
+        <div class="info-row"><span>Tamanho</span><span>15 MB</span></div>
+        <div class="info-row"><span>Atualizado em</span><span>28 de agosto de 2025</span></div>
+        <div class="info-row"><span>Versão</span><span>1.0</span></div>
+    </div>
+
+    <!-- RODAPÉ -->
+    <div class="hidden-note">
+        Este site não possui qualquer afiliação com a Apple ou a App Store. Design apenas inspirado.
+    </div>
+
+    <!-- Modal de Aviso Personalizado -->
+    <div id="customModal" class="modal-overlay">
+        <div class="modal-content">
+            <p id="modalMessage" class="mb-4"></p>
+            <button id="modalCloseButton" class="modal-close-button">OK</button>
+        </div>
+    </div>
+
+    <script>
+        const getBtn = document.getElementById("getBtn");
+        const progressCircle = document.getElementById("progressCircle");
+        const descriptionContent = document.getElementById("descriptionContent");
+        const toggleDescriptionButton = document.getElementById("toggleDescription");
+        const customModal = document.getElementById('customModal');
+        const modalMessage = document.getElementById('modalMessage');
+        const modalCloseButton = document.getElementById('modalCloseButton');
+
+        let isInstalling = false;
+        const downloadDuration = 5000; // 5 segundos para a simulação de download
+        let deferredPrompt; // Para o evento beforeinstallprompt do PWA
+
+        // Função para aplicar o tema (claro/escuro)
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            // Ajustar theme-color da barra de status para iOS
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            if (theme === 'dark') {
+                themeColorMeta.setAttribute('content', '#000');
+                document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').setAttribute('content', 'black');
+            } else {
+                themeColorMeta.setAttribute('content', '#f2f2f7');
+                document.querySelector('meta[name="apple-mobile-web-app-status-bar-style"]').setAttribute('content', 'default');
+            }
+        }
+
+        // Detecta a preferência do sistema ao carregar
+        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        applyTheme(systemTheme);
+
+        // Ouve por mudanças na preferência do sistema
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
+            const newTheme = event.matches ? 'dark' : 'light';
+            applyTheme(newTheme);
+        });
+
+        // Função para mostrar o modal personalizado
+        function showCustomModal(message) {
+            modalMessage.textContent = message;
+            customModal.classList.add('visible');
+            modalCloseButton.onclick = () => {
+                customModal.classList.remove('visible');
+            };
+            customModal.onclick = (event) => {
+                if (event.target === customModal) {
+                    customModal.classList.remove('visible');
+                }
+            };
+        }
+
+        // Service Worker Registration
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("service-worker.js")
+                .then(() => console.log("Service Worker registrado com sucesso."))
+                .catch(error => console.error("Falha no registro do Service Worker:", error));
+        }
+
+        // PWA `beforeinstallprompt` event for 'Add to Home Screen'
+        window.addEventListener("beforeinstallprompt", (e) => {
+            e.preventDefault(); // Impede que o mini-infobar apareça automaticamente
+            deferredPrompt = e;
+            getBtn.innerText = "OBTER";
+            getBtn.classList.remove("hidden"); // Garante que o botão "OBTER" esteja visível
+            console.log("Evento 'beforeinstallprompt' disparado.");
+        });
+
+        // PWA `appinstalled` event
+        window.addEventListener('appinstalled', () => {
+            console.log('Love Tester PWA instalado com sucesso!');
+            getBtn.innerText = "ABRIR";
+            getBtn.classList.remove("hidden"); // Mostra o botão como "ABRIR"
+            progressCircle.classList.remove("visible"); // Esconde o spinner
+            isInstalling = false;
+        });
+
+        // Logic for the 'GET' / 'OPEN' button
+        getBtn.addEventListener("click", () => {
+            if (isInstalling) {
+                return;
+            }
+
+            if (getBtn.innerText === "ABRIR") {
+                console.log("Simulando abertura do aplicativo Love Tester...");
+                showCustomModal("O Love Tester foi aberto!");
+                return;
+            }
+
+            // Attempt to show PWA install prompt
+            if (deferredPrompt) {
+                isInstalling = true;
+                getBtn.classList.add("hidden"); // Esconde o botão
+                progressCircle.classList.add("visible"); // Mostra o spinner
+
+                deferredPrompt.prompt(); // Mostra o prompt de instalação
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Usuário aceitou a instalação do PWA.');
+                        simulateDownload(); // Inicia a simulação de download
+                    } else {
+                        console.log('Usuário recusou a instalação do PWA.');
+                        getBtn.classList.remove("hidden");
+                        progressCircle.classList.remove("visible");
+                        isInstalling = false;
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                // Fallback para navegadores que não disparam beforeinstallprompt ou onde o PWA já está instalado
+                // ou não é possível instalar.
+                console.log("Nenhum prompt de instalação disponível. Iniciando simulação de download.");
+                simulateDownload();
+            }
+        });
+
+        // Function to simulate download (for browsers without beforeinstallprompt or for a more custom flow)
+        function simulateDownload() {
+            isInstalling = true;
+            getBtn.classList.add("hidden");
+            progressCircle.classList.add("visible");
+
+            let progress = 0;
+            const intervalTime = 50;
+            const steps = downloadDuration / intervalTime;
+            const increment = 100 / steps;
+
+            const downloadInterval = setInterval(() => {
+                progress += increment;
+                if (progress >= 100) {
+                    clearInterval(downloadInterval);
+                    progressCircle.classList.remove("visible");
+                    getBtn.innerText = "ABRIR";
+                    getBtn.classList.remove("hidden");
+                    isInstalling = false;
+                    console.log("Download simulado completo.");
+                }
+            }, intervalTime);
+        }
+
+        // Lógica para expandir/recolher a seção "Sobre este aplicativo"
+        toggleDescriptionButton.addEventListener('click', () => {
+            const isExpanded = descriptionContent.classList.toggle('expanded');
+            toggleDescriptionButton.textContent = isExpanded ? 'Ver menos' : 'Ver mais';
+        });
+
+        // Inicializa o botão "Ver mais" se a descrição for inicialmente cortada
+        if (descriptionContent.scrollHeight > descriptionContent.clientHeight) {
+            toggleDescriptionButton.style.display = 'inline';
+        } else {
+            toggleDescriptionButton.style.display = 'none';
+        }
+        
+    </script>
+    <!-- Um service worker básico e manifest.json são necessários para o PWA funcionar. -->
+    <!-- service-worker.js (exemplo, você precisará criar este arquivo) -->
+    <!--
+    self.addEventListener('install', (event) => {
+        event.waitUntil(
+            caches.open('love-tester-cache-v1').then((cache) => {
+                return cache.addAll([
+                    '/',
+                    '/index.html',
+                    'https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium',
+                    'https://pbs.twimg.com/media/Gzc2_v3WoAAlcRY?format=png&name=900x900',
+                    'https://pbs.twimg.com/media/Gzc3Gn1XwAAv9ix?format=png&name=small'
+                ]);
+            })
+        );
+    });
+
+    self.addEventListener('fetch', (event) => {
+        event.respondWith(
+            caches.match(event.request).then((response) => {
+                return response || fetch(event.request);
+            })
+        );
+    });
+    -->
+
+    <!-- manifest.json (exemplo, você precisará criar este arquivo) -->
+    <!--
+    {
+        "name": "Love Tester",
+        "short_name": "Love Tester",
+        "description": "Descubra a compatibilidade do amor com o Love Tester!",
+        "start_url": "./",
+        "display": "standalone",
+        "background_color": "#f2f2f7",
+        "theme_color": "#f2f2f7",
+        "icons": [
+            {
+                "src": "https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium",
+                "sizes": "192x192",
+                "type": "image/png"
+            },
+            {
+                "src": "https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium",
+                "sizes": "512x512",
+                "type": "image/png"
+            }
+        ]
+    }
+    -->
+</body>
+</html>
