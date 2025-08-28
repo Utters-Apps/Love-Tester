@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#ff4081">
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-    <title>Love Tester • Seu Amor, Nosso Cálculo</title>
+    <title>Love Tester</title>
     <meta name="description" content="Love Tester — calcule a compatibilidade entre dois nomes (Simples ou Avançado), adicione fotos e personalidades, salve como imagem e compartilhe com um toque profissional. Agora com poemas!" />
     <!-- PWA Icon from user provided URL, updated as fallback image. For production, convert to Data URL. -->
     <link rel="icon" href="https://pbs.twimg.com/media/GzZdmXDW0AAWq1J?format=png&name=small">
@@ -673,6 +677,13 @@
         }
     </style>
 </head>
+<script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(() => console.log("Service Worker registered"))
+      .catch(err => console.error("SW registration failed:", err));
+  }
+</script>
 <body>
     <div class="app-frame" id="appFrame">
         <div class="device" role="application" aria-label="Love Tester app" id="appDevice">
