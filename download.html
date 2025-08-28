@@ -37,7 +37,13 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             background-color: #ffffff; /* Fundo claro padrão */
+            opacity: 0; /* Começa invisível para a animação de fade-in */
+            transition: opacity 0.5s ease-in-out; /* Animação de fade-in */
         }
+        body.loaded {
+            opacity: 1; /* Torna visível após o carregamento */
+        }
+
         /* Estilos para o modo escuro */
         .dark body {
             background-color: theme('colors.dark-background');
@@ -129,13 +135,33 @@
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
-            background: none; /* Inicia sem o gradiente */
+            /* background: none; O JS vai definir isso */
         }
+
+        .app-icon-wrapper::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            border-radius: 50%;
+            background: conic-gradient(transparent 0%, transparent 0%); /* Inicia transparente */
+            mask: radial-gradient(farthest-side, transparent calc(50% - 4px), #000 0); /* Faz o anel fino */
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - 4px), #000 0);
+            z-index: 0;
+            transition: background 0.1s linear; /* Transição para o preenchimento */
+        }
+
+        .app-icon-wrapper.downloading::after {
+            /* O background conic-gradient será atualizado via JS */
+        }
+
 
         .app-icon-wrapper img {
             width: 80px; /* Um pouco menor para o anel aparecer */
             height: 80px;
-            border-radius: 16px; /* Mantém o arredondamento do ícone interno */
+            border-radius: 10px; /* Bordas menos arredondadas */
             z-index: 1; /* Para que a imagem fique acima do gradiente */
             object-fit: cover; /* Garante que a imagem preencha a área sem distorcer */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para o ícone */
@@ -154,7 +180,7 @@
             min-width: 150px;
         }
         .dark .dropdown-menu {
-            background-color: theme('colors.dark-surface');
+            background-color: theme('colors.dark-surface'); /* Corrigido para modo escuro */
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
         }
         .dropdown-item {
@@ -166,13 +192,13 @@
             color: theme('colors.gray-700');
         }
         .dark .dropdown-item {
-            color: theme('colors.dark-text-primary');
+            color: theme('colors.dark-text-primary'); /* Corrigido para modo escuro */
         }
         .dropdown-item:hover {
             background-color: theme('colors.gray-100');
         }
         .dark .dropdown-item:hover {
-            background-color: theme('colors.gray-800');
+            background-color: theme('colors.gray-800'); /* Corrigido para modo escuro */
         }
     </style>
 
@@ -410,10 +436,10 @@
             downloadProgressDiv.style.display = 'flex'; // Mostra a barra de download
 
             let progress = 0;
-            const duration = 20000; // 20 segundos
+            const duration = 35000; // 35 segundos
             const intervalTime = 100; // 100ms por etapa
-            const steps = duration / intervalTime; // 200 etapas
-            const increment = 100 / steps; // Incremento de 0.5% por etapa
+            const steps = duration / intervalTime;
+            const increment = 100 / steps;
 
             const interval = setInterval(() => {
                 progress += increment;
@@ -423,7 +449,10 @@
                 progressBar.style.width = `${progress}%`;
                 
                 // Atualiza o conic-gradient para simular o preenchimento do círculo
-                appIconWrapper.style.background = `conic-gradient(${tailwind.config.theme.extend.colors['play-green']} ${progress}%, rgba(0, 135, 90, 0) ${progress}%)`;
+                // O mask-image faz o anel ser fino
+                appIconWrapper.style.setProperty('--gradient-progress', `${progress}%`);
+                appIconWrapper.querySelector('::after').style.background = `conic-gradient(from 0deg, ${tailwind.config.theme.extend.colors['play-green']} var(--gradient-progress), transparent var(--gradient-progress))`;
+
 
                 if (progress >= 100) {
                     clearInterval(interval);
@@ -432,7 +461,7 @@
                     installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
                     installAppButton.classList.add('bg-play-green', 'text-white');
                     appIconWrapper.classList.remove('downloading'); // Remove classe da animação do ícone
-                    appIconWrapper.style.background = 'none'; // Remove o gradiente cônico
+                    appIconWrapper.querySelector('::after').style.background = 'none'; // Remove o gradiente cônico
                 }
             }, intervalTime);
         }
@@ -464,17 +493,24 @@
                     });
                 } else {
                     console.log("Tentativa de instalação sem prompt. Abrindo o aplicativo se já estiver instalado.");
-                    // Redireciona para a home do PWA ou para a Play Store, dependendo da lógica do seu app
-                    // window.location.href = '/sua-home-pwa/';
+                    // Se o deferredPrompt não estiver disponível, e o Service Worker estiver ativo
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                        // Tenta abrir o PWA
+                        window.location.href = '/';
+                    }
                 }
             };
         });
 
         // Verifica o estado do PWA ao carregar a página
         window.addEventListener('load', () => {
+            // Adiciona a classe 'loaded' para iniciar a animação de fade-in
+            document.body.classList.add('loaded');
+
             // Garante que a barra de download esteja escondida no carregamento
             downloadProgressDiv.style.display = 'none';
 
+            // Pequeno delay para garantir que beforeinstallprompt teve chance de disparar
             setTimeout(() => {
                 if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
                     // Se há um service worker ativo, o PWA já está instalado
@@ -484,14 +520,12 @@
                     installAppButton.style.display = 'block';
                 } else if (!deferredPrompt) {
                     // Se não houve 'beforeinstallprompt' e nenhum service worker, mostra "Instalar" como fallback
-                    // (Isso pode acontecer se o navegador não suporta PWA ou já foi recusado/instalado e antesinstallprompt não dispara)
                     installAppButton.textContent = 'Instalar';
                     installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
                     installAppButton.classList.add('bg-play-green', 'text-white');
                     installAppButton.style.display = 'block';
                 }
-                // Se deferredPrompt estiver definido, o beforeinstallprompt já cuidou do botão
-            }, 500); // Pequeno delay para garantir que beforeinstallprompt teve chance de disparar
+            }, 500);
         });
 
 
@@ -520,6 +554,7 @@
         shareButton.addEventListener('click', () => {
             dropdownMenu.classList.add('hidden'); // Esconde o menu ao clicar em compartilhar
             if (navigator.share) {
+                // Tenta usar a API de compartilhamento nativa
                 navigator.share({
                     title: document.title,
                     url: window.location.href
@@ -529,7 +564,7 @@
                     console.error('Erro ao compartilhar:', error);
                 });
             } else {
-                // Fallback para navegadores que não suportam navigator.share
+                // Fallback para navegadores que não suportam navigator.share (copia para área de transferência)
                 const dummy = document.createElement('textarea');
                 document.body.appendChild(dummy);
                 dummy.value = window.location.href;
@@ -537,6 +572,7 @@
                 document.execCommand('copy');
                 document.body.removeChild(dummy);
                 console.log('Link copiado para a área de transferência!');
+                // Aqui você pode adicionar uma pequena notificação para o usuário
             }
         });
     </script>
