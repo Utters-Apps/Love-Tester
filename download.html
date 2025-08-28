@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Download Love Tester</title>
+
+  <!-- PWA configs -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#ff4081">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, #ff99cc, #ff4081);
+      color: white;
+    }
+    .card {
+      background: rgba(255,255,255,0.1);
+      padding: 20px;
+      border-radius: 20px;
+      max-width: 400px;
+      margin: auto;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+    img {
+      width: 120px;
+      margin-bottom: 20px;
+      border-radius: 20%;
+    }
+    button {
+      background: white;
+      color: #ff4081;
+      font-size: 18px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: 0.3s;
+    }
+    button:hover {
+      background: #ffe6f0;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <img src="icon-192.png" alt="Love Tester Logo">
+    <h1>Love Tester</h1>
+    <p>Install Love Tester as an app on your device.</p>
+    <button id="installBtn" style="display:none;">Install App</button>
+    <p style="margin-top:15px;"><a href="index.html" style="color:white; text-decoration:underline;">Try Online</a></p>
+  </div>
+
+  <script>
+    // Register service worker
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker registered from download.html"))
+        .catch(err => console.error("SW registration failed:", err));
+    }
+
+    // Handle PWA install prompt
+    let deferredPrompt;
+    const installBtn = document.getElementById("installBtn");
+
+    window.addEventListener("beforeinstallprompt", (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.style.display = "inline-block";
+
+      installBtn.addEventListener("click", () => {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === "accepted") {
+            console.log("App installed");
+          } else {
+            console.log("App dismissed");
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+  </script>
+</body>
+</html>
