@@ -135,10 +135,10 @@
             justify-content: center;
             align-items: center;
             flex-shrink: 0;
-            /* background: none; O JS vai definir isso */
+            /* Usar custom property para atualizar o gradiente dinamicamente */
+            --progress-degree: 0deg;
         }
 
-        /* Usa ::before para o anel de progresso e ::after para o ícone */
         .app-icon-wrapper::after {
             content: '';
             position: absolute;
@@ -147,7 +147,7 @@
             right: 0;
             bottom: 0;
             border-radius: 50%;
-            background: conic-gradient(transparent 0%, transparent 0%); /* Inicia transparente */
+            background: conic-gradient(from 0deg, theme('colors.play-green') var(--progress-degree), transparent var(--progress-degree));
             /* Ajuste o valor de calc(50% - Xpx) para controlar a espessura do anel. Menor valor, mais fino */
             mask: radial-gradient(farthest-side, transparent calc(50% - 3px), #000 0);
             -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - 3px), #000 0);
@@ -446,8 +446,8 @@
                 downloadPercentageSpan.textContent = `${Math.round(progress)}%`;
                 progressBar.style.width = `${progress}%`;
                 
-                // Atualiza o conic-gradient para simular o preenchimento do círculo
-                appIconWrapper.querySelector('::after').style.background = `conic-gradient(from 0deg, ${tailwind.config.theme.extend.colors['play-green']} ${progress}%, transparent ${progress}%)`;
+                // Atualiza a custom property CSS para o conic-gradient
+                appIconWrapper.style.setProperty('--progress-degree', `${progress * 3.6}deg`); // Multiplica por 3.6 para ir de 0 a 360 graus
 
 
                 if (progress >= 100) {
@@ -457,7 +457,7 @@
                     installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
                     installAppButton.classList.add('bg-play-green', 'text-white');
                     appIconWrapper.classList.remove('downloading'); // Remove classe da animação do ícone
-                    appIconWrapper.querySelector('::after').style.background = 'none'; // Remove o gradiente cônico
+                    appIconWrapper.style.setProperty('--progress-degree', '0deg'); // Reseta o progresso visual do círculo
                 }
             }, intervalTime);
         }
@@ -497,6 +497,7 @@
                     });
 
                 } else if (deferredPrompt) {
+                    // Não redireciona, apenas tenta o prompt de instalação
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then((choice) => {
                         if (choice.outcome === "accepted") {
@@ -513,10 +514,12 @@
                         deferredPrompt = null;
                     });
                 } else {
-                    console.log("Nenhum prompt de instalação disponível e app não em modo standalone.");
-                    // Fallback para quando 'Instalar' é mostrado mas PWA não pode ser instalado
-                    // ou já foi recusado/instalado e beforeinstallprompt não dispara.
-                    window.location.href = 'https://utters-apps.github.io/Love-Tester';
+                    console.log("Nenhum prompt de instalação disponível e app não em modo standalone. Mantendo na página.");
+                    // Não redireciona, apenas mantém na página.
+                    installAppButton.textContent = 'Instalar';
+                    installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
+                    installAppButton.classList.add('bg-play-green', 'text-white');
+                    installAppButton.style.display = 'block';
                 }
             };
         });
