@@ -138,6 +138,7 @@
             /* background: none; O JS vai definir isso */
         }
 
+        /* Usa ::before para o anel de progresso e ::after para o ícone */
         .app-icon-wrapper::after {
             content: '';
             position: absolute;
@@ -147,21 +148,18 @@
             bottom: 0;
             border-radius: 50%;
             background: conic-gradient(transparent 0%, transparent 0%); /* Inicia transparente */
-            mask: radial-gradient(farthest-side, transparent calc(50% - 4px), #000 0); /* Faz o anel fino */
-            -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - 4px), #000 0);
+            /* Ajuste o valor de calc(50% - Xpx) para controlar a espessura do anel. Menor valor, mais fino */
+            mask: radial-gradient(farthest-side, transparent calc(50% - 3px), #000 0);
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - 3px), #000 0);
             z-index: 0;
             transition: background 0.1s linear; /* Transição para o preenchimento */
-        }
-
-        .app-icon-wrapper.downloading::after {
-            /* O background conic-gradient será atualizado via JS */
         }
 
 
         .app-icon-wrapper img {
             width: 80px; /* Um pouco menor para o anel aparecer */
             height: 80px;
-            border-radius: 10px; /* Bordas menos arredondadas */
+            border-radius: 8px; /* Bordas menos arredondadas: 8px */
             z-index: 1; /* Para que a imagem fique acima do gradiente */
             object-fit: cover; /* Garante que a imagem preencha a área sem distorcer */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para o ícone */
@@ -449,9 +447,7 @@
                 progressBar.style.width = `${progress}%`;
                 
                 // Atualiza o conic-gradient para simular o preenchimento do círculo
-                // O mask-image faz o anel ser fino
-                appIconWrapper.style.setProperty('--gradient-progress', `${progress}%`);
-                appIconWrapper.querySelector('::after').style.background = `conic-gradient(from 0deg, ${tailwind.config.theme.extend.colors['play-green']} var(--gradient-progress), transparent var(--gradient-progress))`;
+                appIconWrapper.querySelector('::after').style.background = `conic-gradient(from 0deg, ${tailwind.config.theme.extend.colors['play-green']} ${progress}%, transparent ${progress}%)`;
 
 
                 if (progress >= 100) {
@@ -475,7 +471,32 @@
             installAppButton.style.display = 'block'; // Mostra o botão "Instalar"
 
             installAppButton.onclick = () => {
-                if (deferredPrompt) {
+                if (installAppButton.textContent === 'Abrir') {
+                    // Tenta abrir o PWA usando diferentes métodos
+                    console.log("Tentando abrir o aplicativo...");
+
+                    // 1. Tentar URL scheme customizado
+                    window.location.href = 'lovetester://';
+
+                    // 2. Fallback para URL do PWA (raiz) após um pequeno atraso
+                    const fallbackToPwaUrl = setTimeout(() => {
+                        console.log("URL scheme falhou ou tempo esgotado. Tentando abrir PWA na raiz.");
+                        window.location.href = '/';
+                    }, 1000); // 1 segundo para tentar o URL scheme
+
+                    // 3. Fallback final para a página do GitHub (se o PWA na raiz falhar)
+                    const fallbackToGithubPage = setTimeout(() => {
+                        console.log("PWA na raiz falhou ou tempo esgotado. Tentando abrir página do GitHub.");
+                        window.location.href = 'https://utters-apps.github.io/Love-Tester';
+                    }, 2000); // 1 segundo após o fallback do PWA (total 2 segundos)
+
+                    // Se a página for descarregada (indicando que um dos links funcionou), limpar os timeouts
+                    window.addEventListener('beforeunload', () => {
+                        clearTimeout(fallbackToPwaUrl);
+                        clearTimeout(fallbackToGithubPage);
+                    });
+
+                } else if (deferredPrompt) {
                     deferredPrompt.prompt();
                     deferredPrompt.userChoice.then((choice) => {
                         if (choice.outcome === "accepted") {
@@ -492,12 +513,10 @@
                         deferredPrompt = null;
                     });
                 } else {
-                    console.log("Tentativa de instalação sem prompt. Abrindo o aplicativo se já estiver instalado.");
-                    // Se o deferredPrompt não estiver disponível, e o Service Worker estiver ativo
-                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                        // Tenta abrir o PWA
-                        window.location.href = '/';
-                    }
+                    console.log("Nenhum prompt de instalação disponível e app não em modo standalone.");
+                    // Fallback para quando 'Instalar' é mostrado mas PWA não pode ser instalado
+                    // ou já foi recusado/instalado e beforeinstallprompt não dispara.
+                    window.location.href = 'https://utters-apps.github.io/Love-Tester';
                 }
             };
         });
@@ -525,6 +544,7 @@
                     installAppButton.classList.add('bg-play-green', 'text-white');
                     installAppButton.style.display = 'block';
                 }
+                // Se deferredPrompt estiver definido, o beforeinstallprompt já cuidou do botão
             }, 500);
         });
 
