@@ -9,22 +9,22 @@
     <!-- Configuração do Tailwind para usar a fonte Inter e cores personalizadas -->
     <script>
         tailwind.config = {
-            darkMode: 'media', // Habilita o modo escuro baseado na preferência do sistema
+            darkMode: 'media',
             theme: {
                 extend: {
                     fontFamily: {
                         inter: ['Inter', 'sans-serif'],
                     },
                     colors: {
-                        'play-green': '#00875A', // Cor verde do botão de instalação da Play Store
-                        'play-light-gray': '#F5F5F5', // Cor de fundo para seções
-                        'play-text-gray': '#5F6368', // Cor de texto secundária
-                        // Cores para o modo escuro
-                        'dark-background': '#121212',
-                        'dark-surface': '#1E1E1E',
-                        'dark-text-primary': '#E0E0E0',
-                        'dark-text-secondary': '#A0A0A0',
-                        'dark-border': '#333333',
+                        'play-green': '#00875A', // Verde primário da Play Store
+                        'play-light-gray': '#F5F5F5', // Fundo claro da Play Store
+                        'play-text-gray': '#5F6368', // Texto secundário da Play Store
+                        'dark-background': '#121212', // Fundo escuro
+                        'dark-surface': '#1E1E1E', // Superfície em modo escuro
+                        'dark-text-primary': '#E0E0E0', // Texto primário em modo escuro
+                        'dark-text-secondary': '#A0A0A0', // Texto secundário em modo escuro
+                        'dark-border': '#333333', // Borda em modo escuro
+                        'play-blue': '#4285F4', // Azul do Google (usado em links/botões)
                     }
                 }
             }
@@ -94,45 +94,6 @@
             scrollbar-width: none;  /* Firefox */
         }
 
-        /* Esconder o botão de instalação por padrão para controle via JS */
-        #installAppButton {
-            display: none;
-        }
-
-        /* Estilo para a barra de download */
-        #downloadProgress {
-            display: none; /* Escondido por padrão, só aparece com JS */
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            background-color: #2563EB; /* Azul vibrante */
-            color: white;
-            padding: 12px 20px;
-            border-radius: 9999px; /* Full rounded */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: opacity 0.3s ease-in-out; /* Fade for progress bar */
-        }
-        #downloadProgress .progress-bar-container {
-            width: 150px;
-            height: 6px;
-            background-color: rgba(255, 255, 255, 0.3);
-            border-radius: 9999px;
-            overflow: hidden;
-        }
-        #downloadProgress .progress-bar {
-            height: 100%;
-            width: 0%;
-            background-color: white;
-            border-radius: 9999px;
-            transition: width 0.3s ease-in-out;
-        }
-
         /* Estilo para o círculo de download em torno do ícone do app */
         .app-icon-wrapper {
             position: relative;
@@ -159,8 +120,8 @@
             /* Usa a custom property para o conic-gradient */
             background-image: conic-gradient(from 0deg, var(--play-green-color) var(--progress-degree), transparent var(--progress-degree));
             /* Ajuste o valor de calc(50% - Xpx) para controlar a espessura do anel. Menor valor, mais fino */
-            mask: radial-gradient(farthest-side, transparent calc(50% - 3px), #000 0);
-            -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - 3px), #000 0);
+            mask: radial-gradient(farthest-side, transparent calc(50% - 2px), #000 0); /* 2px para um anel mais fino */
+            -webkit-mask: radial-gradient(farthest-side, transparent calc(50% - 2px), #000 0); /* 2px para um anel mais fino */
             z-index: 0;
             transition: background-image 0.05s linear; /* Transição para o preenchimento */
         }
@@ -168,7 +129,7 @@
         .app-icon-wrapper img {
             width: 80px; /* Um pouco menor para o anel aparecer */
             height: 80px;
-            border-radius: 12px; /* Bordas mais arredondadas: 12px para um look Play Store */
+            border-radius: 20px; /* Bordas mais arredondadas para o look Play Store */
             z-index: 1; /* Para que a imagem fique acima do gradiente */
             object-fit: cover; /* Garante que a imagem preencha a área sem distorcer */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra para o ícone */
@@ -189,6 +150,7 @@
             transform: translateY(-10px); /* Começa ligeiramente acima */
             transition: opacity 0.2s ease-out, transform 0.2s ease-out; /* Animação suave */
             pointer-events: none; /* Desabilita cliques quando invisível */
+            visibility: hidden; /* Garante que não ocupa espaço nem interage quando hidden */
         }
         .dark .dropdown-menu {
             background-color: theme('colors.dark-surface');
@@ -198,6 +160,7 @@
             opacity: 1;
             transform: translateY(0);
             pointer-events: auto; /* Habilita cliques quando visível */
+            visibility: visible;
         }
         .dropdown-item {
             padding: 0.75rem 1rem;
@@ -234,53 +197,75 @@
             transform: rotate(90deg);
         }
 
-        /* Estilos para o modal de aviso */
+        /* Estilos para o modal de aviso (Play Store-like) */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.6); /* Fundo mais escuro */
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 1001;
             opacity: 0;
             pointer-events: none;
-            transition: opacity 0.3s ease-in-out;
+            transition: opacity 0.2s ease-in-out;
         }
         .modal-overlay.visible {
             opacity: 1;
             pointer-events: auto;
         }
         .modal-content {
-            background-color: white;
+            background-color: white; /* Cor de fundo padrão para light mode */
+            color: theme('colors.gray-800'); /* Cor do texto padrão para light mode */
             padding: 24px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            text-align: center;
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3); /* Sombra mais pronunciada */
+            text-align: left; /* Texto alinhado à esquerda como em diálogos Android */
             transform: translateY(-20px);
-            transition: transform 0.3s ease-in-out;
+            transition: transform 0.2s ease-in-out;
             max-width: 90%;
-            width: 300px;
+            width: 320px; /* Largura padrão para diálogos */
+            display: flex; /* Para alinhar o botão */
+            flex-direction: column; /* Conteúdo em coluna */
         }
         .modal-overlay.visible .modal-content {
             transform: translateY(0);
         }
+        /* Estilos do modal no modo escuro */
         .dark .modal-content {
-            background-color: theme('colors.dark-surface');
-            color: theme('colors.dark-text-primary');
+            background-color: theme('colors.dark-surface'); /* Fundo escuro */
+            color: theme('colors.dark-text-primary'); /* Texto claro */
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+        }
+        .modal-content .modal-buttons {
+            display: flex;
+            justify-content: flex-end; /* Alinha o botão à direita */
+            margin-top: 20px; /* Espaçamento entre mensagem e botão */
+        }
+        .modal-content .modal-buttons .modal-close-button {
+            background-color: transparent; /* Botão transparente */
+            color: theme('colors.play-blue'); /* Texto azul */
+            font-weight: 600;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: background-color 0.15s ease-in-out;
+        }
+        .dark .modal-content .modal-buttons .modal-close-button {
+            color: theme('colors.play-blue'); /* Mantém o azul no modo escuro */
+        }
+        .modal-content .modal-buttons .modal-close-button:hover {
+            background-color: rgba(66, 133, 244, 0.1); /* Fundo suave no hover */
         }
     </style>
 
-    <!-- PWA configs -->
-    <!-- Manifest e ícones são importantes para a experiência PWA. 
-         Certifique-se de ter um manifest.json válido e os ícones correspondentes. -->
+    <!-- Configurações PWA atualizadas conforme sua solicitação -->
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#00875A"> <!-- Cor do tema Play Store -->
-    <link rel="icon" type="image/png" sizes="192x192" href="https://placehold.co/192x192/00875A/FFFFFF?text=❤️">
-    <link rel="icon" type="image/png" sizes="512x512" href="https://placehold.co/512x512/00875A/FFFFFF?text=❤️">
+    <meta name="theme-color" content="#00875A"> <!-- Cor do tema Play Store (verde) -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 </head>
 <body class="bg-play-light-gray dark:bg-dark-background text-gray-800 dark:text-dark-text-primary">
     <!-- Barra superior do aplicativo (similar à Play Store) -->
@@ -306,7 +291,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v.01M12 12v.01M12 18v.01" />
                 </svg>
             </button>
-            <div id="dropdownMenu" class="dropdown-menu hidden">
+            <div id="dropdownMenu" class="dropdown-menu">
                 <button id="shareButton" class="dropdown-item">
                     <!-- Novo ícone de compartilhamento (flecha para cima em um quadrado) -->
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
@@ -332,7 +317,7 @@
         <section class="flex items-start mb-6">
             <!-- Ícone do Love Tester com o wrapper para a animação de download -->
             <div id="appIconWrapper" class="app-icon-wrapper mr-4">
-                <img src="https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium" onerror="this.onerror=null;this.src='https://placehold.co/80x80/FFB6C1/FF0000?text=❤️';" alt="Ícone do Love Tester" class="rounded-2xl shadow-md">
+                <img src="https://pbs.twimg.com/media/GzZlJAAXgAAoQrx?format=jpg&name=medium" onerror="this.onerror=null;this.src='https://placehold.co/80x80/FFB6C1/FF0000?text❤️';" alt="Ícone do Love Tester" class="rounded-2xl shadow-md">
             </div>
             <div>
                 <h1 class="text-2xl sm:text-3xl font-bold">Love Tester</h1>
@@ -370,7 +355,6 @@
 
         <!-- Galeria de Imagens (apenas 2 screenshots) -->
         <section class="mb-6 overflow-x-auto whitespace-nowrap scrollbar-hide flex space-x-4 pb-2">
-            <!-- Screenshots 1 e 2 -->
             <img src="https://pbs.twimg.com/media/Gzc2_v3WoAAlcRY?format=png&name=900x900" onerror="this.onerror=null;this.src='https://placehold.co/600x1000/FFD1DC/FF0000?text=Love+Tester+Screen+1';" alt="Screenshot Love Tester 1" class="inline-block w-4/5 sm:w-2/3 md:w-1/2 flex-shrink-0 rounded-lg shadow-md">
             <img src="https://pbs.twimg.com/media/Gzc3Gn1XwAAv9ix?format=png&name=small" onerror="this.onerror=null;this.src='https://placehold.co/600x1000/C0E0FF/0000FF?text=Love+Tester+Screen+2';" alt="Screenshot Love Tester 2" class="inline-block w-4/5 sm:w-2/3 md:w-1/2 flex-shrink-0 rounded-lg shadow-md">
         </section>
@@ -465,24 +449,28 @@
 
     </main>
 
-    <!-- Barra de progresso de download -->
-    <div id="downloadProgress" class="fixed bottom-20 left-1/2 -translate-x-1/2 z-1000 bg-blue-600 text-white py-3 px-5 rounded-full shadow-lg font-semibold flex items-center gap-3 transition-opacity duration-300 opacity-0 pointer-events-none">
-        Baixando... <span id="downloadPercentage">0%</span>
-        <div class="progress-bar-container">
-            <div id="progressBar" class="progress-bar"></div>
-        </div>
-    </div>
-
     <!-- Modal de Aviso Personalizado -->
     <div id="customModal" class="modal-overlay">
         <div class="modal-content">
             <p id="modalMessage" class="mb-4"></p>
-            <button id="modalCloseButton" class="bg-blue-600 text-white px-4 py-2 rounded-full hover:bg-blue-700 transition-colors">OK</button>
+            <div class="modal-buttons">
+                <button id="modalCloseButton" class="modal-close-button">OK</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Função para aplicar o tema (claro/escuro)
+        // REDIRECIONAMENTO PARA IOS
+        // Verifica se o agente do usuário indica um dispositivo iOS
+        (function() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                // Se for iOS, redireciona para a página de download específica
+                window.location.replace("https://utters-apps.github.io/Love-Tester/downloadios.html");
+            }
+        })();
+
+        // Função para aplicar o tema (claro/escuro) baseado na preferência do sistema
         function applyTheme(theme) {
             if (theme === 'dark') {
                 document.documentElement.classList.add('dark');
@@ -491,77 +479,100 @@
             }
         }
 
-        // Função para mostrar o modal personalizado
+        // Função para mostrar o modal personalizado (substitui alert/confirm)
         function showCustomModal(message) {
             const customModal = document.getElementById('customModal');
             const modalMessage = document.getElementById('modalMessage');
+            const modalCloseButton = document.getElementById('modalCloseButton');
+
             modalMessage.textContent = message;
-            customModal.classList.add('visible');
-            // Fechar modal ao clicar fora ou no botão OK
-            customModal.addEventListener('click', (event) => {
-                if (event.target === customModal) {
-                    customModal.classList.remove('visible');
-                }
-            });
-            document.getElementById('modalCloseButton').addEventListener('click', () => {
+            customModal.classList.add('visible'); // Torna o modal visível com transição
+
+            // Função para fechar o modal e remover os listeners
+            const closeModal = () => {
                 customModal.classList.remove('visible');
-            }, { once: true }); // Executa uma vez
+                // Remove os event listeners para evitar duplicação ou comportamentos inesperados
+                customModal.removeEventListener('click', handleModalOverlayClick);
+                modalCloseButton.removeEventListener('click', closeModal);
+            };
+
+            // Lidar com cliques no overlay para fechar o modal (se clicar fora do conteúdo)
+            const handleModalOverlayClick = (event) => {
+                if (event.target === customModal) {
+                    closeModal();
+                }
+            };
+            
+            // Adiciona listeners para fechar o modal
+            customModal.addEventListener('click', handleModalOverlayClick);
+            modalCloseButton.addEventListener('click', closeModal, { once: true }); // Fecha no botão "OK", remove-se após um uso
         }
 
-        // Verifica a preferência do sistema ao carregar a página
-        const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        applyTheme(systemTheme);
-
-        // Ouve por mudanças na preferência do sistema
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (event) => {
-            const newTheme = event.matches ? 'dark' : 'light';
-            applyTheme(newTheme);
+        // Ouve a preferência de tema do sistema e aplica ao carregar e quando muda
+        const systemThemeQuery = window.matchMedia('(prefers-color-scheme: dark)');
+        applyTheme(systemThemeQuery.matches ? 'dark' : 'light');
+        systemThemeQuery.addEventListener('change', (event) => {
+            applyTheme(event.matches ? 'dark' : 'light');
         });
 
-        // Redirecionamento para iOS (comentado para exibir o conteúdo principal)
-        // function redirectToIOSPage() {
-        //     const userAgent = navigator.userAgent || navigator.vendor || window.opera;
-        //     if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-        //         if (window.location.href !== "https://utters-apps.github.io/Love-Tester/downloadios.html") {
-        //             window.location.href = "https://utters-apps.github.io/Love-Tester/downloadios.html";
-        //         }
-        //     }
-        // }
-        // redirectToIOSPage(); // Chama a função de redirecionamento no carregamento da página
-
-        // Service Worker
+        // Registro do Service Worker para funcionalidades PWA
         if ("serviceWorker" in navigator) {
             navigator.serviceWorker.register("service-worker.js")
-                .then(() => console.log("SW registered from download.html"))
-                .catch(error => console.error("SW registration failed:", error));
+                .then(registration => {
+                    console.log("Service Worker registrado com escopo:", registration.scope);
+                    // Se o Service Worker já está ativo, significa que o PWA está instalado
+                    if (navigator.serviceWorker.controller) {
+                        updateInstallButton('open');
+                    }
+                })
+                .catch(error => {
+                    console.error("Falha no registro do Service Worker:", error);
+                });
         }
 
-        let deferredPrompt;
+        let deferredPrompt; // Variável para armazenar o evento beforeinstallprompt
         const installAppButton = document.getElementById("installAppButton");
         const appIconWrapper = document.getElementById("appIconWrapper");
-        const downloadProgressDiv = document.getElementById("downloadProgress");
-        const downloadPercentageSpan = document.getElementById("downloadPercentage");
-        const progressBar = document.getElementById("progressBar");
+        const shareButton = document.getElementById("shareButton");
         const menuButton = document.getElementById("menuButton");
         const dropdownMenu = document.getElementById("dropdownMenu");
-        const shareButton = document.getElementById("shareButton");
         const descriptionContent = document.getElementById("descriptionContent");
         const toggleDescriptionButton = document.getElementById("toggleDescription");
 
+        // Função para atualizar o texto e estilo do botão de instalação
+        function updateInstallButton(state) {
+            // Remove todas as classes de estado anteriores para garantir um estilo limpo
+            installAppButton.classList.remove(
+                'bg-play-green', 'text-white', 'bg-transparent', 'border-2', 'border-play-green', 'text-play-green'
+            );
 
-        // Função para simular o download
+            if (state === 'install') {
+                installAppButton.textContent = 'Instalar';
+                installAppButton.classList.add('bg-play-green', 'text-white');
+                installAppButton.disabled = false;
+                installAppButton.style.display = 'block';
+            } else if (state === 'downloading') {
+                installAppButton.textContent = 'Instalando...'; // Novo texto
+                installAppButton.classList.add('bg-transparent', 'border-2', 'border-play-green', 'text-play-green'); // Contorno e texto verde
+                installAppButton.disabled = true; // Desabilita o botão enquanto baixa
+                installAppButton.style.display = 'block';
+            } else if (state === 'open') {
+                installAppButton.textContent = 'Abrir';
+                installAppButton.classList.add('bg-play-green', 'text-white');
+                installAppButton.disabled = false;
+                installAppButton.style.display = 'block';
+            } else if (state === 'hide') {
+                installAppButton.style.display = 'none'; // Esconde o botão completamente
+            }
+        }
+
+        // Função para simular o download e a animação do círculo no ícone
         function simulateDownload() {
-            installAppButton.textContent = 'Baixando';
-            installAppButton.classList.remove('bg-play-green', 'text-white');
-            installAppButton.classList.add('bg-white', 'text-play-green', 'border', 'border-play-green');
-
-            downloadProgressDiv.classList.remove('opacity-0', 'pointer-events-none'); // Mostra a barra de download com fade-in
-            downloadProgressDiv.classList.add('opacity-100', 'pointer-events-auto');
-            downloadProgressDiv.style.display = 'flex'; // Garante que esteja visível para a transição
+            updateInstallButton('downloading'); // Atualiza o botão para "Instalando..."
 
             let progress = 0;
-            const duration = 5000; // 5 segundos para download (mais realista)
-            const intervalTime = 50; // 50ms por etapa
+            const duration = 3000; // 3 segundos para download (mais realista)
+            const intervalTime = 30; // 30ms por etapa
             const steps = duration / intervalTime;
             const increment = 100 / steps;
 
@@ -569,115 +580,81 @@
                 progress += increment;
                 if (progress > 100) progress = 100;
 
-                downloadPercentageSpan.textContent = `${Math.round(progress)}%`;
-                progressBar.style.width = `${progress}%`;
-                
                 // Atualiza a custom property CSS para o conic-gradient no pseudo-elemento ::after
-                appIconWrapper.style.setProperty('--progress-degree', `${progress * 3.6}deg`); 
+                appIconWrapper.style.setProperty('--progress-degree', `${progress * 3.6}deg`);
 
                 if (progress >= 100) {
                     clearInterval(interval);
-                    downloadProgressDiv.classList.remove('opacity-100', 'pointer-events-auto'); // Esconde a barra de download com fade-out
-                    downloadProgressDiv.classList.add('opacity-0', 'pointer-events-none');
-                    // Aguarda a transição antes de ocultar completamente
-                    setTimeout(() => downloadProgressDiv.style.display = 'none', 300);
-                    
-                    installAppButton.textContent = 'Abrir'; // Muda o texto para "Abrir"
-                    installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
-                    installAppButton.classList.add('bg-play-green', 'text-white');
+                    updateInstallButton('open'); // Muda o texto para "Abrir"
                     appIconWrapper.style.setProperty('--progress-degree', '0deg'); // Reseta o progresso visual do círculo
                 }
             }, intervalTime);
         }
 
+        // Listener para o evento beforeinstallprompt (quando o PWA pode ser instalado)
         window.addEventListener("beforeinstallprompt", (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            installAppButton.textContent = 'Instalar';
-            installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
-            installAppButton.classList.add('bg-play-green', 'text-white');
-            installAppButton.style.display = 'block'; // Mostra o botão "Instalar"
+            console.log("Evento 'beforeinstallprompt' disparado.");
+            e.preventDefault(); // Previne que o navegador mostre o prompt automaticamente
+            deferredPrompt = e; // Armazena o evento para ser usado depois
+            updateInstallButton('install'); // Mostra o botão "Instalar"
+        });
 
-            installAppButton.onclick = () => {
-                if (installAppButton.textContent === 'Abrir') {
-                    console.log("Clicou em Abrir. Simulação de abertura do aplicativo.");
-                    showCustomModal("O Love Tester foi aberto!"); // Simula a abertura do app
-                } else if (deferredPrompt) {
-                    // Tenta mostrar o prompt de instalação do PWA
+        // Lógica para o botão de instalação/abertura
+        installAppButton.addEventListener('click', () => {
+            if (installAppButton.textContent === 'Abrir') {
+                console.log("Clicou em Abrir. Simulação de abertura do aplicativo.");
+                showCustomModal("O Love Tester foi aberto!"); // Simula a abertura do app
+            } else if (installAppButton.textContent === 'Instalar') {
+                if (deferredPrompt) {
+                    // Se o evento beforeinstallprompt estiver disponível, tenta mostrar o prompt real
                     deferredPrompt.prompt();
-                    deferredPrompt.userChoice.then((choice) => {
-                        if (choice.outcome === "accepted") {
-                            console.log("Aplicativo instalado com sucesso!");
-                            simulateDownload(); // Inicia a simulação de download
+                    deferredPrompt.userChoice.then((choiceResult) => {
+                        console.log("Prompt de instalação do PWA:", choiceResult.outcome);
+                        if (choiceResult.outcome === 'accepted') {
+                            console.log('Usuário aceitou a instalação. Iniciando simulação de download.');
+                            simulateDownload(); // Inicia a simulação SOMENTE se o usuário aceitar
                         } else {
-                            console.log("Instalação do aplicativo cancelada.");
-                            installAppButton.textContent = 'Instalar';
-                            installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
-                            installAppButton.classList.add('bg-play-green', 'text-white');
+                            console.log('Usuário recusou a instalação.');
+                            updateInstallButton('install'); // Volta para "Instalar" se recusar
                         }
-                        deferredPrompt = null;
+                        deferredPrompt = null; // Limpa o prompt após o uso
                     });
                 } else {
-                    console.log("Nenhum prompt de instalação disponível. O navegador pode não suportar ou o PWA já está instalado.");
-                    showCustomModal("Não foi possível instalar. O navegador pode não suportar ou o app já está instalado.");
+                    // Fallback para navegadores que não disparam beforeinstallprompt ou se já foi rejeitado
+                    // ou se o PWA já está instalado (mas o Service Worker ainda não foi atualizado para "open")
+                    // Se não há deferredPrompt, não podemos oferecer um PWA para instalar,
+                    // então o botão deve simplesmente mudar para "Abrir" se o app já estiver de alguma forma "instalado"
+                    // ou permanecer "Instalar" (sem simulação de PWA) se não.
+                    // A lógica inicial em DOMContentLoaded já tenta definir "Abrir" se o SW estiver ativo.
+                    console.log("Nenhum prompt de instalação real disponível. O botão não fará nada além de simular abertura/instalação.");
+                    showCustomModal("A instalação não pode ser oferecida via PWA neste navegador ou já está instalada. Você pode tentar adicionar à tela inicial manualmente.");
+                    // Não chamamos simulateDownload aqui para manter a promessa de "só se aceitar o prompt PWA"
                 }
-            };
+            }
         });
 
-        // Verifica o estado do PWA ao carregar a página
-        window.addEventListener('load', () => {
-            document.body.classList.add('loaded'); // Inicia a animação de fade-in
-
-            downloadProgressDiv.classList.remove('opacity-100', 'pointer-events-auto'); // Garante que a barra de download esteja escondida
-            downloadProgressDiv.classList.add('opacity-0', 'pointer-events-none');
-            
-            setTimeout(() => {
-                // Emulando a verificação de instalação do PWA
-                // Se houver um service worker ativo (um forte indicativo de PWA), mostramos "Abrir".
-                // Caso contrário, "Instalar" ou esperamos o beforeinstallprompt.
-                if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                    installAppButton.textContent = 'Abrir';
-                    installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
-                    installAppButton.classList.add('bg-play-green', 'text-white');
-                    installAppButton.style.display = 'block';
-                } else if (!deferredPrompt) {
-                    // Se não houve 'beforeinstallprompt' e nenhum service worker, mostra "Instalar" como fallback
-                    installAppButton.textContent = 'Instalar';
-                    installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
-                    installAppButton.classList.add('bg-play-green', 'text-white');
-                    installAppButton.style.display = 'block';
-                }
-            }, 500); // Pequeno atraso para a animação inicial do corpo
-        });
-
-
-        // Caso o app seja instalado após a página carregar (evento PWA real)
+        // Evento disparado quando o PWA é efetivamente instalado
         window.addEventListener('appinstalled', () => {
-            installAppButton.textContent = 'Abrir';
-            installAppButton.classList.remove('bg-white', 'text-play-green', 'border', 'border-play-green');
-            installAppButton.classList.add('bg-play-green', 'text-white');
-            installAppButton.style.display = 'block';
-            downloadProgressDiv.classList.remove('opacity-100', 'pointer-events-auto'); // Garante que a barra de download seja escondida
-            downloadProgressDiv.classList.add('opacity-0', 'pointer-events-none');
-            console.log('Love Tester PWA instalado!');
+            console.log('Love Tester PWA foi instalado com sucesso!');
+            updateInstallButton('open'); // Garante que o botão mude para "Abrir"
         });
 
         // Lógica para o menu de 3 pontos com animação de fade
         menuButton.addEventListener('click', (event) => {
-            if (dropdownMenu.classList.contains('hidden')) {
-                dropdownMenu.classList.remove('hidden');
-                // Pequeno delay para a transição funcionar
+            const isVisible = dropdownMenu.classList.contains('visible');
+            if (!isVisible) {
+                dropdownMenu.style.visibility = 'visible'; // Torna o elemento visível para a transição
                 setTimeout(() => {
                     dropdownMenu.classList.add('visible');
-                }, 10); 
+                }, 10); // Pequeno delay para a transição funcionar
             } else {
                 dropdownMenu.classList.remove('visible');
-                // Espera a transição terminar para adicionar 'hidden'
+                // Espera a transição terminar para ocultar completamente
                 setTimeout(() => {
-                    dropdownMenu.classList.add('hidden');
+                    dropdownMenu.style.visibility = 'hidden';
                 }, 200); // Deve ser igual à duração da transição CSS
             }
-            event.stopPropagation();
+            event.stopPropagation(); // Impede que o clique se propague e feche o menu imediatamente
         });
 
         // Esconde o menu se clicar em qualquer lugar fora dele
@@ -686,7 +663,7 @@
                 if (dropdownMenu.classList.contains('visible')) {
                     dropdownMenu.classList.remove('visible');
                     setTimeout(() => {
-                        dropdownMenu.classList.add('hidden');
+                        dropdownMenu.style.visibility = 'hidden';
                     }, 200);
                 }
             }
@@ -712,7 +689,7 @@
             // Fechar o dropdown após o clique
             dropdownMenu.classList.remove('visible');
             setTimeout(() => {
-                dropdownMenu.classList.add('hidden');
+                dropdownMenu.style.visibility = 'hidden';
             }, 200);
         });
 
@@ -722,6 +699,18 @@
             toggleDescriptionButton.classList.toggle('rotated', isExpanded);
         });
 
+        // Garante que o corpo da página se torne visível após o carregamento inicial do DOM
+        document.addEventListener('DOMContentLoaded', () => {
+            document.body.classList.add('loaded'); // Inicia a animação de fade-in
+            
+            // Verifica o estado inicial do PWA (Service Worker ativo indica instalado)
+            if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                updateInstallButton('open');
+            } else {
+                // Caso contrário, mostra o botão para instalar
+                updateInstallButton('install');  
+            }
+        });
     </script>
 </body>
 </html>
